@@ -1,0 +1,157 @@
+/* CSS Document */
+.txt_system {
+    color: skyblue;
+}
+
+body {
+    font: 12px arial;
+    color: none;
+    padding: 2px; }
+  
+form, p, span {
+    margin:0;
+    padding:0; }
+   
+.link_id {
+    display: block;
+    color: yellowgreen;
+    text-decoration: none; 
+    background-color: none; }
+
+.link_id:before{
+    content: "";
+    display: block;
+    background: url('chaticon_name.png') no-repeat center center;
+    width: 25px;
+    height: 25px;
+    float: left;
+}
+
+.my {
+    color: blue;
+    text-decoration: none; 
+    margin-right: 10px;
+    background-color: none; }
+
+.txt_talk {
+    color: gray;
+    background-color: none;
+    word-wrap: keep-all;
+}
+
+#chatbox, li {
+    list-style-type: none;
+    padding: 3px;
+}
+  
+#wrapper {
+    position: relative;
+    height: 300px;
+}  
+
+#chatbox {
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    width: 300px;
+}
+
+.box_alert {
+    background-color: yellow;
+    padding: 10px;
+}
+
+em,.screen_out {
+    color: red;
+    margin-right: 5px;    
+}
+
+strong,.screen_out {
+    color: red;
+    margin-right: 5px;    
+}
+
+.box_alert:before {
+    content: "";
+    display: block;
+    background: url('cookies_icon.png') no-repeat center center;
+    width: 40px;
+    height: 40px;
+    float: left;
+}
+
+.txt_name {
+    color: yellowgreen;
+    background-color: black;
+    padding: 1px;
+}
+
+.txt_msg {
+    color: black;
+    margin: 5px;
+}
+
+.txt_cookie {
+    color: gold;
+    margin-right: 5px;
+    background-color: black;
+    padding: 1px;
+}
+
+.kakao_emoticon {
+    padding: 10px;
+}
+
+.view_emot_detail {
+    color: none;
+    background-color: none;
+    display: none;
+}
+
+.chat-line__message {
+    color: #bbbbbb;
+    background-color: #333333e0;
+    padding: 5px;
+    border-radius: 5px;    
+}
+
+a {
+    color: #bbbbbb;
+    text-decoration: none;
+}
+
+.chat-line__message span img {
+    position: relative;
+    top: 4px;
+}
+
+.chat-line__username {
+    border: 0px;
+    background-color: transparent;
+    padding: 1px;
+    font-weight: bold;
+}
+
+.chat-author__intl-login {
+    display: none;
+}
+
+.chat-badge {
+    padding-right: 2px;
+}
+
+.chatter-name {
+    border: 0px;
+    background-color: transparent;
+    padding: 1px;
+    background: #55ffaa;
+    background: -webkit-linear-gradient(left, #55ff55, #55ffff);
+    background:    -moz-linear-gradient(right, #55ff55, #55ffff);
+    background:      -o-linear-gradient(right, #55ff55, #55ffff);
+    background:         linear-gradient(to right, #55ff55, #55ffff);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+    font-weight: bold;
+}
+
