@@ -24,6 +24,11 @@ chatsock.onmessage = function (event) {
       div.children('li')[0].remove();
     }
     $('#chatbox').animate({scrollTop: document.body.scrollHeight},"slow");
+    // disappear 
+    var le=document.querySelector('#chatbox').lastChild;    
+    setTimeout(function () {
+          le.style.display='none';    
+    }, 30000);
 }
 </script>
 </body>
