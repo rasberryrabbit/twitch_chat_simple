@@ -9,7 +9,7 @@ body {
     color: none;
     padding: 2px; }
   
-form, p, span {
+form, p, span, div {
     margin:0;
     padding:0; 
 }
@@ -46,7 +46,8 @@ form, p, span {
 
 #chatbox, li {
     list-style-type: none;
-    padding: 3px;
+    padding: 0px;
+    padding-top: 1px;
 }
   
 #wrapper {
@@ -173,7 +174,7 @@ a {
 .chat-line__username {
     border: 0px;
     background-color: transparent;
-    padding: 1px;
+    padding: 0px;
     font-weight: bold;
 }
 
