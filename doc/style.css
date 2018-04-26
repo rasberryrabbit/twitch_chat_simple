@@ -139,9 +139,11 @@ a {
     display: none;
 }
 
-/* icon to right */
+/* icon to right, fix icon position */
 .chat-line__message > span:nth-of-type(1) {
     float: right;
+    position: relative;
+    top: -5px;
 }
 
 /* remove : mark */
@@ -152,7 +154,7 @@ a {
 /* ID, break newline */
 .chat-line__message > button {
     display: block;
-    padding-bottom: 5px;
+    padding-bottom: 1px;
 }
 
 /* disable clip link
