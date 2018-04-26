@@ -148,7 +148,7 @@ a {
     display: none;
 }
 
-/* chat ID */
+/* ID, break newline */
 .chat-line__message > button {
     display: block;
     padding-bottom: 5px;
