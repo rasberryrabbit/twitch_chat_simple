@@ -125,6 +125,7 @@ strong,.screen_out {
     background-color: #333333e0;
     padding: 5px;
     border-radius: 5px;    
+    font-weight: bold;
 }
 
 a {
