@@ -34,12 +34,6 @@ type
       procedure onExIncomeFrame(Sender: THttpServerResp; const Frame: TWebSocketFrame);
   end;
 
-  TSimpleWebSocketClient=class
-    private
-      fClient:THttpClientWebSockets;
-    public
-  end;
-
 
 implementation
 
@@ -67,7 +61,7 @@ constructor TSimpleWebsocketServer.Create(const Port: string;
 var
   protocol:TWebSocketProtocolEcho;
 begin
-  fServer:=TWebSocketServer.Create(Port,nil,nil,'kakaochat');
+  fServer:=TWebSocketServer.Create(Port,nil,nil,'twitchchat');
   ChatBuffer:=ChatBuf;
   protocol:=TWebSocketProtocolEcho.Create('chat','');
   protocol.Server:=Self;
