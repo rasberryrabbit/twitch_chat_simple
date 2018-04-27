@@ -104,6 +104,7 @@ var
 
   PortChat:string  = '8096';
   PortAlert:string = '8098';
+  CInterval:Integer = 700;
 
   PortClient:string = '8092';
 
@@ -461,12 +462,15 @@ begin
   try
     formPort.PortChat:=PortChat;
     formPort.PortAlert:=PortAlert;
+    formPort.Interval:=CInterval;
     if mrOK=formPort.ShowModal then begin
       PortChat:=formPort.PortChat;
       PortAlert:=formPort.PortAlert;
+      CInterval:=formPort.Interval;
       try
         bTimer:=Timer1.Enabled;
         Timer1.Enabled:=False;
+        Timer1.Interval:=CInterval;
         WebSockChat.Free;
         webSockAlert.Free;
         //WClient.Free;
@@ -498,6 +502,7 @@ begin
     config.WriteString('PORT','ALERT',PortAlert);
     config.WriteString('URL','ADDR',EditCEFUrl.Text);
     config.WriteBool('URL','NOIMG',CheckBoxImgLoading.Checked);
+    config.WriteInteger('URL','INT',CInterval);
   finally
     config.Free
   end;
@@ -514,19 +519,21 @@ begin
     PortAlert:=config.ReadString('PORT','ALERT',PortAlert);
     EditCEFUrl.Text:=config.ReadString('URL','ADDR',rootUrl);
     CheckBoxImgLoading.Checked:=config.ReadBool('URL','NOIMG',False);
+    CInterval:=config.ReadInteger('URL','INT',700);
   finally
     config.Free
   end;
 
 
   try
+    Timer1.Interval:=CInterval;
     WebSockChat:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortChat); //,ChatBuffer);
     webSockAlert:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortAlert); //,ChatBuffer);
     //WClient:=TSQLHttpClientWebsockets.Create('localhost',PortClient,TSQLModel.Create([]));
     //WClient.ServerTimestampSynchronize;
 
-    if CheckBoxImgLoading.Checked then
-      cefb.Options.ImageLoading:=STATE_DISABLED;
+    CheckBoxImgLoadingClick(nil);
+
     cefb.Load(UTF8Decode(EditCEFUrl.Text));
   except
     on e:exception do
