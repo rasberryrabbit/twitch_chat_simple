@@ -30,6 +30,7 @@ type
   { TFormTwitchChat }
 
   TFormTwitchChat = class(TForm)
+    ActionParserSet: TAction;
     ActionPortSet: TAction;
     ActionList1: TActionList;
     Button1: TButton;
@@ -43,11 +44,13 @@ type
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
     Panel1: TPanel;
     Panel2: TPanel;
     Timer1: TTimer;
     TimerNav: TTimer;
     UniqueInstance1: TUniqueInstance;
+    procedure ActionParserSetExecute(Sender: TObject);
     procedure ActionPortSetExecute(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -80,7 +83,8 @@ implementation
 {$R *.lfm}
 
 uses
-  sha1, uChatBuffer, uRequestHandler, uWebsockSimple,form_portset, IniFiles;
+  sha1, uChatBuffer, uRequestHandler, uWebsockSimple, form_portset, IniFiles,
+  uformParserTag;
 
 const
   MaxChecksum = 3;
@@ -107,6 +111,19 @@ var
   CInterval:Integer = 700;
 
   PortClient:string = '8092';
+
+  // html parsing
+  LogEleTag : UnicodeString = 'DIV';
+  LogEleAttr : UnicodeString = 'role';
+  LogEleName : UnicodeString = 'log';
+
+  LogEleAlertAttr : UnicodeString = 'CLASS';
+  LogEleAlert : UnicodeString = 'user-notice-line';
+  LogEleSys : UnicodeString = 'chat-line__status';
+
+  LogAddHead : string = '<li class="twitch_chat">';
+  LogAddTail : string = '</li>';
+
 
 type
 
@@ -171,7 +188,7 @@ begin
         //finally
         //  SetLength(fid,0);
         //end;
-        ProcessElementsById(browser.MainFrame,'log');
+        ProcessElementsById(browser.MainFrame,LogEleName);
       finally
         FormTwitchChat.Leave;
       end;
@@ -228,9 +245,6 @@ var
   NodeH : ICefDomNode;
   stemp : string;
   procedure ProcessNode(ANode: ICefDomNode);
-  const
-    classalert='user-notice-line';
-    classsystem='chat-line__status';
   var
     Node, Nodex, NodeN, NodeIcon, NodeChat, NodeStart, NodeEnd: ICefDomNode;
     s, sclass, sbuf, scheck, ssockout : UnicodeString;
@@ -247,7 +261,7 @@ var
       disLog:=FormTwitchChat.CheckBoxDisableLog.Checked;
       Node := ANode.FirstChild;
       while Assigned(Node) do begin
-        if (Node.GetElementAttribute('role')=FNameID) and (Node.GetElementTagName='DIV') then begin
+        if (Node.GetElementAttribute(LogEleAttr)=LogEleName) and (Node.GetElementTagName=LogEleTag) then begin
           ItemCount:=0;
           Nodex:=Node.LastChild;
           NodeEnd:=Nodex;
@@ -311,10 +325,10 @@ var
               else
                 NodeChat:=nil;
 
-            sclass:=Nodex.GetElementAttribute('CLASS');
-            IsAlert:=Pos(classalert,sclass)<>0;
+            sclass:=Nodex.GetElementAttribute(LogEleAlertAttr);
+            IsAlert:=Pos(LogEleAlert,sclass)<>0;
             if RemoveSys then
-              doAddMsg:=Pos(classsystem,sclass)=0;
+              doAddMsg:=Pos(LogEleSys,sclass)=0;
 
             scheck:=Nodex.AsMarkup;
             skipAddMarkup:=True;
@@ -332,7 +346,7 @@ var
               if not skipAddMarkup then
                 scheck:=Nodex.AsMarkup;
 
-              stemp:='<li class="twitch_chat">'+pchar(UTF8Encode(scheck))+'</li>';
+              stemp:=LogAddHead+pchar(UTF8Encode(scheck))+LogAddTail;
               WebSockChat.BroadcastMsg(stemp);
               if IsAlert then
                 WebSockAlert.BroadcastMsg(stemp);
@@ -491,6 +505,35 @@ begin
   end;
 end;
 
+procedure TFormTwitchChat.ActionParserSetExecute(Sender: TObject);
+var
+  pform:TFormParserSet;
+begin
+  pform:=TFormParserSet.Create(self);
+  try
+    pform.ValueListEditorParser.Values['LogEleTag']:=LogEleTag;
+    pform.ValueListEditorParser.Values['LogEleAttr']:=LogEleAttr;
+    pform.ValueListEditorParser.Values['LogEleName']:=LogEleName;
+    pform.ValueListEditorParser.Values['LogEleAlertAttr']:=LogEleAlertAttr;
+    pform.ValueListEditorParser.Values['LogEleAlert']:=LogEleAlert;
+    pform.ValueListEditorParser.Values['LogEleSys']:=LogEleSys;
+    pform.ValueListEditorParser.Values['LogAddHead']:=LogAddHead;
+    pform.ValueListEditorParser.Values['LogAddTail']:=LogAddTail;
+    if pform.ShowModal=mrOK then begin
+      LogEleTag:=pform.ValueListEditorParser.Values['LogEleTag'];
+      LogEleAttr:=pform.ValueListEditorParser.Values['LogEleAttr'];
+      LogEleName:=pform.ValueListEditorParser.Values['LogEleName'];
+      LogEleAlertAttr:=pform.ValueListEditorParser.Values['LogEleAlertAttr'];
+      LogEleAlert:=pform.ValueListEditorParser.Values['LogEleAlert'];
+      LogEleSys:=pform.ValueListEditorParser.Values['LogEleSys'];
+      LogAddHead:=pform.ValueListEditorParser.Values['LogAddHead'];
+      LogAddTail:=pform.ValueListEditorParser.Values['LogAddTail'];
+    end;
+  finally
+    pform.Free;
+  end;
+end;
+
 procedure TFormTwitchChat.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 var
@@ -503,6 +546,15 @@ begin
     config.WriteString('URL','ADDR',EditCEFUrl.Text);
     config.WriteBool('URL','NOIMG',CheckBoxImgLoading.Checked);
     config.WriteInteger('URL','INT',CInterval);
+
+    config.WriteString('PARSER','LogEleTag',LogEleTag);
+    config.WriteString('PARSER','LogEleAttr',LogEleAttr);
+    config.WriteString('PARSER','LogEleName',LogEleName);
+    config.WriteString('PARSER','LogEleAlertAttr',LogEleAlertAttr);
+    config.WriteString('PARSER','LogEleAlert',LogEleAlert);
+    config.WriteString('PARSER','LogEleSys',LogEleSys);
+    config.WriteString('PARSER','LogAddHead',LogAddHead);
+    config.WriteString('PARSER','LogAddTail',LogAddTail);
   finally
     config.Free
   end;
@@ -520,6 +572,15 @@ begin
     EditCEFUrl.Text:=config.ReadString('URL','ADDR',rootUrl);
     CheckBoxImgLoading.Checked:=config.ReadBool('URL','NOIMG',False);
     CInterval:=config.ReadInteger('URL','INT',700);
+
+    LogEleTag:=config.ReadString('PARSER','LogEleTag',LogEleTag);
+    LogEleAttr:=config.ReadString('PARSER','LogEleAttr',LogEleAttr);
+    LogEleName:=config.ReadString('PARSER','LogEleName',LogEleName);
+    LogEleAlertAttr:=config.ReadString('PARSER','LogEleAlertAttr',LogEleAlertAttr);
+    LogEleAlert:=config.ReadString('PARSER','LogEleAlert',LogEleAlert);
+    LogEleSys:=config.ReadString('PARSER','LogEleSys',LogEleSys);
+    LogAddHead:=config.ReadString('PARSER','LogAddHead',LogAddHead);
+    LogAddTail:=config.ReadString('PARSER','LogAddTail',LogAddTail);
   finally
     config.Free
   end;
