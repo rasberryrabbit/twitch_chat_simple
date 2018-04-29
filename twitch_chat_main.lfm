@@ -20,14 +20,14 @@ object FormTwitchChat: TFormTwitchChat
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 0
   end
-  object Button1: TButton
+  object ButtonAct: TButton
     Left = 552
     Height = 25
     Top = 479
     Width = 152
     Anchors = [akBottom]
     Caption = 'Activate'
-    OnClick = Button1Click
+    OnClick = ButtonActClick
     TabOrder = 4
   end
   object Panel2: TPanel
@@ -128,6 +128,9 @@ object FormTwitchChat: TFormTwitchChat
       object MenuItem3: TMenuItem
         Action = ActionParserSet
       end
+      object MenuItem4: TMenuItem
+        Action = ActionActiveStart
+      end
     end
   end
   object ActionList1: TActionList
@@ -140,6 +143,11 @@ object FormTwitchChat: TFormTwitchChat
     object ActionParserSet: TAction
       Caption = 'Parser Settings'
       OnExecute = ActionParserSetExecute
+    end
+    object ActionActiveStart: TAction
+      Caption = 'Active at loading'
+      Checked = True
+      OnExecute = ActionActiveStartExecute
     end
   end
   object TimerNav: TTimer

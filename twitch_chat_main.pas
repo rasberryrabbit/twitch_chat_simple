@@ -30,10 +30,11 @@ type
   { TFormTwitchChat }
 
   TFormTwitchChat = class(TForm)
+    ActionActiveStart: TAction;
     ActionParserSet: TAction;
     ActionPortSet: TAction;
     ActionList1: TActionList;
-    Button1: TButton;
+    ButtonAct: TButton;
     Button2: TButton;
     CheckBoxImgLoading: TCheckBox;
     CheckBoxAutoUrl: TCheckBox;
@@ -45,14 +46,16 @@ type
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
     Panel1: TPanel;
     Panel2: TPanel;
     Timer1: TTimer;
     TimerNav: TTimer;
     UniqueInstance1: TUniqueInstance;
+    procedure ActionActiveStartExecute(Sender: TObject);
     procedure ActionParserSetExecute(Sender: TObject);
     procedure ActionPortSetExecute(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure ButtonActClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure CheckBoxImgLoadingClick(Sender: TObject);
     procedure EditCEFUrlKeyPress(Sender: TObject; var Key: char);
@@ -437,13 +440,13 @@ begin
   Sleep(100);
 end;
 
-procedure TFormTwitchChat.Button1Click(Sender: TObject);
+procedure TFormTwitchChat.ButtonActClick(Sender: TObject);
 begin
   Timer1.Enabled:=not Timer1.Enabled;
   if Timer1.Enabled then
-    Button1.Caption:='Stop'
+    ButtonAct.Caption:='Stop'
     else
-      Button1.Caption:='Activate';
+      ButtonAct.Caption:='Activate';
 end;
 
 procedure TFormTwitchChat.Button2Click(Sender: TObject);
@@ -534,6 +537,11 @@ begin
   end;
 end;
 
+procedure TFormTwitchChat.ActionActiveStartExecute(Sender: TObject);
+begin
+  ActionActiveStart.Checked:=not ActionActiveStart.Checked;
+end;
+
 procedure TFormTwitchChat.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 var
@@ -546,6 +554,7 @@ begin
     config.WriteString('URL','ADDR',EditCEFUrl.Text);
     config.WriteBool('URL','NOIMG',CheckBoxImgLoading.Checked);
     config.WriteInteger('URL','INT',CInterval);
+    config.WriteBool('URL','ACTIVE',ActionActiveStart.Checked);
 
     config.WriteString('PARSER','LogEleTag',LogEleTag);
     config.WriteString('PARSER','LogEleAttr',LogEleAttr);
@@ -572,6 +581,7 @@ begin
     EditCEFUrl.Text:=config.ReadString('URL','ADDR',rootUrl);
     CheckBoxImgLoading.Checked:=config.ReadBool('URL','NOIMG',False);
     CInterval:=config.ReadInteger('URL','INT',700);
+    ActionActiveStart.Checked:=config.ReadBool('URL','ACTIVE',True);
 
     LogEleTag:=config.ReadString('PARSER','LogEleTag',LogEleTag);
     LogEleAttr:=config.ReadString('PARSER','LogEleAttr',LogEleAttr);
@@ -601,6 +611,8 @@ begin
       ShowMessage(e.Message);
   end;
   CheckBoxImgLoading.OnClick:=@CheckBoxImgLoadingClick;
+  if ActionActiveStart.Checked then
+    ButtonAct.Click;
 end;
 
 procedure TFormTwitchChat.Timer1Timer(Sender: TObject);
