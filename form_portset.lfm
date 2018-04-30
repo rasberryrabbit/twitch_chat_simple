@@ -83,7 +83,7 @@ object FormPortSet: TFormPortSet
     Top = 120
     Width = 80
     TabOrder = 3
-    Text = '700'
+    Text = '500'
   end
   object Label4: TLabel
     Left = 24

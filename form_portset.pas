@@ -56,7 +56,7 @@ begin
   PortHTTP:=CheckAssign(EditHttp.Text,'8090');
   PortChat:=CheckAssign(EditChat.Text,'8092');
   PortAlert:=CheckAssign(EditAlert.Text,'8094');
-  Interval:=StrToIntDef(EditIntr.Text,700);
+  Interval:=StrToIntDef(EditIntr.Text,500);
 end;
 
 procedure TFormPortSet.FormShow(Sender: TObject);

@@ -111,7 +111,7 @@ var
 
   PortChat:string  = '8096';
   PortAlert:string = '8098';
-  CInterval:Integer = 700;
+  CInterval:Integer = 500;
 
   PortClient:string = '8092';
 
@@ -281,8 +281,16 @@ var
             i:=0;
             dupCountChk:=lastDupChk;
             while Assigned(NodeN) do begin
-              // not full html
-              scheck:=NodeN.Name+NodeN.GetElementAttribute('CLASS')+NodeN.ElementInnerText;
+
+              // make checksum source
+              scheck:=NodeN.ElementInnerText;
+              NodeIcon:=NodeN.FirstChild;
+              if Assigned(NodeIcon) then begin
+                scheck:=scheck+NodeIcon.ElementInnerText;
+                NodeChat:=NodeIcon.NextSibling;
+                if Assigned(NodeChat) then
+                  scheck:=scheck+NodeChat.ElementInnerText;
+              end;
               checksumN:=MakeHash(@scheck[1],Length(scheck)*SizeOf(WideChar));
 
               if matched and (i<lastchkCount) then begin
@@ -620,7 +628,7 @@ begin
     PortAlert:=config.ReadString('PORT','ALERT',PortAlert);
     EditCEFUrl.Text:=config.ReadString('URL','ADDR',rootUrl);
     CheckBoxImgLoading.Checked:=config.ReadBool('URL','NOIMG',False);
-    CInterval:=config.ReadInteger('URL','INT',700);
+    CInterval:=config.ReadInteger('URL','INT',500);
     ActionActiveStart.Checked:=config.ReadBool('URL','ACTIVE',True);
 
     LogEleTag:=config.ReadString('PARSER','LogEleTag',LogEleTag);
