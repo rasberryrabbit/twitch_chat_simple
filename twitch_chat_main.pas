@@ -98,7 +98,7 @@ var
   MainBrowser : ICefBrowser;
 
   lastchecksum : array[0..MaxChecksum] of THashDigest;
-  lastchkCount : Integer = 0;
+  lastchkCount : Integer;
   lastDupChk : array[0..MaxChecksum] of Integer;
 
   //ChatBuffer:TCefChatBuffer;
@@ -281,7 +281,8 @@ var
             i:=0;
             dupCountChk:=lastDupChk;
             while Assigned(NodeN) do begin
-              scheck:={document.BaseUrl+}NodeN.AsMarkup;
+              // not full html
+              scheck:=NodeN.Name+NodeN.GetElementAttribute('CLASS')+NodeN.ElementInnerText;
               checksumN:=MakeHash(@scheck[1],Length(scheck)*SizeOf(WideChar));
 
               if matched and (i<lastchkCount) then begin
@@ -334,7 +335,9 @@ var
                 NodeChat:=nil;
 
             sclass:=Nodex.GetElementAttribute(LogEleAlertAttr);
-            IsAlert:=Pos(LogEleAlert,sclass)<>0;
+            IsAlert:=False;
+            if Pos(LogEleAlert,sclass)<>0 then
+              IsAlert:=True;
             if RemoveSys then
               doAddMsg:=Pos(LogEleSys,sclass)=0;
 
@@ -345,7 +348,7 @@ var
               sbuf:=NodeIcon.ElementInnerText;
             while Assigned(NodeChat) do begin
               // check user alert
-              if UserAlertID.Count>0 then begin
+              if (not IsAlert) and (UserAlertID.Count>0) then begin
                 sclass:=NodeChat.GetElementAttribute(LogEleAlertAttr);
                 if Pos(LogEleUser,sclass)<>0 then begin
                   NodeN:=NodeChat.FirstChild;
@@ -442,6 +445,7 @@ begin
   IsMultiThread:=True;
   UserAlertID:=TStringList.Create;
   UserAlertID.Delimiter:=',';
+  lastchkCount:=0;
   //ChatBuffer:=TCefChatBuffer.Create;
   log:=TLogListFPC.Create(self);
   log.Parent:=Panel2;

@@ -30,7 +30,7 @@ end;
 
 initialization
   // set hash descriptor
-  HashDesc:=FindHash_by_ID(_RIPEMD160);
+  HashDesc:=FindHash_by_ID(_RMD160);
 
 end.
 

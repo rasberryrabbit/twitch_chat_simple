@@ -17,6 +17,7 @@ $(document).ready(function(){
  
 });
 var alertsock = new ReconnectingWebSocket("ws://localhost:8098","chat");
+alertsock.reconnectInterval=2000;
 alertsock.onmessage = function (event) {
     var dival = $("#alertbox");
     dival.append(event.data);
