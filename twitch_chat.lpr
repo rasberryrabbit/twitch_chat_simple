@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, twitch_chat_main, lnetvisual, uniqueinstance_package, uChatBuffer,
-  uWebsockSimple, form_portset, uformParserTag;
+  uWebsockSimple, form_portset, uformParserTag, uhashimpl;
 
 {$R *.res}
 

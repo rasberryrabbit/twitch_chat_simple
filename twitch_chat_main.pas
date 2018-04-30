@@ -86,8 +86,8 @@ implementation
 {$R *.lfm}
 
 uses
-  sha1, uChatBuffer, uRequestHandler, uWebsockSimple, form_portset, IniFiles,
-  uformParserTag;
+  uChatBuffer, uRequestHandler, uWebsockSimple, form_portset, IniFiles,
+  uformParserTag, uhashimpl, Hash;
 
 const
   MaxChecksum = 3;
@@ -97,7 +97,7 @@ var
   cefb : TChromium;
   MainBrowser : ICefBrowser;
 
-  lastchecksum : array[0..MaxChecksum] of TSHA1Digest;
+  lastchecksum : array[0..MaxChecksum] of THashDigest;
   lastchkCount : Integer = 0;
   lastDupChk : array[0..MaxChecksum] of Integer;
 
@@ -124,9 +124,14 @@ var
   LogEleAlert : UnicodeString = 'user-notice-line';
   LogEleSys : UnicodeString = 'chat-line__status';
 
+  LogEleUser : UnicodeString = 'chat-line__username';
+  LogEleUserName : UnicodeString = 'chat-author__display-name';
+  LogEleUserAttr : UnicodeString = 'data-a-user';
+
   LogAddHead : string = '<li class="twitch_chat">';
   LogAddTail : string = '</li>';
 
+  UserAlertID : TStringList;
 
 type
 
@@ -250,13 +255,13 @@ var
   procedure ProcessNode(ANode: ICefDomNode);
   var
     Node, Nodex, NodeN, NodeIcon, NodeChat, NodeStart, NodeEnd: ICefDomNode;
-    s, sclass, sbuf, scheck, ssockout : UnicodeString;
-    checksumN : TSHA1Digest;
-    bottomchecksum : array[0..MaxChecksum] of TSHA1Digest;
+    s, sclass, sbuf, scheck : UnicodeString;
+    checksumN : THashDigest;
+    bottomchecksum : array[0..MaxChecksum] of THashDigest;
     dupCount, dupCountChk : array[0..MaxChecksum] of Integer;
     chkCount, i, j, ItemCount : Integer;
     matched, skipAddMarkup, disLog, RemoveSys, doAddMsg, IsAlert : Boolean;
-    stemp: string;
+    ssockout, stemp: string;
   begin
     if Assigned(ANode) then
     begin
@@ -277,10 +282,10 @@ var
             dupCountChk:=lastDupChk;
             while Assigned(NodeN) do begin
               scheck:={document.BaseUrl+}NodeN.AsMarkup;
-              checksumN:=SHA1Buffer(scheck[1],Length(scheck)*SizeOf(WideChar));
+              checksumN:=MakeHash(@scheck[1],Length(scheck)*SizeOf(WideChar));
 
               if matched and (i<lastchkCount) then begin
-                if SHA1Match(checksumN,lastchecksum[i]) then begin
+                if CompareHash(checksumN,lastchecksum[i]) then begin
                   Dec(dupCountChk[i]);
                   if dupCountChk[i]=0 then
                     Inc(i);
@@ -291,7 +296,7 @@ var
               // fill bottom checksum
               if chkCount<=MaxChecksum then begin
                 // check duplication on first checksum
-                if (chkCount>0) and SHA1Match(checksumN,bottomchecksum[chkCount-1]) then
+                if (chkCount>0) and CompareHash(checksumN,bottomchecksum[chkCount-1]) then
                   Inc(dupCount[chkCount-1])
                 else begin
                   bottomchecksum[chkCount]:=checksumN;
@@ -336,12 +341,33 @@ var
             scheck:=Nodex.AsMarkup;
             skipAddMarkup:=True;
             // get chat message
-            if not disLog then begin
+            if not disLog then
               sbuf:=NodeIcon.ElementInnerText;
-              while Assigned(NodeChat) do begin
-                sbuf:=sbuf+NodeChat.ElementInnerText;
-                NodeChat:=NodeChat.NextSibling;
+            while Assigned(NodeChat) do begin
+              // check user alert
+              if UserAlertID.Count>0 then begin
+                sclass:=NodeChat.GetElementAttribute(LogEleAlertAttr);
+                if Pos(LogEleUser,sclass)<>0 then begin
+                  NodeN:=NodeChat.FirstChild;
+                  while Assigned(NodeN) do begin
+                    sclass:=NodeN.GetElementAttribute(LogEleAlertAttr);
+                    if sclass<>'' then begin
+                      if Pos(LogEleUserName,sclass)<>0 then begin
+                        sclass:=NodeN.GetElementAttribute(LogEleUserAttr);
+                        if UserAlertID.IndexOf(sclass)<>-1 then
+                          IsAlert:=True;
+                        break;
+                      end;
+                      NodeN:=NodeN.NextSibling;
+                    end else
+                      NodeN:=NodeN.FirstChild;
+                  end;
+                end;
               end;
+
+              if not disLog then
+                sbuf:=sbuf+NodeChat.ElementInnerText;
+              NodeChat:=NodeChat.NextSibling;
             end;
 
             if doAddMsg then begin
@@ -353,7 +379,7 @@ var
               WebSockChat.BroadcastMsg(stemp);
               if IsAlert then
                 WebSockAlert.BroadcastMsg(stemp);
-              //ssockout:=ssockout+'<li class="twitch_chat">'+scheck+'</li>'#13;
+              //ssockout:=ssockout+stemp+#13;
               //ChatBuffer.Add(stemp);
 
               // log
@@ -366,8 +392,9 @@ var
               break;
             Nodex:=Nodex.NextSibling;
           end;
+
           //if ssockout<>'' then
-          //  WebSockChat.BroadcastMsg(UTF8Encode(ssockout));
+          //  WebSockChat.BroadcastMsg(ssockout);
 
           // set last checksum
           if chkCount>0 then begin
@@ -413,6 +440,8 @@ end;
 procedure TFormTwitchChat.FormCreate(Sender: TObject);
 begin
   IsMultiThread:=True;
+  UserAlertID:=TStringList.Create;
+  UserAlertID.Delimiter:=',';
   //ChatBuffer:=TCefChatBuffer.Create;
   log:=TLogListFPC.Create(self);
   log.Parent:=Panel2;
@@ -437,6 +466,7 @@ begin
   //WClient.Free;
   WebSockChat.Free;
   WebSockAlert.Free;
+  UserAlertID.Free;
   Sleep(100);
 end;
 
@@ -564,6 +594,12 @@ begin
     config.WriteString('PARSER','LogEleSys',LogEleSys);
     config.WriteString('PARSER','LogAddHead',LogAddHead);
     config.WriteString('PARSER','LogAddTail',LogAddTail);
+
+    config.WriteString('PARSER','LogEleUser',LogEleUser);
+    config.WriteString('PARSER','LogEleUserName',LogEleUserName);
+    config.WriteString('PARSER','LogEleUserAttr',LogEleUserAttr);
+
+    config.WriteString('USERALERT','USER',UserAlertID.DelimitedText);
   finally
     config.Free
   end;
@@ -591,6 +627,12 @@ begin
     LogEleSys:=config.ReadString('PARSER','LogEleSys',LogEleSys);
     LogAddHead:=config.ReadString('PARSER','LogAddHead',LogAddHead);
     LogAddTail:=config.ReadString('PARSER','LogAddTail',LogAddTail);
+
+    LogEleUser:=config.ReadString('PARSER','LogEleUser',LogEleUser);
+    LogEleUserName:=config.ReadString('PARSER','LogEleUserName',LogEleUserName);
+    LogEleUserAttr:=config.ReadString('PARSER','LogEleUserAttr',LogEleUserAttr);
+
+    UserAlertID.DelimitedText:=config.ReadString('USERALERT','USER','');
   finally
     config.Free
   end;

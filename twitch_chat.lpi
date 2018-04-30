@@ -38,7 +38,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="7">
       <Unit0>
         <Filename Value="twitch_chat.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -71,9 +71,14 @@
         <Filename Value="uformparsertag.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FormParserSet"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uformParserTag"/>
       </Unit5>
+      <Unit6>
+        <Filename Value="uhashimpl.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -85,7 +90,7 @@
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
       <Libraries Value="mormot\static\i386-win32"/>
-      <OtherUnitFiles Value="fpCEF3;fpCEF3\Component;mormot;mormot\SQLite3;C:\development\extras\lnet\"/>
+      <OtherUnitFiles Value="fpCEF3;fpCEF3\Component;mormot;mphash;mormot\SQLite3;C:\development\extras\lnet\"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>
