@@ -283,14 +283,15 @@ var
             while Assigned(NodeN) do begin
 
               // make checksum source
-              scheck:=NodeN.ElementInnerText;
+              scheck:='';
               NodeIcon:=NodeN.FirstChild;
               if Assigned(NodeIcon) then begin
                 scheck:=scheck+NodeIcon.ElementInnerText;
                 NodeChat:=NodeIcon.NextSibling;
                 if Assigned(NodeChat) then
                   scheck:=scheck+NodeChat.ElementInnerText;
-              end;
+              end else
+                scheck:=NodeN.ElementInnerText;
               checksumN:=MakeHash(@scheck[1],Length(scheck)*SizeOf(WideChar));
 
               if matched and (i<lastchkCount) then begin
