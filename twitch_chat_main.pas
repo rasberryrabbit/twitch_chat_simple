@@ -288,8 +288,23 @@ var
               if Assigned(NodeIcon) then begin
                 scheck:=scheck+NodeIcon.ElementInnerText;
                 NodeChat:=NodeIcon.NextSibling;
-                if Assigned(NodeChat) then
+                // id
+                if Assigned(NodeChat) then begin
                   scheck:=scheck+NodeChat.ElementInnerText;
+                  NodeChat:=NodeChat.NextSibling;
+                end;
+                {
+                // ':'
+                if Assigned(NodeChat) then begin
+                  scheck:=scheck+NodeChat.ElementInnerText;
+                  NodeChat:=NodeChat.NextSibling;
+                end;
+                // chat - removed deleted message
+                if Assigned(NodeChat) then begin
+                  scheck:=scheck+NodeChat.ElementInnerText;
+                  NodeChat:=NodeChat.NextSibling;
+                end;
+                }
               end else
                 scheck:=NodeN.ElementInnerText;
               checksumN:=MakeHash(@scheck[1],Length(scheck)*SizeOf(WideChar));
