@@ -15,6 +15,7 @@ object FormParserSet: TFormParserSet
     Top = 8
     Width = 600
     Anchors = [akTop, akLeft, akRight, akBottom]
+    FixedCols = 0
     RowCount = 9
     TabOrder = 0
     DisplayOptions = [doColumnTitles, doAutoColResize]

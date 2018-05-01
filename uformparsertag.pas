@@ -29,6 +29,8 @@ implementation
 
 {$R *.lfm}
 
+uses DefaultTranslator;
+
 { TFormParserSet }
 
 procedure TFormParserSet.ButtonOkClick(Sender: TObject);

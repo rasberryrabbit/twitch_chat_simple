@@ -87,7 +87,7 @@ implementation
 
 uses
   uChatBuffer, uRequestHandler, uWebsockSimple, form_portset, IniFiles,
-  uformParserTag, uhashimpl, Hash;
+  uformParserTag, uhashimpl, Hash, DefaultTranslator;
 
 const
   MaxChecksum = 3;

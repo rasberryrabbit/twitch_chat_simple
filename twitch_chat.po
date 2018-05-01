@@ -1,0 +1,113 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: tformparserset.buttoncancel.caption
+msgctxt "tformparserset.buttoncancel.caption"
+msgid "Cancel"
+msgstr ""
+
+#: tformparserset.buttonok.caption
+msgctxt "tformparserset.buttonok.caption"
+msgid "Ok"
+msgstr ""
+
+#: tformparserset.caption
+msgctxt "tformparserset.caption"
+msgid "Parser Settings"
+msgstr ""
+
+#: tformportset.buttoncancel.caption
+msgctxt "tformportset.buttoncancel.caption"
+msgid "Cancel"
+msgstr ""
+
+#: tformportset.buttonok.caption
+msgctxt "tformportset.buttonok.caption"
+msgid "Ok"
+msgstr ""
+
+#: tformportset.caption
+msgid "Port"
+msgstr ""
+
+#: tformportset.editalert.text
+msgid "8094"
+msgstr ""
+
+#: tformportset.editchat.text
+msgid "8092"
+msgstr ""
+
+#: tformportset.edithttp.text
+msgid "8090"
+msgstr ""
+
+#: tformportset.editintr.text
+msgid "500"
+msgstr ""
+
+#: tformportset.label1.caption
+msgid "HTTP"
+msgstr ""
+
+#: tformportset.label2.caption
+msgid "Websocket Chat"
+msgstr ""
+
+#: tformportset.label3.caption
+msgid "Websocket Alert"
+msgstr ""
+
+#: tformportset.label4.caption
+msgid "Capture Timing"
+msgstr ""
+
+#: tformtwitchchat.actionactivestart.caption
+msgid "Active at loading"
+msgstr ""
+
+#: tformtwitchchat.actionparserset.caption
+msgctxt "tformtwitchchat.actionparserset.caption"
+msgid "Parser Settings"
+msgstr ""
+
+#: tformtwitchchat.actionportset.caption
+msgid "Port Setting"
+msgstr ""
+
+#: tformtwitchchat.button2.caption
+msgid "Home"
+msgstr ""
+
+#: tformtwitchchat.buttonact.caption
+msgid "Activate"
+msgstr ""
+
+#: tformtwitchchat.caption
+msgid "Twitch Chat"
+msgstr ""
+
+#: tformtwitchchat.checkboxautourl.caption
+msgid "Auto Chat URL"
+msgstr ""
+
+#: tformtwitchchat.checkboxclearb.caption
+msgid "Clear on Load"
+msgstr ""
+
+#: tformtwitchchat.checkboxdisablelog.caption
+msgid "Disable log"
+msgstr ""
+
+#: tformtwitchchat.checkboximgloading.caption
+msgid "Disable Image loading"
+msgstr ""
+
+#: tformtwitchchat.checkboxremsys.caption
+msgid "Remove system"
+msgstr ""
+
+#: tformtwitchchat.menuitem1.caption
+msgid "Setting"
+msgstr ""
+

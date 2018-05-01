@@ -1,0 +1,113 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: tformparserset.buttoncancel.caption
+msgctxt "tformparserset.buttoncancel.caption"
+msgid "Cancel"
+msgstr "취소"
+
+#: tformparserset.buttonok.caption
+msgctxt "tformparserset.buttonok.caption"
+msgid "Ok"
+msgstr "확인"
+
+#: tformparserset.caption
+msgctxt "tformparserset.caption"
+msgid "Parser Settings"
+msgstr "파서 설정"
+
+#: tformportset.buttoncancel.caption
+msgctxt "tformportset.buttoncancel.caption"
+msgid "Cancel"
+msgstr "취소"
+
+#: tformportset.buttonok.caption
+msgctxt "tformportset.buttonok.caption"
+msgid "Ok"
+msgstr "확인"
+
+#: tformportset.caption
+msgid "Port"
+msgstr "포트"
+
+#: tformportset.editalert.text
+msgid "8094"
+msgstr ""
+
+#: tformportset.editchat.text
+msgid "8092"
+msgstr ""
+
+#: tformportset.edithttp.text
+msgid "8090"
+msgstr ""
+
+#: tformportset.editintr.text
+msgid "500"
+msgstr ""
+
+#: tformportset.label1.caption
+msgid "HTTP"
+msgstr ""
+
+#: tformportset.label2.caption
+msgid "Websocket Chat"
+msgstr "웹 소켓 채팅"
+
+#: tformportset.label3.caption
+msgid "Websocket Alert"
+msgstr "웹 소켓 알림"
+
+#: tformportset.label4.caption
+msgid "Capture Timing"
+msgstr "캡처 타이밍"
+
+#: tformtwitchchat.actionactivestart.caption
+msgid "Active at loading"
+msgstr "로딩에 활성화"
+
+#: tformtwitchchat.actionparserset.caption
+msgctxt "tformtwitchchat.actionparserset.caption"
+msgid "Parser Settings"
+msgstr "파서 설정"
+
+#: tformtwitchchat.actionportset.caption
+msgid "Port Setting"
+msgstr "포트 설정"
+
+#: tformtwitchchat.button2.caption
+msgid "Home"
+msgstr "홈"
+
+#: tformtwitchchat.buttonact.caption
+msgid "Activate"
+msgstr "활성화"
+
+#: tformtwitchchat.caption
+msgid "Twitch Chat"
+msgstr "트위치 채팅"
+
+#: tformtwitchchat.checkboxautourl.caption
+msgid "Auto Chat URL"
+msgstr "자동 채팅 URL"
+
+#: tformtwitchchat.checkboxclearb.caption
+msgid "Clear on Load"
+msgstr "로드시 지우기"
+
+#: tformtwitchchat.checkboxdisablelog.caption
+msgid "Disable log"
+msgstr "로그 사용 안함"
+
+#: tformtwitchchat.checkboximgloading.caption
+msgid "Disable Image loading"
+msgstr "이미지 로딩 사용 안함"
+
+#: tformtwitchchat.checkboxremsys.caption
+msgid "Remove system"
+msgstr "시스템 제거"
+
+#: tformtwitchchat.menuitem1.caption
+msgid "Setting"
+msgstr "환경"
+
