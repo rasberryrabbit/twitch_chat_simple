@@ -75,6 +75,10 @@ msgstr ""
 msgid "Port Setting"
 msgstr ""
 
+#: tformtwitchchat.actionuserlist.caption
+msgid "Edit User List"
+msgstr ""
+
 #: tformtwitchchat.button2.caption
 msgid "Home"
 msgstr ""
@@ -109,5 +113,27 @@ msgstr ""
 
 #: tformtwitchchat.menuitem1.caption
 msgid "Setting"
+msgstr ""
+
+#: tformuserlist.buttoncancel.caption
+msgctxt "tformuserlist.buttoncancel.caption"
+msgid "Cancel"
+msgstr ""
+
+#: tformuserlist.buttonok.caption
+msgctxt "tformuserlist.buttonok.caption"
+msgid "Ok"
+msgstr ""
+
+#: tformuserlist.caption
+msgid "User List"
+msgstr ""
+
+#: tformuserlist.label1.caption
+msgid "User Alert"
+msgstr ""
+
+#: tformuserlist.label2.caption
+msgid "User Skip"
 msgstr ""
 

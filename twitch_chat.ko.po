@@ -75,6 +75,10 @@ msgstr "파서 설정"
 msgid "Port Setting"
 msgstr "포트 설정"
 
+#: tformtwitchchat.actionuserlist.caption
+msgid "Edit User List"
+msgstr "사용자 목록 편집"
+
 #: tformtwitchchat.button2.caption
 msgid "Home"
 msgstr "홈"
@@ -110,4 +114,28 @@ msgstr "시스템 제거"
 #: tformtwitchchat.menuitem1.caption
 msgid "Setting"
 msgstr "환경"
+
+#: tformuserlist.buttoncancel.caption
+#, fuzzy
+msgctxt "tformuserlist.buttoncancel.caption"
+msgid "Cancel"
+msgstr "취소"
+
+#: tformuserlist.buttonok.caption
+#, fuzzy
+msgctxt "tformuserlist.buttonok.caption"
+msgid "Ok"
+msgstr "확인"
+
+#: tformuserlist.caption
+msgid "User List"
+msgstr "사용자 목록"
+
+#: tformuserlist.label1.caption
+msgid "User Alert"
+msgstr "사용자 알림"
+
+#: tformuserlist.label2.caption
+msgid "User Skip"
+msgstr "사용자 무시"
 

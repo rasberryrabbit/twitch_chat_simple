@@ -131,6 +131,9 @@ object FormTwitchChat: TFormTwitchChat
       object MenuItem4: TMenuItem
         Action = ActionActiveStart
       end
+      object MenuItem5: TMenuItem
+        Action = ActionUserList
+      end
     end
   end
   object ActionList1: TActionList
@@ -148,6 +151,10 @@ object FormTwitchChat: TFormTwitchChat
       Caption = 'Active at loading'
       Checked = True
       OnExecute = ActionActiveStartExecute
+    end
+    object ActionUserList: TAction
+      Caption = 'Edit User List'
+      OnExecute = ActionUserListExecute
     end
   end
   object TimerNav: TTimer

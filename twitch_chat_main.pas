@@ -30,6 +30,7 @@ type
   { TFormTwitchChat }
 
   TFormTwitchChat = class(TForm)
+    ActionUserList: TAction;
     ActionActiveStart: TAction;
     ActionParserSet: TAction;
     ActionPortSet: TAction;
@@ -47,6 +48,7 @@ type
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
     Panel1: TPanel;
     Panel2: TPanel;
     Timer1: TTimer;
@@ -55,6 +57,7 @@ type
     procedure ActionActiveStartExecute(Sender: TObject);
     procedure ActionParserSetExecute(Sender: TObject);
     procedure ActionPortSetExecute(Sender: TObject);
+    procedure ActionUserListExecute(Sender: TObject);
     procedure ButtonActClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure CheckBoxImgLoadingClick(Sender: TObject);
@@ -87,7 +90,7 @@ implementation
 
 uses
   uChatBuffer, uRequestHandler, uWebsockSimple, form_portset, IniFiles,
-  uformParserTag, uhashimpl, Hash, DefaultTranslator, Contnrs;
+  uformParserTag, uhashimpl, Hash, DefaultTranslator, Contnrs, uformUserlist;
 
 const
   MaxChecksum = 3;
@@ -200,6 +203,7 @@ var
   temp : TStringList;
   i : Integer;
 begin
+  Clear;
   temp:=TStringList.Create;
   try
     temp.Delimiter:=',';
@@ -625,6 +629,29 @@ begin
     end;
   finally
     formPort.Free;
+  end;
+end;
+
+procedure TFormTwitchChat.ActionUserListExecute(Sender: TObject);
+var
+  userlist:TFormUserList;
+  lastTimer:Boolean;
+begin
+  userlist:=TFormUserList.Create(self);
+  try
+    userlist.MemoAlert.Lines.Delimiter:=',';
+    userlist.MemoAlert.Lines.DelimitedText:=UserAlertID.Text;
+    userlist.MemoSkip.Lines.Delimiter:=',';
+    userlist.MemoSkip.Lines.DelimitedText:=UserSkipID.Text;
+    if userlist.ShowModal=mrOK then begin
+      lastTimer:=Timer1.Enabled;
+      Timer1.Enabled:=False;
+      UserAlertID.Text:=userlist.MemoAlert.Lines.DelimitedText;
+      UserSkipID.Text:=userlist.MemoSkip.Lines.DelimitedText;
+      Timer1.Enabled:=lastTimer;
+    end;
+  finally
+    userlist.Free;
   end;
 end;
 
