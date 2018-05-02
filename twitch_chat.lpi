@@ -87,6 +87,7 @@
         <Filename Value="uformuserlist.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FormUserList"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uformUserlist"/>
       </Unit7>

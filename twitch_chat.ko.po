@@ -111,6 +111,10 @@ msgstr "이미지 로딩 사용 안함"
 msgid "Remove system"
 msgstr "시스템 제거"
 
+#: tformtwitchchat.checkboxshowreal.caption
+msgid "Show real ID"
+msgstr "실제 ID 보기"
+
 #: tformtwitchchat.menuitem1.caption
 msgid "Setting"
 msgstr "환경"

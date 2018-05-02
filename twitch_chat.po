@@ -111,6 +111,10 @@ msgstr ""
 msgid "Remove system"
 msgstr ""
 
+#: tformtwitchchat.checkboxshowreal.caption
+msgid "Show real ID"
+msgstr ""
+
 #: tformtwitchchat.menuitem1.caption
 msgid "Setting"
 msgstr ""

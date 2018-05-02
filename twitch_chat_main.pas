@@ -37,6 +37,7 @@ type
     ActionList1: TActionList;
     ButtonAct: TButton;
     Button2: TButton;
+    CheckBoxShowReal: TCheckBox;
     CheckBoxImgLoading: TCheckBox;
     CheckBoxAutoUrl: TCheckBox;
     CheckBoxRemSyS: TCheckBox;
@@ -318,13 +319,14 @@ var
     bottomchecksum : array[0..MaxChecksum] of THashDigest;
     dupCount, dupCountChk : array[0..MaxChecksum] of Integer;
     chkCount, i, j, ItemCount : Integer;
-    matched, skipAddMarkup, disLog, RemoveSys, doAddMsg, IsAlert : Boolean;
+    matched, skipAddMarkup, disLog, RemoveSys, doAddMsg, IsAlert, ShowReal : Boolean;
     ssockout, stemp: string;
   begin
     if Assigned(ANode) then
     begin
       RemoveSys:=FormTwitchChat.CheckBoxRemSyS.Checked;
       disLog:=FormTwitchChat.CheckBoxDisableLog.Checked;
+      ShowReal:=FormTwitchChat.CheckBoxShowReal.Checked;
       Node := ANode.FirstChild;
       while Assigned(Node) do begin
         if (Node.GetElementAttribute(LogEleAttr)=LogEleName) and (Node.GetElementTagName=LogEleTag) then begin
@@ -439,6 +441,8 @@ var
                     if sclass<>'' then begin
                       if Pos(LogEleUserName,sclass)<>0 then begin
                         sclass:=NodeN.GetElementAttribute(LogEleUserAttr);
+                        if ShowReal then
+                          sbuf:=sbuf+'('+sclass+') ';
                         // user alert
                         if (not IsAlert) and
                            (UserAlertID.Count>0) and

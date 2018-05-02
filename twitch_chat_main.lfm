@@ -18,7 +18,7 @@ object FormTwitchChat: TFormTwitchChat
     Top = 56
     Width = 1264
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabOrder = 0
+    TabOrder = 4
   end
   object ButtonAct: TButton
     Left = 552
@@ -28,7 +28,7 @@ object FormTwitchChat: TFormTwitchChat
     Anchors = [akBottom]
     Caption = 'Activate'
     OnClick = ButtonActClick
-    TabOrder = 4
+    TabOrder = 9
   end
   object Panel2: TPanel
     Left = 8
@@ -36,7 +36,7 @@ object FormTwitchChat: TFormTwitchChat
     Top = 511
     Width = 1264
     Anchors = [akLeft, akRight, akBottom]
-    TabOrder = 5
+    TabOrder = 10
   end
   object CheckBoxClearB: TCheckBox
     Left = 8
@@ -45,7 +45,7 @@ object FormTwitchChat: TFormTwitchChat
     Width = 95
     Anchors = [akLeft, akBottom]
     Caption = 'Clear on Load'
-    TabOrder = 1
+    TabOrder = 5
   end
   object CheckBoxDisableLog: TCheckBox
     Left = 144
@@ -54,7 +54,7 @@ object FormTwitchChat: TFormTwitchChat
     Width = 80
     Anchors = [akLeft, akBottom]
     Caption = 'Disable log'
-    TabOrder = 2
+    TabOrder = 6
   end
   object CheckBoxRemSyS: TCheckBox
     Left = 256
@@ -65,7 +65,7 @@ object FormTwitchChat: TFormTwitchChat
     Caption = 'Remove system'
     Checked = True
     State = cbChecked
-    TabOrder = 3
+    TabOrder = 7
   end
   object EditCEFUrl: TEdit
     Left = 64
@@ -74,7 +74,7 @@ object FormTwitchChat: TFormTwitchChat
     Width = 1208
     Anchors = [akTop, akLeft, akRight]
     OnKeyPress = EditCEFUrlKeyPress
-    TabOrder = 6
+    TabOrder = 1
   end
   object Button2: TButton
     Left = 0
@@ -83,7 +83,7 @@ object FormTwitchChat: TFormTwitchChat
     Width = 56
     Caption = 'Home'
     OnClick = Button2Click
-    TabOrder = 7
+    TabOrder = 0
   end
   object CheckBoxAutoUrl: TCheckBox
     Left = 8
@@ -93,7 +93,7 @@ object FormTwitchChat: TFormTwitchChat
     Caption = 'Auto Chat URL'
     Checked = True
     State = cbChecked
-    TabOrder = 8
+    TabOrder = 2
   end
   object CheckBoxImgLoading: TCheckBox
     Left = 128
@@ -101,8 +101,16 @@ object FormTwitchChat: TFormTwitchChat
     Top = 32
     Width = 140
     Caption = 'Disable Image loading'
-    TabOrder = 9
+    TabOrder = 3
     Visible = False
+  end
+  object CheckBoxShowReal: TCheckBox
+    Left = 400
+    Height = 19
+    Top = 487
+    Width = 89
+    Caption = 'Show real ID'
+    TabOrder = 8
   end
   object Timer1: TTimer
     Enabled = False
