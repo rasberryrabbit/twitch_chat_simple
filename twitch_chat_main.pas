@@ -205,7 +205,10 @@ begin
     temp.Delimiter:=',';
     temp.DelimitedText:=Value;
     for i:=0 to temp.Count-1 do
-      Add(temp.Strings[i],'1');
+      try
+        Add(temp.Strings[i],'1');
+      except
+      end;
   finally
     temp.Free;
   end;
@@ -435,11 +438,11 @@ var
                         // user alert
                         if (not IsAlert) and
                            (UserAlertID.Count>0) and
-                           (UserAlertID.Items[sclass]<>'') then
+                           (UserAlertID.Items[LowerCase(sclass)]='1') then
                           IsAlert:=True;
                         // user skip
                         if (UserSkipID.Count>0) and
-                           (UserSkipID.Items[sclass]<>'') then
+                           (UserSkipID.Items[LowerCase(sclass)]='1') then
                           doAddMsg:=False;
                         break;
                       end;
