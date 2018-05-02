@@ -87,7 +87,7 @@ implementation
 
 uses
   uChatBuffer, uRequestHandler, uWebsockSimple, form_portset, IniFiles,
-  uformParserTag, uhashimpl, Hash, DefaultTranslator;
+  uformParserTag, uhashimpl, Hash, DefaultTranslator, Contnrs;
 
 const
   MaxChecksum = 3;
@@ -131,8 +131,6 @@ var
   LogAddHead : string = '<li class="twitch_chat">';
   LogAddTail : string = '</li>';
 
-  UserAlertID : TStringList;
-
 type
 
   { TElementIdVisitor }
@@ -151,6 +149,24 @@ type
     procedure Leave;
   end;
 
+  { TFPStringHashTableList }
+
+  TFPStringHashTableList = class(TFPStringHashTable)
+    private
+      fText:string;
+      function GetText: string;
+      procedure SetText(const Value:string);
+      procedure _IterStr(Item: String; const Key: string; var Continue: Boolean);
+    protected
+    public
+      property Text:string read GetText write SetText;
+  end;
+
+var
+  UserAlertID : TFPStringHashTableList;
+  UserSkipID : TFPStringHashTableList;
+
+
 
 procedure ProcessElementsById(const AFrame: ICefFrame; const AId: string);
 var
@@ -166,6 +182,41 @@ begin
       AFrame.VisitDom(Visitor);
     end;
   end;
+end;
+
+{ TFPStringHashTableList }
+
+function TFPStringHashTableList.GetText: string;
+var
+  temp: THTStringNode;
+begin
+  fText:='';
+  ForEachCall(@_IterStr);
+  Result:=fText;
+end;
+
+procedure TFPStringHashTableList.SetText(const Value: string);
+var
+  temp : TStringList;
+  i : Integer;
+begin
+  temp:=TStringList.Create;
+  try
+    temp.Delimiter:=',';
+    temp.DelimitedText:=Value;
+    for i:=0 to temp.Count-1 do
+      Add(temp.Strings[i],'1');
+  finally
+    temp.Free;
+  end;
+end;
+
+procedure TFPStringHashTableList._IterStr(Item: String; const Key: string;
+  var Continue: Boolean);
+begin
+  if fText<>'' then
+    fText:=fText+',';
+  fText:=fText+Key;
 end;
 
 { TTwitchRenderProcessHandler }
@@ -371,8 +422,8 @@ var
             if not disLog then
               sbuf:=NodeIcon.ElementInnerText;
             while Assigned(NodeChat) do begin
-              // check user alert
-              if (not IsAlert) and (UserAlertID.Count>0) then begin
+              // check user alert and user skip
+              if (UserSkipID.Count>0) or (UserAlertID.Count>0) then begin
                 sclass:=NodeChat.GetElementAttribute(LogEleAlertAttr);
                 if Pos(LogEleUser,sclass)<>0 then begin
                   NodeN:=NodeChat.FirstChild;
@@ -381,8 +432,15 @@ var
                     if sclass<>'' then begin
                       if Pos(LogEleUserName,sclass)<>0 then begin
                         sclass:=NodeN.GetElementAttribute(LogEleUserAttr);
-                        if UserAlertID.IndexOf(sclass)<>-1 then
+                        // user alert
+                        if (not IsAlert) and
+                           (UserAlertID.Count>0) and
+                           (UserAlertID.Items[sclass]<>'') then
                           IsAlert:=True;
+                        // user skip
+                        if (UserSkipID.Count>0) and
+                           (UserSkipID.Items[sclass]<>'') then
+                          doAddMsg:=False;
                         break;
                       end;
                       NodeN:=NodeN.NextSibling;
@@ -467,8 +525,8 @@ end;
 procedure TFormTwitchChat.FormCreate(Sender: TObject);
 begin
   IsMultiThread:=True;
-  UserAlertID:=TStringList.Create;
-  UserAlertID.Delimiter:=',';
+  UserAlertID:=TFPStringHashTableList.Create;
+  UserSkipID:=TFPStringHashTableList.Create;
   lastchkCount:=0;
   //ChatBuffer:=TCefChatBuffer.Create;
   log:=TLogListFPC.Create(self);
@@ -495,6 +553,7 @@ begin
   WebSockChat.Free;
   WebSockAlert.Free;
   UserAlertID.Free;
+  UserSkipID.Free;
   Sleep(100);
 end;
 
@@ -600,10 +659,12 @@ begin
   ActionActiveStart.Checked:=not ActionActiveStart.Checked;
 end;
 
+
 procedure TFormTwitchChat.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 var
   config : TIniFile;
+  stemp : string;
 begin
   config:=TIniFile.Create(ChangeFileExt(Application.ExeName,'.ini'));
   try
@@ -627,7 +688,9 @@ begin
     config.WriteString('PARSER','LogEleUserName',LogEleUserName);
     config.WriteString('PARSER','LogEleUserAttr',LogEleUserAttr);
 
-    config.WriteString('USERALERT','USER',UserAlertID.DelimitedText);
+
+    config.WriteString('USERALERT','USER',UserAlertID.Text);
+    config.WriteString('USERSKIP','USER',UserSkipID.Text);
   finally
     config.Free
   end;
@@ -660,7 +723,8 @@ begin
     LogEleUserName:=config.ReadString('PARSER','LogEleUserName',LogEleUserName);
     LogEleUserAttr:=config.ReadString('PARSER','LogEleUserAttr',LogEleUserAttr);
 
-    UserAlertID.DelimitedText:=config.ReadString('USERALERT','USER','');
+    UserAlertID.Text:=config.ReadString('USERALERT','USER','');
+    UserSkipID.Text:=config.ReadString('USERSKIP','USER','');
   finally
     config.Free
   end;
