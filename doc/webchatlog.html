@@ -17,11 +17,16 @@ $(document).ready(function(){
  
 });
 //
+var randomcolor=1;
 var chatsock = new ReconnectingWebSocket("ws://localhost:8096","chat");
 chatsock.reconnectInterval=2000;
 chatsock.onmessage = function (event) {
     var div = $("#chatbox");
     div.append(event.data);
+    // disable random color
+    if(!randomcolor) {
+      $('.chat-author__display-name').attr('style','');
+    }
     if (div.children('li').length>500) {
       div.children('li')[0].remove();
     }
