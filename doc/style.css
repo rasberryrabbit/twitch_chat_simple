@@ -69,6 +69,19 @@ form, p, span, div {
     width: 100%;
 }
 
+#alertbox {
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+#alertbox, li {
+    list-style-type: none;
+    padding: 0px;
+    padding-top: 1px;
+}
+
 /* 카카오 쿠키 알림 */
 .box_alert {
     background-color: yellow;
@@ -125,6 +138,12 @@ strong,.screen_out {
 }
 
 /* 트위치 CSS. todo: 아이디 앞에 트위치 아이콘을 넣기. 채팅 통합시에 필요. */
+
+#alertdiv {
+    position: relative;
+    height: 300px;
+    width: 300px;
+}  
 
 /* 채팅글의 배경을 지정. 컬러는 RGBA값 */
 .chat-line__message {
