@@ -1,0 +1,255 @@
+/* CSS Document */
+/* 카카오 시스템 메시지 */
+.txt_system {
+    color: skyblue;
+}
+
+body {
+    font: 12px arial;
+    color: none;
+    padding: 2px; }
+  
+form, p, span, div {
+    margin:0;
+    padding:0; 
+}
+
+/* 카카오 아이디 */
+.link_id {
+    display: block;
+    color: yellowgreen;
+    text-decoration: none; 
+    background-color: none; 
+    font-weight: bold;
+    padding-bottom: 2px;
+}
+
+/* 카카오 채팅 아이콘 */
+.link_id:before{
+    content: "";
+    display: block;
+    background: url('chaticon_name.png') no-repeat center center;
+    width: 24px;
+    height: 24px;
+    float: Right;
+    position: relative;
+    Top: -7px;
+}
+
+.my {
+    color: blue;
+    text-decoration: none; 
+    margin-right: 10px;
+    background-color: none; }
+
+/* 카카오 채팅글 */
+.txt_talk {
+    color: gray;
+    background-color: none;
+    word-wrap: keep-all;
+}
+
+#chatbox, li {
+    list-style-type: none;
+    padding: 0px;
+    padding-top: 1px;
+}
+  
+#wrapper {
+    position: relative;
+    height: 300px;
+    width: 300px;
+}  
+
+/* 전체 글상자. 속성 조정으로 하단부터 시작하는 채팅글이 표현 */
+#chatbox {
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #eeeeeeaa;
+}
+
+#alertbox {
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+#alertbox, li {
+    list-style-type: none;
+    padding: 0px;
+    padding-top: 1px;
+}
+
+/* 카카오 쿠키 알림 */
+.box_alert {
+    background-color: yellow;
+    padding: 10px;
+}
+
+em,.screen_out {
+    color: red;
+    margin-right: 5px;    
+}
+
+strong,.screen_out {
+    color: red;
+    margin-right: 5px;    
+}
+
+/* 카카오 쿠키 알림 아이콘 */
+.box_alert:before {
+    content: "";
+    display: block;
+    background: url('cookies_icon.png') no-repeat center center;
+    width: 40px;
+    height: 40px;
+    float: left;
+}
+
+.txt_name {
+    color: yellowgreen;
+    background-color: black;
+    padding: 1px;
+}
+
+.txt_msg {
+    color: black;
+    margin: 5px;
+}
+
+.txt_cookie {
+    color: gold;
+    margin-right: 5px;
+    background-color: black;
+    padding: 1px;
+}
+
+/* 카카오 이모티콘 */
+.kakao_emoticon {
+    padding: 10px;
+}
+
+.view_emot_detail {
+    color: none;
+    background-color: none;
+    display: none;
+}
+
+/* 트위치 CSS. todo: 아이디 앞에 트위치 아이콘을 넣기. 채팅 통합시에 필요. */
+
+#alertdiv {
+    position: relative;
+    height: 300px;
+    width: 300px;
+}  
+
+/* 채팅글의 배경을 지정. 컬러는 RGBA값 */
+.chat-line__message {
+    /* color: #bbbbbb;
+    background-color: #333333e0;
+    padding: 5px;
+    border-radius: 5px; */
+    font-weight: bold;
+}
+
+a {
+    color: #bbbbbb;
+    text-decoration: none;
+}
+
+/* 영문 아이디. 보이지 않게 제거 */
+.chat-author__intl-login {
+    display: none;
+}
+
+
+/* icon + ID */
+.chat-line__message > :nth-child(-n+2) {
+    background-color: #11111111;
+    padding: 3px;
+    margin-top: 3px;
+}
+
+/* match icon top */
+.chat-line__message > :nth-child(1) {
+    padding-top: 6px;
+}
+
+.chat-line__message > :nth-child(2) {
+    padding-right: 10px;
+}
+
+/* : mark, newline tweak  */
+.chat-line__message >:nth-child(3) {
+    display: block;
+    height: 0px;
+    position: relative;
+    left: -30px;
+    margin-bottom: 3px;
+}
+
+/* chat message margin left */
+.chat-line__message >:nth-child(4) {
+    margin-left: 45px;
+}
+
+/*
+.chat-line__message >:nth-child(n+4) {
+    background-color: #77777711;
+    padding: 4px;
+    margin-bottom: 5px;
+}
+*/
+
+/* emote */
+.tw-inline-block {    
+}
+
+/* disable clip link
+.chat-card__link {
+    display: none;
+} */
+
+.chat-card__preview-img {
+    display: none;
+}
+
+/* 아이콘과 채팅글의 위치를 맞춤 */
+.chat-line__message span img {
+    position: relative;
+    top: 4px;
+}
+
+/* 채팅 아이디 */
+.chat-line__username {
+    border: 0px;
+    background-color: transparent;
+    padding: 0px;
+    font-weight: bold;
+    font-size: 12px;
+    color: yellowgreen;
+}
+
+/* 뱃지 및 아이콘. "display: none;" 을 넣으면 사라짐. */
+.chat-badge {
+    padding-right: 2px;
+}
+
+/* 구독자 이름을 표기 */
+.chatter-name {
+    border: 0px;
+    background-color: transparent;
+    padding: 1px;
+    background: #55ffaa;
+    background: -webkit-linear-gradient(left, #55ff55, #55ffff);
+    background:    -moz-linear-gradient(right, #55ff55, #55ffff);
+    background:      -o-linear-gradient(right, #55ff55, #55ffff);
+    background:         linear-gradient(to right, #55ff55, #55ffff);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+    font-weight: bold;
+}
