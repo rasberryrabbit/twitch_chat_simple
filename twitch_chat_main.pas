@@ -109,15 +109,13 @@ var
 
   WebSockChat:TSimpleWebsocketServer;
   WebSockAlert:TSimpleWebsocketServer;
-
-  //WClient:TSQLHttpClientWebsockets;
+  WebSockRawChat:TSimpleWebsocketServer;
 
 
   PortChat:string  = '8096';
   PortAlert:string = '8098';
+  PortRawChat:string  = '8100';
   CInterval:Integer = 500;
-
-  PortClient:string = '8092';
 
   // html parsing
   LogEleTag : UnicodeString = 'DIV';
@@ -169,7 +167,6 @@ type
 var
   UserAlertID : TFPStringHashTableList;
   UserSkipID : TFPStringHashTableList;
-
 
 
 procedure ProcessElementsById(const AFrame: ICefFrame; const AId: string);
@@ -454,6 +451,7 @@ var
                           doAddMsg:=False;
                         break;
                       end;
+
                       NodeN:=NodeN.NextSibling;
                     end else
                       NodeN:=NodeN.FirstChild;
@@ -461,7 +459,7 @@ var
                 end;
               end;
 
-              if not disLog then
+              //if not disLog then
                 sbuf:=sbuf+NodeChat.ElementInnerText;
               NodeChat:=NodeChat.NextSibling;
             end;
@@ -477,6 +475,7 @@ var
                 WebSockAlert.BroadcastMsg(stemp);
               //ssockout:=ssockout+stemp+#13;
               //ChatBuffer.Add(stemp);
+              WebSockRawChat.BroadcastMsg(sbuf);
 
               // log
               if not disLog then begin
@@ -560,9 +559,9 @@ begin
   //ChatBuffer.Free;
   FEventMain.Free;
 
-  //WClient.Free;
   WebSockChat.Free;
   WebSockAlert.Free;
+  WebSockRawChat.Free;
   UserAlertID.Free;
   UserSkipID.Free;
   Sleep(100);
@@ -607,23 +606,24 @@ begin
   try
     formPort.PortChat:=PortChat;
     formPort.PortAlert:=PortAlert;
+    formPort.PortRawChat:=PortRawChat;
     formPort.Interval:=CInterval;
     if mrOK=formPort.ShowModal then begin
       PortChat:=formPort.PortChat;
       PortAlert:=formPort.PortAlert;
+      PortRawChat:=formPort.PortRawChat;
       CInterval:=formPort.Interval;
       try
         bTimer:=Timer1.Enabled;
         Timer1.Enabled:=False;
         Timer1.Interval:=CInterval;
         WebSockChat.Free;
-        webSockAlert.Free;
-        //WClient.Free;
+        WebSockAlert.Free;
+        WebSockRawChat.Free;
         Sleep(100);
-        WebSockChat:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortChat); //,ChatBuffer);
-        webSockAlert:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortAlert); //,ChatBuffer);
-        //WClient:=TSQLHttpClientWebsockets.Create('localhost',PortClient,TSQLModel.Create([]));
-        //WClient.ServerTimestampSynchronize;
+        WebSockChat:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortChat);
+        WebSockAlert:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortAlert);
+        WebSockRawChat:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortRawChat);
       except
         on e:Exception do begin
           ShowMessage(e.Message);
@@ -704,6 +704,7 @@ begin
   try
     config.WriteString('PORT','CHAT',PortChat);
     config.WriteString('PORT','ALERT',PortAlert);
+    config.WriteString('PORT','RAWCHAT',PortRawChat);
     config.WriteString('URL','ADDR',EditCEFUrl.Text);
     config.WriteBool('URL','NOIMG',CheckBoxImgLoading.Checked);
     config.WriteInteger('URL','INT',CInterval);
@@ -739,6 +740,7 @@ begin
   try
     PortChat:=config.ReadString('PORT','CHAT',PortChat);
     PortAlert:=config.ReadString('PORT','ALERT',PortAlert);
+    PortRawChat:=config.ReadString('PORT','RAWCHAT',PortRawChat);
     EditCEFUrl.Text:=config.ReadString('URL','ADDR',rootUrl);
     CheckBoxImgLoading.Checked:=config.ReadBool('URL','NOIMG',False);
     CInterval:=config.ReadInteger('URL','INT',500);
@@ -766,10 +768,9 @@ begin
 
   try
     Timer1.Interval:=CInterval;
-    WebSockChat:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortChat); //,ChatBuffer);
-    webSockAlert:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortAlert); //,ChatBuffer);
-    //WClient:=TSQLHttpClientWebsockets.Create('localhost',PortClient,TSQLModel.Create([]));
-    //WClient.ServerTimestampSynchronize;
+    WebSockChat:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortChat);
+    WebSockAlert:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortAlert);
+    WebSockRawChat:=TSimpleWebsocketServer.Create('0.0.0.0:'+PortRawChat);
 
     CheckBoxImgLoadingClick(nil);
 

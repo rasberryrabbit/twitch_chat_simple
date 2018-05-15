@@ -15,7 +15,7 @@ type
     ButtonOk: TButton;
     ButtonCancel: TButton;
     EditIntr: TEdit;
-    EditHttp: TEdit;
+    EditRChat: TEdit;
     EditChat: TEdit;
     EditAlert: TEdit;
     Label1: TLabel;
@@ -27,7 +27,7 @@ type
   private
 
   public
-    PortHTTP, PortChat, PortAlert: string;
+    PortRawChat, PortChat, PortAlert: string;
     Interval: Integer;
   end;
 
@@ -55,15 +55,15 @@ end;
 
 procedure TFormPortSet.ButtonOkClick(Sender: TObject);
 begin
-  PortHTTP:=CheckAssign(EditHttp.Text,'8090');
-  PortChat:=CheckAssign(EditChat.Text,'8092');
-  PortAlert:=CheckAssign(EditAlert.Text,'8094');
+  PortRawChat:=CheckAssign(EditRChat.Text,'8100');
+  PortChat:=CheckAssign(EditChat.Text,'8096');
+  PortAlert:=CheckAssign(EditAlert.Text,'8098');
   Interval:=StrToIntDef(EditIntr.Text,500);
 end;
 
 procedure TFormPortSet.FormShow(Sender: TObject);
 begin
-  EditHttp.Text:=PortHTTP;
+  EditRChat.Text:=PortRawChat;
   EditChat.Text:=PortChat;
   EditAlert.Text:=PortAlert;
   EditIntr.Text:=IntToStr(Interval);

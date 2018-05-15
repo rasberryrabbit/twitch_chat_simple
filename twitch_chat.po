@@ -31,23 +31,24 @@ msgid "Port"
 msgstr ""
 
 #: tformportset.editalert.text
-msgid "8094"
+msgid "8098"
 msgstr ""
 
 #: tformportset.editchat.text
-msgid "8092"
-msgstr ""
-
-#: tformportset.edithttp.text
-msgid "8090"
+msgid "8096"
 msgstr ""
 
 #: tformportset.editintr.text
 msgid "500"
 msgstr ""
 
+#: tformportset.editrchat.text
+msgctxt "tformportset.editrchat.text"
+msgid "8100"
+msgstr ""
+
 #: tformportset.label1.caption
-msgid "HTTP"
+msgid "Websocket RChat"
 msgstr ""
 
 #: tformportset.label2.caption
