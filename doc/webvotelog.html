@@ -136,7 +136,7 @@ chatsock.onmessage = function (event) {
     res=temp.match(rex);
     if(res) {
         temp=res[1]+' '+res[2];
-        newid='twt'+res[1];
+        newid='(twt)'+res[1];
     }
     // unique id
     if(res && idlist[newid]===undefined) {
