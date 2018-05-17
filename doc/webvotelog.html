@@ -34,7 +34,7 @@ var script_debug=0;
 var idlist={};
 var itemlist={};
 function initlabels(conf) {
-    if(conf || confirm("모든 항목을 삭제합니까?")) {
+    if(conf || confirm("모든 항목을 초기화 합니까?")) {
         idlist={};
         $("li").each(function() {
             var itn=$(this).find("#itemname").text();
