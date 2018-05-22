@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-<title>분수 같은 움직임의 이모트 렌더링</title>
+<title>분수 같은 움직임의 이모트 렌더링-바운스</title>
 <link rel="stylesheet" href="./jquery/jquery-ui.css" />
 <link type="text/css" rel="stylesheet" href="style.css" />
 <script src = "./jquery/jquery-3.3.1.min.js"></script>
@@ -40,9 +40,12 @@ imgx = {};
 imgy = {};
 imgvx = {};
 imgvy = {};
-var fps = 40;
+imgtc = {};
+var fps = 40;       // FPS
 gravity = 60 / fps * 0.095;
-maximages = 50;
+maximages = 50;     // 최대 이미지 개수
+fac = 0.8;          // 바운스 감소율
+imagelife = 7000;   // 표시 유효 시간
 sizefix = 20;
 
 var canvas = document.getElementById("imgcanvas");
@@ -52,22 +55,37 @@ canvas.width = window.innerWidth - sizefix;
 canvas.height = window.innerHeight - sizefix;
 
 function draw(key,image) {
+    // 경계에서 가속 감소치를 부호반전해서 곱하기.
+    if( imgx[key] + image.width > canvas.width ) {
+        imgvx[key] *= -fac;
+        imgx[key]=canvas.width-image.width;
+    } else if(imgx[key] <0) {
+        imgvx[key] *= -fac;
+        imgx[key]=-imgx[key];
+    }
+    
+    if(imgy[key] + image.height > canvas.height) {
+        imgvy[key] *= -fac;
+        imgy[key]=canvas.height-image.height;
+    } else if(imgy[key] <0) {
+        imgvy[key] *= -fac;
+        imgy[key]=-imgy[key];
+    }
+
     imgvy[key]+=gravity;
     imgx[key]+=imgvx[key];
     imgy[key]+=imgvy[key];
-
-    // 범위 체크
-    if( (imgx[key] - image.width) > canvas.width ||
-        (imgx[key] + image.width) < 0 ||
-        (imgy[key] - image.height) > canvas.height ||
-        (imgy[key] + image.height) < 0 
-    ) {
+    
+    // 제거 조건 = 떨어지는 모션 + 시간제한 또는 하단에 정체됨
+    if( (imgvy[key]>0 && Date.now()-imgtc[key]>imagelife) ||
+        (imgy[key]>canvas.height-(2*image.height) && imgvy[key]<0.02 && imgvy[key]>-0.02) ) {
         // 리스트에서 제거
         delete images[key];
         delete imgx[key];
         delete imgy[key];
         delete imgvx[key];
         delete imgvy[key];
+        delete imgtc[key];
     } else {
         // 캔버스에 그리기
         ctx.drawImage(image, imgx[key], imgy[key]);
@@ -124,12 +142,25 @@ chatsock.onmessage = function (event) {
     lastlink="";
     chatline.find(".chat-image").each(function() {
         var imgtag=$(this).attr("src");
+        /*
+        // 태그와 anijs로 하는 방법론이지만 미완성
+        var newimg="<img id=\"newimg\" src=\""+imgtag+"\" >";
+        setTimeout(function() {        
+            $("#emotedraw").append(newimg);
+            var ni=$("#emotedraw :last-child");
+            ni.toggleClass("fadeOutUp animated");
+            ni.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(e){
+                $(e.target).removeClass('fadeOutUp animated');
+                ni.remove();
+            });
+        }, 100);
+        */
         // 이미지를 로딩하고 그리기 큐에 넣는다.
         if(Object.keys(images).length<maximages || lastlink!=imgtag) {
             linkdup=0;
             if(Object.keys(images).length>=maximages) {
                 var fi=Object.keys(images)[0];
-                imgx[fi]=-100;
+                imgtc[fi]=0;
             }
             var img=new Image();
             img.onload = function() {
@@ -144,6 +175,7 @@ chatsock.onmessage = function (event) {
                 imgy[imgname] = Math.random() * (canvas.height / 2) + (canvas.height / 8);
                 imgvx[imgname] = -3 + Math.random() * 6;
                 imgvy[imgname] = Math.random() * -3;
+                imgtc[imgname] = Date.now();
                 images[imgname]=img;
             }
             img.src=imgtag;
