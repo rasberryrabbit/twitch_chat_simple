@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>참여자 추첨하기</title>
+<link rel="stylesheet" href="./jquery/jquery-ui.css" />
+<link type="text/css" rel="stylesheet" href="style.css" />
+<link type="text/css" rel="stylesheet" href="stylevote.css" />
+<script src = "./jquery/jquery-3.3.1.min.js"></script>
+<script src = "./jquery/jquery-ui.js"></script>
+<script>
+// 채팅 스크립트 준비
+try {
+var chatsize = JSON.parse(localStorage.chatsize || "{}");
+} catch(e) {
+var chatsize = JSON.parse("{}");
+}
+var windowname='chatwindowtwitchgetlist';    // 단일 이름을 지정.
+// 초기화
+$(document).ready(function(){
+  // load/save size
+  if(chatsize[windowname]) {
+    $("#alertdiv").width(chatsize[windowname].width);
+    $("#alertdiv").height(chatsize[windowname].height);
+  }
+  // make resizable
+  $("#alertdiv").resizable({autoHide: true, stop: function (event, ui) {
+            chatsize[windowname] = ui.size;
+            localStorage.chatsize = JSON.stringify(chatsize);
+        }}); 
+});
+// 카운터 스크립트 준비
+var script_debug=0;
+var idlist={};
+var itemlist={};
+var maxcount={};
+// 초기화
+function initlabels(conf) {
+    if(conf || confirm("모든 항목을 초기화 합니까?")) {
+        idlist={};
+        $("li").each(function() {
+            var itn=$(this).find("#itemname").text();
+            itemlist[itn]=0;
+            var itl=$(this).find("#labelc");
+            setTimeout(function() {
+                var nval=0;
+                itl.html(nval.toString());
+            }, 100);
+            $(this).find("#idlistdiv").html("");
+        });
+    }
+}
+// 카운터 업데이트
+function updateitem(item, nid) {
+    $("#item").each(function() {
+        var itn=$(this).find("#itemname").text();
+        if(idlist[nid]===undefined && itn!="" && item.indexOf(itn)!=-1) {
+            var itid=$(this).find("#idlistdiv");
+                // 그룹 아이디 리스트에 추가.
+                var widx=0;
+                var wlen=itn.length;
+                var idindex=0;
+                while(widx<4096) {
+                    widx=item.indexOf(itn,widx);
+                    if(widx!=-1) {
+                        var ididxname="idlistul"+idindex.toString();
+                        var itul=itid.find("#"+ididxname);
+                        if(itul.length == 0) {                
+                            var newul="<div id=\"idlistsub\"><span>그룹 인덱스 "+idindex.toString()+"</span><ul id=\""+ididxname+"\"></ul></div>";
+                            itid.append(newul);
+                            itul=itid.find("#"+ididxname);
+                        }
+                        if(itul.children().length<maxcount[itn]) {
+                            var newli="<li id=\"idlistli\">"+nid.substring(5)+"</li>";
+                            itul.append(newli);
+                            // 아이디 중복 불가
+                            if(idlist[nid]===undefined) {
+                                idlist[nid]=itn;
+                                // 카운터 증가
+                                var itl=$(this).find("#labelc");
+                                //setTimeout(function() {
+                                    var nval=itemlist[itn];
+                                    nval++;
+                                    itemlist[itn]=nval;
+                                    itl.html(nval.toString());
+                                //}, 200);
+                            }
+                            widx+=wlen;
+                        }
+                        idindex+=1;
+                    } else {
+                        break;
+                    }
+                }
+        }
+    });
+}
+// 유저 리스트 리셋
+function resetuser() {
+    idlist={};
+}
+// 중복 검사
+function CheckDup(name) {
+    var retbool=false;
+    $("li").each(function() {
+        var itn=$(this).find("#itemname").text();
+        if(itn==name) {
+            retbool=true;
+        }
+    });
+    return(retbool);
+}
+// 아이템 추가
+function AddVoteItem(form) {
+    var itn=form.name.value;
+    var desc=form.desc.value;
+    var max=form.max.value;
+    if(itn!="" && !CheckDup(itn)) {
+        maxcount[itn]=parseInt(max);
+        var tag="<li id=\"item\"><span id=\"itemname\">"+itn+"</span><span id=\"itemdesc\">"+desc+
+        "</span><span id=\"labelc\">0</span><button id=\"removebtn\" type=\"button\" onclick=\"javascript: RemoveItem('"+
+        itn+"');\">-</button><div id=\"idlistdiv\"></div></li>";
+        $("#resultul").append(tag);
+        itemlist[itn]=0;
+        form.reset();
+        form.max.value=10;
+    }
+}
+// 아이템 제거
+function RemoveItem(name) {
+    if(confirm(name+" 항목을 지웁니까?")) {
+        $("li").each(function() {
+            var itn=$(this).find("#itemname").text();
+            if(itn==name) {
+                itemlist[itn]=0;
+                $(this).remove();
+            }
+        });
+    }
+}
+</script>
+</head> 
+<body>
+<div id="alertdiv">
+    <ul id="alertbox"></ul>
+</div>
+<div id="ItemDiv">
+<p><b>아이템 추가하기. 이름은 서로 다른 값이어야 합니다. 중복된 리스트가 나타납니다.</b></p>
+<p><b>초기화를 누르기 전까지 항목이 지워져도 목록에 포함되어 있었던 아이디는 중복 검사 목록에서 사라지지 않습니다.</b></p>
+<form name="newlabel">
+이름: <input type="text" name="name">
+설명: <input type="text" name="desc">
+최대: <input type="text" name="max" value=10>
+<button type="button" onclick="javascript: AddVoteItem(this.form);">추가</button>
+</form>
+</div>
+<div></div>
+<div id="result">
+    <ul id="resultul">
+    </ul>
+<button type="button" onclick="javascript: initlabels(false);">초기화</button>
+</div>
+<div id="idlist">
+    <ul id="idlistul">
+    </ul>
+</div>
+<script type="text/javascript" src="reconnecting-websocket.min.js"></script>
+<script type="text/javascript">
+initlabels(true);
+var randomcolor=1;
+var makedisappear=0;
+var chatsock = new ReconnectingWebSocket("ws://localhost:8100","chat");
+chatsock.reconnectInterval=2000;
+chatsock.onmessage = function (event) {
+    var div = $("#alertbox");
+    var temp=event.data;
+    // id and chat
+    var rex="([^\\:]+)\\:\\s(.+)";
+    var newid;
+    res=temp.match(rex);
+    if(res) {
+        temp=res[1]+' '+res[2];
+        newid='(twt)'+res[1];
+    }
+    // unique id
+    if(res) {
+        var check=res[2];
+        // 문자열을 체크하고 카운터를 올림
+        updateitem(check,newid);
+    }
+    // show chat message. for debugging.
+    if(script_debug) {
+        chatline=$('<li>'+temp+'</li>');
+        div.append(chatline);
+        if (div.children('li').length>500) {
+          div.children('li')[0].remove();
+        }
+        $('#alertbox').animate({scrollTop: document.body.scrollHeight},"slow");
+        // disappear
+        if(makedisappear) {
+            var le=document.querySelector('#alertbox').lastChild;
+            setTimeout(function () {
+                  le.style.display='none';
+            }, 30000);
+        }
+    }
+}
+</script>
+</body>
+</html>
