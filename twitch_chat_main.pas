@@ -530,6 +530,21 @@ begin
   end;
 end;
 
+function CheckParam(const str:string):Boolean;
+var
+  s:string;
+  i:Integer;
+begin
+  Result:=False;
+  if ParamCount>0 then
+    for i:=1 to ParamCount do begin
+      s:=ParamStr(i);
+      if CompareText(s,str)=0 then begin
+        Result:=True;
+        break;
+      end;
+    end;
+end;
 
 { TFormTwitchChat }
 
@@ -546,7 +561,8 @@ begin
   FEventMain:=TEvent.Create(nil,True,True,'TWITCHMAIN'+IntToStr(GetTickCount64));
   CefSingleProcess:=True; //must be true
   CefLogSeverity:=LOGSEVERITY_ERROR_REPORT;
-
+  if CheckParam('IGNORECERT') then
+    CefIgnoreCertificateError:=True;
   cefb:=TChromium.Create(self);
   cefb.Name:='cefTwitch';
   cefb.Parent:=Panel1;
