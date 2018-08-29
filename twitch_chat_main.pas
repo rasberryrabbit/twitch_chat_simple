@@ -79,7 +79,8 @@ type
 
     procedure CefLoadStart(Sender: TObject; const Browser: ICefBrowser; const Frame: ICefFrame; transitionType: TCefTransitionType);
     procedure CefAddressChange(Sender: TObject; const Browser: ICefBrowser; const Frame: ICefFrame; const url: ustring);
-
+    procedure CefLoadError(Sender: TObject; const Browser: ICefBrowser; const Frame: ICefFrame; errorCode: TCefErrorCode;
+    const errorText, failedUrl: ustring);
   end;
 
 var
@@ -552,6 +553,7 @@ begin
   cefb.Align:=alClient;
   cefb.OnLoadStart:=@CefLoadStart;
   cefb.OnAddressChange:=@CefAddressChange;
+  cefb.OnLoadError:=@CefLoadError;
 end;
 
 procedure TFormTwitchChat.FormDestroy(Sender: TObject);
@@ -857,6 +859,25 @@ begin
         TimerNav.Enabled:=True;
     end;
   end;
+end;
+
+procedure TFormTwitchChat.CefLoadError(Sender: TObject;
+  const Browser: ICefBrowser; const Frame: ICefFrame; errorCode: TCefErrorCode;
+  const errorText, failedUrl: ustring);
+var
+  errorstr:string;
+begin
+  case errorCode of
+  ERR_ABORTED: errorstr:='Aborted';
+  ERR_ACCESS_DENIED: errorstr:='Access denied';
+  ERR_ADDRESS_INVALID: errorstr:='Invalid Address';
+  ERR_ADDRESS_UNREACHABLE: errorstr:='Address unreachable';
+  ERR_INVALID_URL: errorstr:='Invalid URL';
+  ERR_NAME_NOT_RESOLVED: errorstr:='Name not resolved';
+  else
+    errorstr:='error';
+  end;
+  log.AddLog(Format('%s %s %d %s',[errorText,failedUrl,errorCode,errorstr]));
 end;
 
 procedure AppExceptProc(Obj : TObject; Addr : CodePointer; FrameCount:Longint; Frame: PCodePointer);
