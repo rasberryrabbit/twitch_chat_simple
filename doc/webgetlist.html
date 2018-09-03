@@ -52,9 +52,9 @@ function initlabels(conf) {
 }
 // 카운터 업데이트
 function updateitem(item, nid) {
-    $("#item").each(function() {
+    $("li#item").each(function() {
         var itn=$(this).find("#itemname").text();
-        if(idlist[nid]===undefined && itn!="" && item.indexOf(itn)!=-1) {
+        if(idlist[nid]===undefined && itn!="" && item!="" && item.indexOf(itn)!=-1) {
             var itid=$(this).find("#idlistdiv");
                 // 그룹 아이디 리스트에 추가.
                 var widx=0;
