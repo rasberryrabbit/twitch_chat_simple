@@ -54,18 +54,22 @@ function initlabels(conf) {
 function updateitem(item, nid) {
     $("li#item").each(function() {
         var itn=$(this).find("#itemname").text();
-        if(itn!="" && item!="" && item.indexOf(itn)!=-1) {
+        if(itn!="" && nid && item.indexOf(itn)!=-1) {
             var itid=$(this).find("#idlistdiv");
                 // 그룹 아이디 리스트에 추가.
                 var widx=0;
                 var wlen=itn.length;
+                var itemlen=item.length;
+                if(itemlen>4096) {
+                    itemlen=4096;
+                }
                 var idindex=0;
-                while(widx<4096) {
+                while(widx<itemlen) {
                     widx=item.indexOf(itn,widx);
                     if(widx!=-1) {
                         var ididxname="idlistul"+idindex.toString();
                         var itul=itid.find("#"+ididxname);
-                        if(itul.length == 0) {                
+                        if(!itul || itul.length == 0) {
                             var newul="<div id=\"idlistsub\"><span>그룹 인덱스 "+idindex.toString()+"</span><ul id=\""+ididxname+"\"></ul></div>";
                             itid.append(newul);
                             itul=itid.find("#"+ididxname);
