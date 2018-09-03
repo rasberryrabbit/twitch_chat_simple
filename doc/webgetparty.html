@@ -69,16 +69,15 @@ function updateitem(item, nid) {
                     if(widx!=-1) {
                         var ididxname="idlistul"+idindex.toString();
                         var itul=itid.find("#"+ididxname);
-                        if(!itul || itul.length == 0) {
+                        if(itul===undefined || (itul && itul.children().length == 0)) {
                             var newul="<div id=\"idlistsub\"><span>그룹 인덱스 "+idindex.toString()+"</span><ul id=\""+ididxname+"\"></ul></div>";
                             itid.append(newul);
                             itul=itid.find("#"+ididxname);
                         }
-                        var idcheck=nid+idindex.toString();
+                        var idcheck=itn+nid+idindex.toString();
                         if(itul.children().length<maxcount[itn] && idlist[idcheck]===undefined) {
                             var newli="<li id=\"idlistli\">"+nid.substring(5)+"</li>";
                             itul.append(newli);
-                            // 그룹마다 아이디 중복 불가
                             idlist[idcheck]=itn;
                             // 카운터 증가
                             var itl=$(this).find("#labelc");
@@ -154,7 +153,8 @@ function RemoveItem(name) {
 이름: <input type="text" name="name">
 설명: <input type="text" name="desc">
 최대: <input type="text" name="max" value=10>
-<button type="button" onclick="javascript: AddVoteItem(this.form);">추가</button>
+<button type="button" onclick="javascript: AddVoteItem(this.form);">추가</button><br/><br/>
+<button type="button" onclick="javascript: initlabels(false);">초기화</button>
 </form>
 </div>
 <div></div>
