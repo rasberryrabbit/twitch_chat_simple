@@ -162,7 +162,7 @@ a {
 /* 영문 아이디. 보이지 않게 제거 */
 .chat-author__intl-login {
     display: none;
-}
+} 
 
 /* icon to right, fix icon position, fix height */
 .chat-line__message > span:nth-of-type(1) {
@@ -172,8 +172,13 @@ a {
     height: 10px;
 }
 
-/* remove : mark */
+/* padding right on chat-id */
 .chat-line__message > span:nth-of-type(2) {
+    padding-right: 8px;
+}
+
+/* remove : mark */
+.chat-line__message > span:nth-of-type(3) {
     display: none;
 }
 
