@@ -167,7 +167,7 @@ object FormTwitchChat: TFormTwitchChat
   end
   object TimerNav: TTimer
     Enabled = False
-    Interval = 300
+    Interval = 100
     OnTimer = TimerNavTimer
     Left = 88
     Top = 408

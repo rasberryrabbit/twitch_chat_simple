@@ -812,9 +812,13 @@ var
   key:char;
 begin
   TimerNav.Enabled:=False;
-  EditCEFUrl.Text:=EditCEFUrl.Text+'/chat';
-  key:=#13;
-  EditCEFUrlKeyPress(nil,key);
+  try
+    EditCEFUrl.Text:=EditCEFUrl.Text+'/chat';
+    key:=#13;
+    EditCEFUrlKeyPress(nil,key);
+  except
+    TimerNav.Enabled:=True;
+  end;
 end;
 
 function TFormTwitchChat.TryEnter: Boolean;
