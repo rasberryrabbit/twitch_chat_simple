@@ -11,7 +11,7 @@ object FormTwitchChat: TFormTwitchChat
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object Panel1: TPanel
     Left = 8
     Height = 415
@@ -167,7 +167,7 @@ object FormTwitchChat: TFormTwitchChat
   end
   object TimerNav: TTimer
     Enabled = False
-    Interval = 500
+    Interval = 300
     OnTimer = TimerNavTimer
     Left = 88
     Top = 408
