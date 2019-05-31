@@ -127,6 +127,10 @@ var
   LogEleAlert : UnicodeString = 'user-notice-line';
   LogEleSys : UnicodeString = 'chat-line__status';
 
+  LogEleChatAttr : UnicodeString = 'class';
+  LogEleChatName : UnicodeString = 'chat-line__message';
+  LogEleChatSkip : UnicodeString = 'scrollable-trigger__wrapper';
+
   LogEleUser : UnicodeString = 'chat-line__username';
   LogEleUserName : UnicodeString = 'chat-author__display-name';
   LogEleUserAttr : UnicodeString = 'data-a-user';
@@ -339,57 +343,45 @@ var
             i:=0;
             dupCountChk:=lastDupChk;
             while Assigned(NodeN) do begin
+              // check chatline only
+              if NodeN.GetElementAttribute(LogEleChatAttr)=LogEleChatName then begin
+                scheck:='';
+                // make checksum source
+                NodeIcon:=NodeN.FirstChild;
+                if Assigned(NodeIcon) then begin
+                  scheck:=scheck+NodeIcon.ElementInnerText;
+                  NodeChat:=NodeIcon.NextSibling;
+                  // id only
+                  if Assigned(NodeChat) then begin
+                    scheck:=scheck+NodeChat.ElementInnerText;
+                    NodeChat:=NodeChat.NextSibling;
+                  end;
+                end;
+                checksumN:=MakeHash(@scheck[1],Length(scheck)*SizeOf(WideChar));
 
-              // make checksum source
-              scheck:='';
-              NodeIcon:=NodeN.FirstChild;
-              if Assigned(NodeIcon) then begin
-                scheck:=scheck+NodeIcon.ElementInnerText;
-                NodeChat:=NodeIcon.NextSibling;
-                // id
-                if Assigned(NodeChat) then begin
-                  scheck:=scheck+NodeChat.ElementInnerText;
-                  NodeChat:=NodeChat.NextSibling;
+                if matched and (i<lastchkCount) then begin
+                  if CompareHash(checksumN,lastchecksum[i]) then begin
+                    Dec(dupCountChk[i]);
+                    if dupCountChk[i]=0 then
+                      Inc(i);
+                  end else
+                    matched:=False;
                 end;
-                {
-                // ':'
-                if Assigned(NodeChat) then begin
-                  scheck:=scheck+NodeChat.ElementInnerText;
-                  NodeChat:=NodeChat.NextSibling;
-                end;
-                // chat - removed deleted message
-                if Assigned(NodeChat) then begin
-                  scheck:=scheck+NodeChat.ElementInnerText;
-                  NodeChat:=NodeChat.NextSibling;
-                end;
-                }
-              end else
-                scheck:=NodeN.ElementInnerText;
-              checksumN:=MakeHash(@scheck[1],Length(scheck)*SizeOf(WideChar));
 
-              if matched and (i<lastchkCount) then begin
-                if CompareHash(checksumN,lastchecksum[i]) then begin
-                  Dec(dupCountChk[i]);
-                  if dupCountChk[i]=0 then
-                    Inc(i);
+                // fill bottom checksum
+                if chkCount<=MaxChecksum then begin
+                  // check duplication on first checksum
+                  if (chkCount>0) and CompareHash(checksumN,bottomchecksum[chkCount-1]) then
+                    Inc(dupCount[chkCount-1])
+                  else begin
+                    bottomchecksum[chkCount]:=checksumN;
+                    dupCount[chkCount]:=1;
+                    Inc(chkCount);
+                  end;
                 end else
-                  matched:=False;
+                  if i>=lastchkCount then
+                    break;
               end;
-
-              // fill bottom checksum
-              if chkCount<=MaxChecksum then begin
-                // check duplication on first checksum
-                if (chkCount>0) and CompareHash(checksumN,bottomchecksum[chkCount-1]) then
-                  Inc(dupCount[chkCount-1])
-                else begin
-                  bottomchecksum[chkCount]:=checksumN;
-                  dupCount[chkCount]:=1;
-                  Inc(chkCount);
-                end;
-              end else
-                if i>=lastchkCount then
-                  break;
-
               NodeN:=NodeN.PreviousSibling;
             end;
             if matched then
@@ -407,80 +399,83 @@ var
           ssockout:='';
           Nodex:=NodeStart;
           while Nodex<>nil do begin
+            // check skip element
+            if Nodex.GetElementAttribute(LogEleChatAttr)<>LogEleChatSkip then begin
+              doAddMsg:=True;
 
-            doAddMsg:=True;
+              NodeIcon:=Nodex.FirstChild;
+              if Assigned(NodeIcon) then
+                NodeChat:=NodeIcon.NextSibling
+                else
+                  NodeChat:=nil;
 
-            NodeIcon:=Nodex.FirstChild;
-            if Assigned(NodeIcon) then
-              NodeChat:=NodeIcon.NextSibling
-              else
-                NodeChat:=nil;
+              sclass:=Nodex.GetElementAttribute(LogEleAlertAttr);
+              IsAlert:=False;
+              // syslog, alert
+              if Pos(LogEleAlert,sclass)<>0 then
+                IsAlert:=True;
+              if RemoveSys then
+                doAddMsg:=Pos(LogEleSys,sclass)=0;
 
-            sclass:=Nodex.GetElementAttribute(LogEleAlertAttr);
-            IsAlert:=False;
-            if Pos(LogEleAlert,sclass)<>0 then
-              IsAlert:=True;
-            if RemoveSys then
-              doAddMsg:=Pos(LogEleSys,sclass)=0;
+              scheck:=Nodex.AsMarkup;
+              skipAddMarkup:=True;
+              // get chat message
+              if not disLog then
+                sbuf:=NodeIcon.ElementInnerText;
+              while Assigned(NodeChat) do begin
+                // check user alert and user skip
+                if (UserSkipID.Count>0) or (UserAlertID.Count>0) then begin
+                  sclass:=NodeChat.GetElementAttribute(LogEleAlertAttr);
+                  if Pos(LogEleUser,sclass)<>0 then begin
+                    NodeN:=NodeChat.FirstChild;
+                    while Assigned(NodeN) do begin
+                      sclass:=NodeN.GetElementAttribute(LogEleAlertAttr);
+                      if sclass<>'' then begin
+                        if Pos(LogEleUserName,sclass)<>0 then begin
+                          sclass:=NodeN.GetElementAttribute(LogEleUserAttr);
+                          if ShowReal then
+                            sbuf:=sbuf+'('+sclass+') ';
+                          // user alert
+                          if (not IsAlert) and
+                             (UserAlertID.Count>0) and
+                             (UserAlertID.Items[sclass]='1') then
+                            IsAlert:=True;
+                          // user skip
+                          if (UserSkipID.Count>0) and
+                             (UserSkipID.Items[sclass]='1') then
+                            doAddMsg:=False;
+                          break;
+                        end;
 
-            scheck:=Nodex.AsMarkup;
-            skipAddMarkup:=True;
-            // get chat message
-            if not disLog then
-              sbuf:=NodeIcon.ElementInnerText;
-            while Assigned(NodeChat) do begin
-              // check user alert and user skip
-              if (UserSkipID.Count>0) or (UserAlertID.Count>0) then begin
-                sclass:=NodeChat.GetElementAttribute(LogEleAlertAttr);
-                if Pos(LogEleUser,sclass)<>0 then begin
-                  NodeN:=NodeChat.FirstChild;
-                  while Assigned(NodeN) do begin
-                    sclass:=NodeN.GetElementAttribute(LogEleAlertAttr);
-                    if sclass<>'' then begin
-                      if Pos(LogEleUserName,sclass)<>0 then begin
-                        sclass:=NodeN.GetElementAttribute(LogEleUserAttr);
-                        if ShowReal then
-                          sbuf:=sbuf+'('+sclass+') ';
-                        // user alert
-                        if (not IsAlert) and
-                           (UserAlertID.Count>0) and
-                           (UserAlertID.Items[sclass]='1') then
-                          IsAlert:=True;
-                        // user skip
-                        if (UserSkipID.Count>0) and
-                           (UserSkipID.Items[sclass]='1') then
-                          doAddMsg:=False;
-                        break;
-                      end;
-
-                      NodeN:=NodeN.NextSibling;
-                    end else
-                      NodeN:=NodeN.FirstChild;
+                        NodeN:=NodeN.NextSibling;
+                      end else
+                        NodeN:=NodeN.FirstChild;
+                    end;
                   end;
                 end;
+
+                //if not disLog then
+                  sbuf:=sbuf+NodeChat.ElementInnerText;
+                NodeChat:=NodeChat.NextSibling;
               end;
 
-              //if not disLog then
-                sbuf:=sbuf+NodeChat.ElementInnerText;
-              NodeChat:=NodeChat.NextSibling;
-            end;
+              if doAddMsg then begin
+                // fill by markup
+                if not skipAddMarkup then
+                  scheck:=Nodex.AsMarkup;
 
-            if doAddMsg then begin
-              // fill by markup
-              if not skipAddMarkup then
-                scheck:=Nodex.AsMarkup;
+                stemp:=LogAddHead+pchar(UTF8Encode(scheck))+LogAddTail;
+                WebSockChat.BroadcastMsg(stemp);
+                if IsAlert then
+                  WebSockAlert.BroadcastMsg(stemp);
+                //ssockout:=ssockout+stemp+#13;
+                //ChatBuffer.Add(stemp);
+                WebSockRawChat.BroadcastMsg(sbuf);
 
-              stemp:=LogAddHead+pchar(UTF8Encode(scheck))+LogAddTail;
-              WebSockChat.BroadcastMsg(stemp);
-              if IsAlert then
-                WebSockAlert.BroadcastMsg(stemp);
-              //ssockout:=ssockout+stemp+#13;
-              //ChatBuffer.Add(stemp);
-              WebSockRawChat.BroadcastMsg(sbuf);
-
-              // log
-              if not disLog then begin
-                FormTwitchChat.log.AddLog(UTF8Encode(sbuf));
+                // log
+                if not disLog then begin
+                  FormTwitchChat.log.AddLog(UTF8Encode(sbuf));
+                end;
               end;
             end;
 
@@ -741,6 +736,9 @@ begin
     config.WriteString('PARSER','LogEleUserName',LogEleUserName);
     config.WriteString('PARSER','LogEleUserAttr',LogEleUserAttr);
 
+    config.WriteString('PARSER','LogEleChatAttr',LogEleChatAttr);
+    config.WriteString('PARSER','LogEleChatName',LogEleChatName);
+    config.WriteString('PARSER','LogEleChatSkip',LogEleChatSkip);
 
     config.WriteString('USERALERT','USER',UserAlertID.Text);
     config.WriteString('USERSKIP','USER',UserSkipID.Text);
@@ -776,6 +774,10 @@ begin
     LogEleUser:=config.ReadString('PARSER','LogEleUser',LogEleUser);
     LogEleUserName:=config.ReadString('PARSER','LogEleUserName',LogEleUserName);
     LogEleUserAttr:=config.ReadString('PARSER','LogEleUserAttr',LogEleUserAttr);
+
+    LogEleChatAttr:=config.ReadString('PARSER','LogEleChatAttr',LogEleChatAttr);
+    LogEleChatName:=config.ReadString('PARSER','LogEleChatName',LogEleChatName);
+    LogEleChatSkip:=config.ReadString('PARSER','LogEleChatSkip',LogEleChatSkip);
 
     UserAlertID.Text:=config.ReadString('USERALERT','USER','');
     UserSkipID.Text:=config.ReadString('USERSKIP','USER','');
