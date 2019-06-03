@@ -129,7 +129,7 @@ var
 
   LogEleChatAttr : UnicodeString = 'class';
   LogEleChatName : UnicodeString = 'chat-line__message';
-  LogEleChatSkip : UnicodeString = 'scrollable-trigger__wrapper';
+  LogEleChatSkipDefault : UnicodeString = 'scrollable-trigger__wrapper';
 
   LogEleUser : UnicodeString = 'chat-line__username';
   LogEleUserName : UnicodeString = 'chat-author__display-name';
@@ -172,6 +172,7 @@ type
 var
   UserAlertID : TFPStringHashTableList;
   UserSkipID : TFPStringHashTableList;
+  LogEleChatSkip : TFPStringHashTableList;
 
 
 procedure ProcessElementsById(const AFrame: ICefFrame; const AId: string);
@@ -309,6 +310,11 @@ begin
   FEvent.SetEvent;
 end;
 
+function IsContainUniStringSemi(const s:UnicodeString):Boolean;
+begin
+  Result:=LogEleChatSkip.Find(pchar(UTF8Encode(s)))<>nil;
+end;
+
 procedure TElementIdVisitor.Visit(const document: ICefDomDocument);
 var
   NodeH : ICefDomNode;
@@ -344,7 +350,8 @@ var
             dupCountChk:=lastDupChk;
             while Assigned(NodeN) do begin
               // check chatline only
-              if NodeN.GetElementAttribute(LogEleChatAttr)=LogEleChatName then begin
+              //if NodeN.GetElementAttribute(LogEleChatAttr)=LogEleChatName then begin
+              if not IsContainUniStringSemi(NodeN.GetElementAttribute(LogEleChatAttr)) then begin
                 scheck:='';
                 // make checksum source
                 NodeIcon:=NodeN.FirstChild;
@@ -400,7 +407,8 @@ var
           Nodex:=NodeStart;
           while Nodex<>nil do begin
             // check skip element
-            if Nodex.GetElementAttribute(LogEleChatAttr)<>LogEleChatSkip then begin
+            //if Nodex.GetElementAttribute(LogEleChatAttr)<>LogEleChatSkip then begin
+            if not IsContainUniStringSemi(Nodex.GetElementAttribute(LogEleChatAttr)) then begin
               doAddMsg:=True;
 
               NodeIcon:=Nodex.FirstChild;
@@ -548,6 +556,7 @@ begin
   IsMultiThread:=True;
   UserAlertID:=TFPStringHashTableList.Create;
   UserSkipID:=TFPStringHashTableList.Create;
+  LogEleChatSkip:=TFPStringHashTableList.Create;
   lastchkCount:=0;
   //ChatBuffer:=TCefChatBuffer.Create;
   log:=TLogListFPC.Create(self);
@@ -575,6 +584,7 @@ begin
   WebSockChat.Free;
   WebSockAlert.Free;
   WebSockRawChat.Free;
+  LogEleChatSkip.Free;
   UserAlertID.Free;
   UserSkipID.Free;
   Sleep(100);
@@ -706,7 +716,6 @@ begin
   ActionActiveStart.Checked:=not ActionActiveStart.Checked;
 end;
 
-
 procedure TFormTwitchChat.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 var
@@ -738,8 +747,8 @@ begin
 
     config.WriteString('PARSER','LogEleChatAttr',LogEleChatAttr);
     config.WriteString('PARSER','LogEleChatName',LogEleChatName);
-    config.WriteString('PARSER','LogEleChatSkip',LogEleChatSkip);
 
+    config.WriteString('PARSER','LogEleChatSkip',LogEleChatSkip.Text);
     config.WriteString('USERALERT','USER',UserAlertID.Text);
     config.WriteString('USERSKIP','USER',UserSkipID.Text);
   finally
@@ -777,8 +786,8 @@ begin
 
     LogEleChatAttr:=config.ReadString('PARSER','LogEleChatAttr',LogEleChatAttr);
     LogEleChatName:=config.ReadString('PARSER','LogEleChatName',LogEleChatName);
-    LogEleChatSkip:=config.ReadString('PARSER','LogEleChatSkip',LogEleChatSkip);
 
+    LogEleChatSkip.Text:=config.ReadString('PARSER','LogEleChatSkip',LogEleChatSkipDefault);
     UserAlertID.Text:=config.ReadString('USERALERT','USER','');
     UserSkipID.Text:=config.ReadString('USERSKIP','USER','');
   finally
