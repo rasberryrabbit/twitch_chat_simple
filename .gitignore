@@ -1,0 +1,6 @@
+backup/
+blob_storage/
+lib/
+locales/
+mormot/
+webrtc_event_logs/
