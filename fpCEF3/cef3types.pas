@@ -1021,17 +1021,18 @@ Type
   // "Verb" of a drag-and-drop operation as negotiated between the source and
   // destination. These constants match their equivalents in WebCore's
   // DragActions.h and should not be renumbered.
-  TCefDragOperationsMask = (
-    DRAG_OPERATION_NONE    = 0,
-    DRAG_OPERATION_COPY    = 1,
-    DRAG_OPERATION_LINK    = 2,
-    DRAG_OPERATION_GENERIC = 4,
-    DRAG_OPERATION_PRIVATE = 8,
-    DRAG_OPERATION_MOVE    = 16,
-    DRAG_OPERATION_DELETE  = 32,
-    DRAG_OPERATION_EVERY   = High(UInt32)
-    );
+  TCefDragOperationsMask = longword;
+const
+    DRAG_OPERATION_NONE    = 0;
+    DRAG_OPERATION_COPY    = 1;
+    DRAG_OPERATION_LINK    = 2;
+    DRAG_OPERATION_GENERIC = 4;
+    DRAG_OPERATION_PRIVATE = 8;
+    DRAG_OPERATION_MOVE    = 16;
+    DRAG_OPERATION_DELETE  = 32;
+    DRAG_OPERATION_EVERY   = High(UInt32);
 
+Type
   // V8 access control values.
   TCefV8AccessControl = (
     V8_ACCESS_CONTROL_ALL_CAN_READ,         //= 1 shl 0
@@ -1126,73 +1127,74 @@ Type
 
   // Transition type for a request. Made up of one source value and 0 or more
   // qualifiers.
-  TCefTransitionType = (
+  TCefTransitionType = longword;
+const
     // Source is a link click or the JavaScript window.open function. This is
     // also the default value for requests like sub-resource loads that are not
     // navigations.
-    TT_LINK = 0,
+    TT_LINK = 0;
 
     // Source is some other "explicit" navigation action such as creating a new
     // browser or using the LoadURL function. This is also the default value
     // for navigations where the actual type is unknown.
-    TT_EXPLICIT = 1,
+    TT_EXPLICIT = 1;
 
     // Source is a subframe navigation. This is any content that is automatically
     // loaded in a non-toplevel frame. For example, if a page consists of several
     // frames containing ads, those ad URLs will have this transition type.
     // The user may not even realize the content in these pages is a separate
     // frame, so may not care about the URL.
-    TT_AUTO_SUBFRAME = 3,
+    TT_AUTO_SUBFRAME = 3;
 
     // Source is a subframe navigation explicitly requested by the user that will
     // generate new navigation entries in the back/forward list. These are
     // probably more important than frames that were automatically loaded in
     // the background because the user probably cares about the fact that this
     // link was loaded.
-    TT_MANUAL_SUBFRAME = 4,
+    TT_MANUAL_SUBFRAME = 4;
 
     // Source is a form submission by the user. NOTE: In some situations
     // submitting a form does not result in this transition type. This can happen
     // if the form uses a script to submit the contents.
-    TT_FORM_SUBMIT = 7,
+    TT_FORM_SUBMIT = 7;
 
     // Source is a "reload" of the page via the Reload function or by re-visiting
     // the same URL. NOTE: This is distinct from the concept of whether a
     // particular load uses "reload semantics" (i.e. bypasses cached data).
-    TT_RELOAD = 8,
+    TT_RELOAD = 8;
 
     // General mask defining the bits used for the source values.
-    TT_SOURCE_MASK = $FF,
+    TT_SOURCE_MASK = $FF;
 
     // Qualifiers.
     // Any of the core values above can be augmented by one or more qualifiers.
     // These qualifiers further define the transition.
 
     // Attempted to visit a URL but was blocked.
-    TT_BLOCKED_FLAG = $00800000,
+    TT_BLOCKED_FLAG = $00800000;
 
     // Used the Forward or Back function to navigate among browsing history.
-    TT_FORWARD_BACK_FLAG = $01000000,
+    TT_FORWARD_BACK_FLAG = $01000000;
 
     // The beginning of a navigation chain.
-    TT_CHAIN_START_FLAG = $10000000,
+    TT_CHAIN_START_FLAG = $10000000;
 
     // The last transition in a redirect chain.
-    TT_CHAIN_END_FLAG = $20000000,
+    TT_CHAIN_END_FLAG = $20000000;
 
     // Redirects caused by JavaScript or a meta refresh tag on the page.
-    TT_CLIENT_REDIRECT_FLAG = $40000000,
+    TT_CLIENT_REDIRECT_FLAG = $40000000;
 
     // Redirects sent from the server by HTTP headers.
-    TT_SERVER_REDIRECT_FLAG = $80000000,
+    TT_SERVER_REDIRECT_FLAG = $80000000;
 
     // Used to test whether a transition involves a redirect.
-    TT_IS_REDIRECT_MASK = $C0000000,
+    TT_IS_REDIRECT_MASK = $C0000000;
 
     // General mask defining the bits used for the qualifiers.
-    TT_QUALIFIER_MASK = $FFFFFF00
-  );
+    TT_QUALIFIER_MASK = $FFFFFF00;
 
+Type
   // Flags used to customize the behavior of CefURLRequest.
   TCefUrlRequestFlag = (
     // If set the cache will be skipped when handling the request.
