@@ -109,6 +109,7 @@ object FormTwitchChat: TFormTwitchChat
     Height = 19
     Top = 487
     Width = 89
+    Anchors = [akLeft, akBottom]
     Caption = 'Show real ID'
     TabOrder = 8
   end
