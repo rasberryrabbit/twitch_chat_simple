@@ -18,8 +18,8 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="1"/>
-      <RevisionNr Value="1"/>
-      <BuildNr Value="87"/>
+      <RevisionNr Value="3"/>
+      <BuildNr Value="88"/>
     </VersionInfo>
     <BuildModes>
       <Item Name="default" Default="True"/>
@@ -30,16 +30,16 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="3">
-      <Item1>
+    <RequiredPackages>
+      <Item>
         <PackageName Value="uniqueinstance_package"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="lnetvisual"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <PackageName Value="LCL"/>
-      </Item3>
+      </Item>
     </RequiredPackages>
     <Units>
       <Unit>
