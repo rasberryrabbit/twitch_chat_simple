@@ -6,26 +6,13 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Menus, ActnList, cef3types, cef3lib, cef3intf, cef3lcl, cef3ref, cef3api,
-  cef3own, cef3gui, lNetComponents, lhttp, lNet, UniqueInstance, loglistfpc,
-  syncobjs;
+  Menus, ActnList, uCEFApplication, uCEFWindowParent, uCEFChromiumWindow,
+  uCEFTypes, uCEFLibFunctions, uCEFInterfaces, uCEFRenderProcessHandler,
+  uCEFChromium, uCEFDomVisitor, uCEFChromiumCore, uCEFProcessMessage,
+  lNetComponents, lhttp, lNet, UniqueInstance, loglistfpc, syncobjs,
+  Messages, uCEFChromiumEvents, uCEFConstants;
 
 type
-
-  { TTwitchRenderProcessHandler }
-
-  TTwitchRenderProcessHandler=class(TCefRenderProcessHandlerOwn)
-    protected
-      function OnProcessMessageReceived(const browser: ICefBrowser;
-        sourceProcess: TCefProcessId; const message: ICefProcessMessage
-        ): Boolean; override;
-      procedure OnBrowserCreated(const browser: ICefBrowser); override;
-      procedure OnUncaughtException(const browser: ICefBrowser;
-        const frame: ICefFrame; const context: ICefV8Context;
-        const exception: ICefV8Exception; const stackTrace: ICefV8StackTrace);
-        override;
-  end;
-
 
   { TFormTwitchChat }
 
@@ -37,12 +24,14 @@ type
     ActionList1: TActionList;
     ButtonAct: TButton;
     Button2: TButton;
+    CEFWindowParent1: TCEFWindowParent;
     CheckBoxShowReal: TCheckBox;
     CheckBoxImgLoading: TCheckBox;
     CheckBoxAutoUrl: TCheckBox;
     CheckBoxRemSyS: TCheckBox;
     CheckBoxDisableLog: TCheckBox;
     CheckBoxClearB: TCheckBox;
+    Chromium1: TChromium;
     EditCEFUrl: TEdit;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
@@ -50,9 +39,9 @@ type
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
-    Panel1: TPanel;
     Panel2: TPanel;
     Timer1: TTimer;
+    TimerChrome: TTimer;
     TimerNav: TTimer;
     UniqueInstance1: TUniqueInstance;
     procedure ActionActiveStartExecute(Sender: TObject);
@@ -62,26 +51,51 @@ type
     procedure ButtonActClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure CheckBoxImgLoadingClick(Sender: TObject);
+    procedure Chromium1AddressChange(Sender: TObject;
+      const browser: ICefBrowser; const frame: ICefFrame; const url: ustring);
+    procedure Chromium1AfterCreated(Sender: TObject; const browser: ICefBrowser
+      );
+    procedure Chromium1BeforeClose(Sender: TObject; const browser: ICefBrowser);
+    procedure Chromium1Close(Sender: TObject; const browser: ICefBrowser;
+      var aAction: TCefCloseBrowserAction);
+    procedure Chromium1LoadError(Sender: TObject; const browser: ICefBrowser;
+      const frame: ICefFrame; errorCode: TCefErrorCode; const errorText,
+      failedUrl: ustring);
+    procedure Chromium1LoadStart(Sender: TObject; const browser: ICefBrowser;
+      const frame: ICefFrame; transitionType: TCefTransitionType);
+    procedure Chromium1ProcessMessageReceived(Sender: TObject;
+      const browser: ICefBrowser; const frame: ICefFrame;
+      sourceProcess: TCefProcessId; const message: ICefProcessMessage; out
+      Result: Boolean);
     procedure EditCEFUrlKeyPress(Sender: TObject; var Key: char);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure TimerChromeTimer(Sender: TObject);
     procedure TimerNavTimer(Sender: TObject);
   private
     FEventMain:TEvent;
+    // chrome
+    procedure BrowserCreateMsg(var aMsg:TMessage); message CEF_AFTERCREATED;
+    procedure BrowserDestroyMsg(var aMsg:TMessage); message CEF_DESTROY;
+    procedure WMMove(var aMsg:TMessage); message WM_MOVE;
+    procedure WMMoving(var aMsg:TMessage); message WM_MOVING;
   public
     log:TLogListFPC;
+    // chrome
+    FCanClose:Boolean;
+    FClosing:Boolean;
 
     function TryEnter:Boolean;
     procedure Leave;
 
-    procedure CefLoadStart(Sender: TObject; const Browser: ICefBrowser; const Frame: ICefFrame; transitionType: TCefTransitionType);
-    procedure CefAddressChange(Sender: TObject; const Browser: ICefBrowser; const Frame: ICefFrame; const url: ustring);
-    procedure CefLoadError(Sender: TObject; const Browser: ICefBrowser; const Frame: ICefFrame; errorCode: TCefErrorCode;
-    const errorText, failedUrl: ustring);
   end;
+
+  procedure CreateGlobalCEFApp;
+  function CheckParam(const str:string):Boolean;
 
 var
   FormTwitchChat: TFormTwitchChat;
@@ -91,15 +105,15 @@ implementation
 {$R *.lfm}
 
 uses
-  uChatBuffer, uRequestHandler, uWebsockSimple, form_portset, IniFiles,
-  uformParserTag, uhashimpl, Hash, DefaultTranslator, Contnrs, uformUserlist;
+  Windows, uChatBuffer, uRequestHandler, uWebsockSimple, form_portset, IniFiles,
+  uformParserTag, uhashimpl, Hash, DefaultTranslator, Contnrs, uformUserlist,
+  uCEFMiscFunctions;
 
 const
   MaxChecksum = 3;
   rootUrl = 'https://www.twitch.tv';
 
 var
-  cefb : TChromium;
   MainBrowser : ICefBrowser;
 
   lastchecksum : array[0..MaxChecksum] of THashDigest;
@@ -191,6 +205,50 @@ begin
   end;
 end;
 
+
+procedure OnCEFProcessMsg(const browser: ICefBrowser; const frame: ICefFrame; sourceProcess: TCefProcessId; const message: ICefProcessMessage; var aHandled : boolean);
+var
+  chatframe:ICefFrame;
+  fcount, i:NativeUInt;
+  fid:array of int64;
+  surl:string;
+begin
+  aHandled:=False;
+  if Message.Name='visitdom' then begin
+    { thread-safe? }
+    if FormTwitchChat.TryEnter then begin
+      try
+        //fcount:=browser.GetFrameCount;
+        //SetLength(fid,fcount);
+        //try
+        //  browser.GetFrameIdentifiers(@fcount,@fid[0]);
+        //  for i:=0 to fcount-1 do begin
+        //    chatframe:=browser.GetFrameByident(fid[i]);
+        //    ProcessElementsById(chatframe,'log');
+        //  end;
+        //finally
+        //  SetLength(fid,0);
+        //end;
+        ProcessElementsById(browser.MainFrame,LogEleName);
+        aHandled:=True;
+      finally
+        FormTwitchChat.Leave;
+      end;
+    end;
+  end;
+end;
+
+procedure CreateGlobalCEFApp;
+begin
+  GlobalCEFApp                  := TCefApplication.Create;
+  //GlobalCEFApp.LogFile          := 'cef.log';
+  //GlobalCEFApp.LogSeverity      := LOGSEVERITY_ERROR;
+  GlobalCEFApp.SingleProcess:=True;
+  GlobalCEFApp.OnProcessMessageReceived:=@OnCEFProcessMsg;
+  if CheckParam('IGNORECERT') then
+    GlobalCEFApp.IgnoreCertificateErrors:=True;
+end;
+
 { TFPStringHashTableList }
 
 function TFPStringHashTableList.GetText: string;
@@ -229,58 +287,6 @@ begin
     fText:=fText+',';
   fText:=fText+Key;
 end;
-
-{ TTwitchRenderProcessHandler }
-
-function TTwitchRenderProcessHandler.OnProcessMessageReceived(
-  const browser: ICefBrowser; sourceProcess: TCefProcessId;
-  const message: ICefProcessMessage): Boolean;
-var
-  chatframe:ICefFrame;
-  fcount, i:TSize;
-  fid:array of int64;
-  surl:string;
-begin
-  Result:=inherited OnProcessMessageReceived(browser, sourceProcess, message);
-  if not Result then
-  if message.Name='visitdom' then begin
-    { thread-safe? }
-    if FormTwitchChat.TryEnter then begin
-      try
-        //fcount:=browser.GetFrameCount;
-        //SetLength(fid,fcount);
-        //try
-        //  browser.GetFrameIdentifiers(@fcount,@fid[0]);
-        //  for i:=0 to fcount-1 do begin
-        //    chatframe:=browser.GetFrameByident(fid[i]);
-        //    ProcessElementsById(chatframe,'log');
-        //  end;
-        //finally
-        //  SetLength(fid,0);
-        //end;
-        ProcessElementsById(browser.MainFrame,LogEleName);
-      finally
-        FormTwitchChat.Leave;
-      end;
-    end;
-    Result:=True;
-  end;
-end;
-
-procedure TTwitchRenderProcessHandler.OnBrowserCreated(const browser: ICefBrowser);
-begin
-  inherited OnBrowserCreated(browser);
-  MainBrowser:=browser;
-end;
-
-procedure TTwitchRenderProcessHandler.OnUncaughtException(
-  const browser: ICefBrowser; const frame: ICefFrame;
-  const context: ICefV8Context; const exception: ICefV8Exception;
-  const stackTrace: ICefV8StackTrace);
-begin
-  inherited OnUncaughtException(browser, frame, context, exception, stackTrace);
-end;
-
 
 { TElementNameVisitor }
 
@@ -553,6 +559,10 @@ end;
 
 procedure TFormTwitchChat.FormCreate(Sender: TObject);
 begin
+  // Chrome
+  FCanClose:=False;
+  FClosing:=False;
+
   IsMultiThread:=True;
   UserAlertID:=TFPStringHashTableList.Create;
   UserSkipID:=TFPStringHashTableList.Create;
@@ -563,17 +573,9 @@ begin
   log.Parent:=Panel2;
   log.Align:=alClient;
   FEventMain:=TEvent.Create(nil,True,True,'TWITCHMAIN'+IntToStr(GetTickCount64));
-  CefSingleProcess:=True; //must be true
-  CefLogSeverity:=LOGSEVERITY_ERROR_REPORT;
-  if CheckParam('IGNORECERT') then
-    CefIgnoreCertificateError:=True;
-  cefb:=TChromium.Create(self);
-  cefb.Name:='cefTwitch';
-  cefb.Parent:=Panel1;
-  cefb.Align:=alClient;
-  cefb.OnLoadStart:=@CefLoadStart;
-  cefb.OnAddressChange:=@CefAddressChange;
-  cefb.OnLoadError:=@CefLoadError;
+
+  // chrome
+  CreateGlobalCEFApp;
 end;
 
 procedure TFormTwitchChat.FormDestroy(Sender: TObject);
@@ -601,22 +603,147 @@ end;
 
 procedure TFormTwitchChat.Button2Click(Sender: TObject);
 begin
-  cefb.Load(UTF8Encode(rootUrl));
+  if Chromium1.Initialized then
+    Chromium1.LoadURL(UTF8Encode(rootUrl));
 end;
 
 procedure TFormTwitchChat.CheckBoxImgLoadingClick(Sender: TObject);
 begin
   if CheckBoxImgLoading.Checked then
-    cefb.Options.ImageLoading:=STATE_DISABLED
+    Chromium1.Options.ImageLoading:=STATE_DISABLED
     else
-      cefb.Options.ImageLoading:=STATE_ENABLED;
+      Chromium1.Options.ImageLoading:=STATE_ENABLED;
+end;
+
+procedure TFormTwitchChat.Chromium1AddressChange(Sender: TObject;
+  const browser: ICefBrowser; const frame: ICefFrame; const url: ustring);
+const
+  baseaddr='twitch.tv/';
+var
+  s:string;
+  i,j,l,k:Integer;
+begin
+    s:=UTF8Encode(url);
+    if s<>'about:blank' then begin
+      EditCEFUrl.Text:=s;
+      if CheckBoxAutoUrl.Checked then begin
+        l:=Length(s);
+        i:=Pos(baseaddr,LowerCase(s));
+        j:=Pos('/chat',LowerCase(s));
+        // auto navigate to chat url
+        if i<>0 then begin
+          if (i+Length(baseaddr)>l) then
+          i:=0
+          else
+            Inc(i,Length(baseaddr));
+        end;
+        if (i<>0) and (j=0) then begin
+          k:=l;
+          while k>i do begin
+            if s[k]='/' then
+              break;
+            Dec(k);
+          end;
+          if k<=i then
+            TimerNav.Enabled:=True;
+        end;
+      end;
+    end;
+end;
+
+procedure TFormTwitchChat.Chromium1AfterCreated(Sender: TObject;
+  const browser: ICefBrowser);
+begin
+  PostMessage(Handle, CEF_AFTERCREATED, 0, 0);
+end;
+
+procedure TFormTwitchChat.Chromium1BeforeClose(Sender: TObject;
+  const browser: ICefBrowser);
+begin
+  FCanClose := True;
+  PostMessage(Handle, WM_CLOSE, 0, 0);
+end;
+
+procedure TFormTwitchChat.Chromium1Close(Sender: TObject;
+  const browser: ICefBrowser; var aAction: TCefCloseBrowserAction);
+begin
+  PostMessage(Handle, CEF_DESTROY, 0, 0);
+  aAction := cbaDelay;
+end;
+
+procedure TFormTwitchChat.Chromium1LoadError(Sender: TObject;
+  const browser: ICefBrowser; const frame: ICefFrame; errorCode: TCefErrorCode;
+  const errorText, failedUrl: ustring);
+var
+  errorstr:string;
+begin
+  case errorCode of
+  ERR_ABORTED: errorstr:='Aborted';
+  ERR_ACCESS_DENIED: errorstr:='Access denied';
+  ERR_ADDRESS_INVALID: errorstr:='Invalid Address';
+  ERR_ADDRESS_UNREACHABLE: errorstr:='Address unreachable';
+  ERR_INVALID_URL: errorstr:='Invalid URL';
+  ERR_NAME_NOT_RESOLVED: errorstr:='Name not resolved';
+  else
+    errorstr:='error';
+  end;
+  log.AddLog(Format('%s %s %d %s',[errorText,failedUrl,errorCode,errorstr]));
+end;
+
+procedure TFormTwitchChat.Chromium1LoadStart(Sender: TObject;
+  const browser: ICefBrowser; const frame: ICefFrame;
+  transitionType: TCefTransitionType);
+begin
+  if TryEnter then begin
+    try
+      //if CheckBoxClearB.Checked then
+      //  ChatBuffer.Clear;
+      log.Font.Name:='Default';
+    finally
+      Leave;
+    end;
+  end;
+end;
+
+procedure TFormTwitchChat.Chromium1ProcessMessageReceived(Sender: TObject;
+  const browser: ICefBrowser; const frame: ICefFrame;
+  sourceProcess: TCefProcessId; const message: ICefProcessMessage; out
+  Result: Boolean);
+var
+  chatframe:ICefFrame;
+  fcount, i:NativeUInt;
+  fid:array of int64;
+  surl:string;
+begin
+  if Message.Name='visitdom' then begin
+    { thread-safe? }
+    //if FormTwitchChat.TryEnter then begin
+      try
+        //fcount:=browser.GetFrameCount;
+        //SetLength(fid,fcount);
+        //try
+        //  browser.GetFrameIdentifiers(@fcount,@fid[0]);
+        //  for i:=0 to fcount-1 do begin
+        //    chatframe:=browser.GetFrameByident(fid[i]);
+        //    ProcessElementsById(chatframe,'log');
+        //  end;
+        //finally
+        //  SetLength(fid,0);
+        //end;
+        ProcessElementsById(browser.MainFrame,LogEleName);
+      finally
+     //   FormTwitchChat.Leave;
+      end;
+    //end;
+  end;
 end;
 
 procedure TFormTwitchChat.EditCEFUrlKeyPress(Sender: TObject; var Key: char);
 begin
   if Key=#13 then begin
     Key:=#0;
-    cefb.Load(UTF8Decode(EditCEFUrl.Text));
+    if Chromium1.Initialized then
+      Chromium1.LoadURL(UTF8Decode(EditCEFUrl.Text));
   end;
 end;
 
@@ -756,6 +883,17 @@ begin
   end;
 end;
 
+procedure TFormTwitchChat.FormCloseQuery(Sender: TObject; var CanClose: Boolean
+  );
+begin
+  CanClose:=FCanClose;
+  if not FClosing then begin
+    FClosing:=True;
+    Visible:=False;
+    Chromium1.CloseBrowser(True);
+  end;
+end;
+
 procedure TFormTwitchChat.FormShow(Sender: TObject);
 var
   config : TIniFile;
@@ -803,7 +941,8 @@ begin
 
     CheckBoxImgLoadingClick(nil);
 
-    cefb.Load(UTF8Decode(EditCEFUrl.Text));
+    if not(Chromium1.CreateBrowser(CEFWindowParent1, 'cefTwitch')) then
+      TimerChrome.Enabled := True;
   except
     on e:exception do
       ShowMessage(e.Message);
@@ -815,7 +954,18 @@ end;
 
 procedure TFormTwitchChat.Timer1Timer(Sender: TObject);
 begin
-  cefb.Browser.SendProcessMessage(PID_RENDERER,TCefProcessMessageRef.New('visitdom'));
+  if Chromium1.Initialized then
+    Chromium1.SendProcessMessage(PID_RENDERER,TCefProcessMessageRef.New('visitdom'));
+end;
+
+procedure TFormTwitchChat.TimerChromeTimer(Sender: TObject);
+begin
+  TimerChrome.Enabled := False;
+  if not(Chromium1.CreateBrowser(CEFWindowParent1, 'cefTwitch')) and not(Chromium1.Initialized) then
+    TimerChrome.Enabled := True;
+
+  if Chromium1.Initialized then
+    Chromium1.LoadURL(EditCEFUrl.Text);
 end;
 
 procedure TFormTwitchChat.TimerNavTimer(Sender: TObject);
@@ -832,6 +982,30 @@ begin
   end;
 end;
 
+procedure TFormTwitchChat.BrowserCreateMsg(var aMsg: TMessage);
+begin
+  CEFWindowParent1.UpdateSize;
+end;
+
+procedure TFormTwitchChat.BrowserDestroyMsg(var aMsg: TMessage);
+begin
+  CEFWindowParent1.Free;
+end;
+
+procedure TFormTwitchChat.WMMove(var aMsg: TMessage);
+begin
+  inherited;
+  if Chromium1<>nil then
+     Chromium1.NotifyMoveOrResizeStarted;
+end;
+
+procedure TFormTwitchChat.WMMoving(var aMsg: TMessage);
+begin
+  inherited;
+  if Chromium1<>nil then
+     Chromium1.NotifyMoveOrResizeStarted;
+end;
+
 function TFormTwitchChat.TryEnter: Boolean;
 begin
   Result:=FEventMain.WaitFor(0)<>wrTimeout;
@@ -844,80 +1018,12 @@ begin
   FEventMain.SetEvent;
 end;
 
-procedure TFormTwitchChat.CefLoadStart(Sender: TObject; const Browser: ICefBrowser;
-  const Frame: ICefFrame; transitionType: TCefTransitionType);
-begin
-  if TryEnter then begin
-    try
-      //if CheckBoxClearB.Checked then
-      //  ChatBuffer.Clear;
-      log.Font.Name:='Default';
-    finally
-      Leave;
-    end;
-  end;
-end;
-
-procedure TFormTwitchChat.CefAddressChange(Sender: TObject;
-  const Browser: ICefBrowser; const Frame: ICefFrame; const url: ustring);
-const
-  baseaddr='twitch.tv/';
-var
-  s:string;
-  i,j,l,k:Integer;
-begin
-  s:=UTF8Encode(url);
-  EditCEFUrl.Text:=s;
-  if CheckBoxAutoUrl.Checked then begin
-    l:=Length(s);
-    i:=Pos(baseaddr,LowerCase(s));
-    j:=Pos('/chat',LowerCase(s));
-    // auto navigate to chat url
-    if i<>0 then begin
-      if (i+Length(baseaddr)>l) then
-      i:=0
-      else
-        Inc(i,Length(baseaddr));
-    end;
-    if (i<>0) and (j=0) then begin
-      k:=l;
-      while k>i do begin
-        if s[k]='/' then
-          break;
-        Dec(k);
-      end;
-      if k<=i then
-        TimerNav.Enabled:=True;
-    end;
-  end;
-end;
-
-procedure TFormTwitchChat.CefLoadError(Sender: TObject;
-  const Browser: ICefBrowser; const Frame: ICefFrame; errorCode: TCefErrorCode;
-  const errorText, failedUrl: ustring);
-var
-  errorstr:string;
-begin
-  case errorCode of
-  ERR_ABORTED: errorstr:='Aborted';
-  ERR_ACCESS_DENIED: errorstr:='Access denied';
-  ERR_ADDRESS_INVALID: errorstr:='Invalid Address';
-  ERR_ADDRESS_UNREACHABLE: errorstr:='Address unreachable';
-  ERR_INVALID_URL: errorstr:='Invalid URL';
-  ERR_NAME_NOT_RESOLVED: errorstr:='Name not resolved';
-  else
-    errorstr:='error';
-  end;
-  log.AddLog(Format('%s %s %d %s',[errorText,failedUrl,errorCode,errorstr]));
-end;
-
 procedure AppExceptProc(Obj : TObject; Addr : CodePointer; FrameCount:Longint; Frame: PCodePointer);
 begin
   ShowMessage(Format('%s',[BacktraceStrFunc(Addr)]));
 end;
 
 initialization
-  CefRenderProcessHandler := TTwitchRenderProcessHandler.Create;
   //ExceptProc:=@AppExceptProc;
 
 end.

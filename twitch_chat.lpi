@@ -32,6 +32,9 @@
     </RunParams>
     <RequiredPackages>
       <Item>
+        <PackageName Value="CEF4Delphi_Lazarus"/>
+      </Item>
+      <Item>
         <PackageName Value="uniqueinstance_package"/>
       </Item>
       <Item>
@@ -101,7 +104,7 @@
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
       <Libraries Value="mormot\static\i386-win32"/>
-      <OtherUnitFiles Value="fpCEF3;fpCEF3\Component;mormot;mphash;mormot\SQLite3;C:\development\extras\lnet\"/>
+      <OtherUnitFiles Value="mormot;mphash;mormot\SQLite3;C:\development\extras\lnet\;C:\development\extras\CEF4Delphi\source\;C:\development\extras\CEF4Delphi\packages\"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>

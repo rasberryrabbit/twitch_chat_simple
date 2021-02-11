@@ -1,71 +1,64 @@
 object FormTwitchChat: TFormTwitchChat
   Left = 274
-  Height = 679
+  Height = 634
   Top = 140
   Width = 1280
   Caption = 'Twitch Chat'
-  ClientHeight = 659
+  ClientHeight = 614
   ClientWidth = 1280
   Menu = MainMenu1
   OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
   LCLVersion = '2.1.0.0'
-  object Panel1: TPanel
-    Left = 8
-    Height = 415
-    Top = 56
-    Width = 1264
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    TabOrder = 4
-  end
   object ButtonAct: TButton
     Left = 552
     Height = 25
-    Top = 479
+    Top = 434
     Width = 152
     Anchors = [akBottom]
     Caption = 'Activate'
     OnClick = ButtonActClick
-    TabOrder = 9
+    TabOrder = 8
   end
   object Panel2: TPanel
     Left = 8
     Height = 138
-    Top = 511
+    Top = 466
     Width = 1264
     Anchors = [akLeft, akRight, akBottom]
-    TabOrder = 10
+    TabOrder = 9
   end
   object CheckBoxClearB: TCheckBox
     Left = 8
     Height = 19
-    Top = 487
+    Top = 442
     Width = 95
     Anchors = [akLeft, akBottom]
     Caption = 'Clear on Load'
-    TabOrder = 5
+    TabOrder = 4
   end
   object CheckBoxDisableLog: TCheckBox
     Left = 144
     Height = 19
-    Top = 487
+    Top = 442
     Width = 80
     Anchors = [akLeft, akBottom]
     Caption = 'Disable log'
-    TabOrder = 6
+    TabOrder = 5
   end
   object CheckBoxRemSyS: TCheckBox
     Left = 256
     Height = 19
-    Top = 487
+    Top = 442
     Width = 104
     Anchors = [akLeft, akBottom]
     Caption = 'Remove system'
     Checked = True
     State = cbChecked
-    TabOrder = 7
+    TabOrder = 6
   end
   object EditCEFUrl: TEdit
     Left = 64
@@ -107,11 +100,19 @@ object FormTwitchChat: TFormTwitchChat
   object CheckBoxShowReal: TCheckBox
     Left = 400
     Height = 19
-    Top = 487
+    Top = 442
     Width = 89
     Anchors = [akLeft, akBottom]
     Caption = 'Show real ID'
-    TabOrder = 8
+    TabOrder = 7
+  end
+  object CEFWindowParent1: TCEFWindowParent
+    Left = 8
+    Height = 371
+    Top = 56
+    Width = 1264
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 10
   end
   object Timer1: TTimer
     Enabled = False
@@ -172,5 +173,21 @@ object FormTwitchChat: TFormTwitchChat
     OnTimer = TimerNavTimer
     Left = 88
     Top = 408
+  end
+  object Chromium1: TChromium
+    OnLoadStart = Chromium1LoadStart
+    OnLoadError = Chromium1LoadError
+    OnAddressChange = Chromium1AddressChange
+    OnAfterCreated = Chromium1AfterCreated
+    OnBeforeClose = Chromium1BeforeClose
+    OnClose = Chromium1Close
+    Left = 40
+    Top = 88
+  end
+  object TimerChrome: TTimer
+    Interval = 100
+    OnTimer = TimerChromeTimer
+    Left = 88
+    Top = 280
   end
 end

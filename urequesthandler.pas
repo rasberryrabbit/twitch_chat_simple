@@ -5,21 +5,22 @@ unit uRequestHandler;
 interface
 
 uses
-  Classes, SysUtils, cef3own, cef3intf, cef3types;
+  Classes, SysUtils, uCEFClient, uCEFInterfaces, uCEFResourceRequestHandler,
+  uCEFTypes;
 
 type
 
 
   { TMyClient }
 
-  TMyClient=class(TCefClientOwn)
+  TMyClient=class(TCustomClientHandler)
     protected
-      function GetRequestHandler: ICefRequestHandler; override;
+      procedure GetRequestHandler(var aHandler : ICefRequestHandler); override;
   end;
 
   { TMyRequestHandler }
 
-  TMyRequestHandler = class(TCefRequestHandlerOwn)
+  TMyRequestHandler = class(TCefResourceRequestHandlerOwn)
     protected
       function OnBeforeResourceLoad(const browser: ICefBrowser;
         const frame: ICefFrame; const request: ICefRequest;
@@ -30,9 +31,9 @@ implementation
 
 { TMyClient }
 
-function TMyClient.GetRequestHandler: ICefRequestHandler;
+procedure TMyClient.GetRequestHandler(var aHandler: ICefRequestHandler);
 begin
-  Result:=inherited GetRequestHandler;
+  inherited GetRequestHandler(aHandler);
 end;
 
 { TMyRequestHandler }
