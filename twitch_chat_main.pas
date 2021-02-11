@@ -12,6 +12,9 @@ uses
   lNetComponents, lhttp, lNet, UniqueInstance, loglistfpc, syncobjs,
   Messages, uCEFChromiumEvents, uCEFConstants;
 
+const
+  WM_CEFMsg = WM_USER+100;
+
 type
 
   { TFormTwitchChat }
@@ -83,6 +86,7 @@ type
     procedure BrowserDestroyMsg(var aMsg:TMessage); message CEF_DESTROY;
     procedure WMMove(var aMsg:TMessage); message WM_MOVE;
     procedure WMMoving(var aMsg:TMessage); message WM_MOVING;
+    procedure WMCEFMsg(var aMsg:TMessage); message WM_CEFMsg;
   public
     log:TLogListFPC;
     // chrome
@@ -954,8 +958,7 @@ end;
 
 procedure TFormTwitchChat.Timer1Timer(Sender: TObject);
 begin
-  if Chromium1.Initialized then
-    Chromium1.SendProcessMessage(PID_RENDERER,TCefProcessMessageRef.New('visitdom'));
+  PostMessage(Handle,WM_CEFMsg,0,0);
 end;
 
 procedure TFormTwitchChat.TimerChromeTimer(Sender: TObject);
@@ -1004,6 +1007,12 @@ begin
   inherited;
   if Chromium1<>nil then
      Chromium1.NotifyMoveOrResizeStarted;
+end;
+
+procedure TFormTwitchChat.WMCEFMsg(var aMsg: TMessage);
+begin
+  if (Chromium1<>nil) and Chromium1.Initialized then
+    Chromium1.SendProcessMessage(PID_RENDERER,TCefProcessMessageRef.New('visitdom'));
 end;
 
 function TFormTwitchChat.TryEnter: Boolean;
