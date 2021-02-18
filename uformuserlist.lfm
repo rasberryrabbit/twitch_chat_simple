@@ -1,0 +1,65 @@
+object FormUserList: TFormUserList
+  Left = 517
+  Height = 375
+  Top = 233
+  Width = 342
+  BorderStyle = bsDialog
+  Caption = 'User List'
+  ClientHeight = 375
+  ClientWidth = 342
+  OnShow = FormShow
+  Position = poOwnerFormCenter
+  LCLVersion = '1.9.0.0'
+  object ButtonOk: TButton
+    Left = 83
+    Height = 25
+    Top = 336
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'Ok'
+    ModalResult = 1
+    TabOrder = 2
+  end
+  object ButtonCancel: TButton
+    Left = 184
+    Height = 25
+    Top = 336
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 3
+  end
+  object MemoAlert: TMemo
+    Left = 8
+    Height = 290
+    Top = 24
+    Width = 150
+    ScrollBars = ssAutoVertical
+    TabOrder = 0
+  end
+  object MemoSkip: TMemo
+    Left = 184
+    Height = 290
+    Top = 24
+    Width = 150
+    ScrollBars = ssAutoVertical
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 12
+    Top = 8
+    Width = 55
+    Caption = 'User Alert'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 184
+    Height = 12
+    Top = 8
+    Width = 54
+    Caption = 'User Skip'
+    ParentColor = False
+  end
+end

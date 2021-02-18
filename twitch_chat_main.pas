@@ -385,7 +385,7 @@ var
                     end else
                       matched:=False;
                   end else begin
-                    if (i>0) and CompareHash(checksumN,lastchecksum[i-1]) then
+                    if matched and (i>0) and CompareHash(checksumN,lastchecksum[i-1]) then
                       matched:=False;
                   end;
                 end;
