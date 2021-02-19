@@ -114,7 +114,7 @@ uses
   uCEFMiscFunctions;
 
 const
-  MaxChecksum = 3;
+  MaxChecksum = 10;
   rootUrl = 'https://www.twitch.tv';
 
 var
@@ -401,7 +401,7 @@ var
                     Inc(chkCount);
                   end;
                 end else
-                  if i>=lastchkCount then
+                  if (i>=lastchkCount) or (not matched) then
                     break;
               end;
               NodeN:=NodeN.PreviousSibling;
