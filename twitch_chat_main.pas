@@ -704,6 +704,7 @@ procedure TFormTwitchChat.Chromium1LoadStart(Sender: TObject;
   const browser: ICefBrowser; const frame: ICefFrame;
   transitionType: TCefTransitionType);
 begin
+  lastchkCount:=0;
   if TryEnter then begin
     try
       //if CheckBoxClearB.Checked then
