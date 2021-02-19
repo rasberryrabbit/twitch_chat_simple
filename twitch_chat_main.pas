@@ -391,7 +391,7 @@ var
                 end;
 
                 // fill bottom checksum
-                if chkCount<=MaxChecksum then begin
+                if chkCount<MaxChecksum then begin
                   // check duplication on first checksum
                   if (chkCount>0) and CompareHash(checksumN,bottomchecksum[chkCount-1]) then
                     Inc(dupCount[chkCount-1])
