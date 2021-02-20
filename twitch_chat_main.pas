@@ -337,7 +337,7 @@ var
     bottomchecksum : array[0..MaxChecksum] of THashDigest;
     dupCount, dupCountChk : array[0..MaxChecksum] of Integer;
     chkCount, i, j, ItemCount : Integer;
-    matched, skipAddMarkup, disLog, RemoveSys, doAddMsg, IsAlert, ShowReal : Boolean;
+    matched, skipAddMarkup, disLog, RemoveSys, doAddMsg, IsAlert, ShowReal, containchat, skipcheck : Boolean;
     ssockout, stemp: string;
   begin
     if Assigned(ANode) then
@@ -363,6 +363,7 @@ var
               //if NodeN.GetElementAttribute(LogEleChatAttr)=LogEleChatName then begin
               if not IsContainUniStringSemi(NodeN.GetElementAttribute(LogEleChatAttr)) then begin
                 scheck:='';
+                skipcheck:=False;
                 // make checksum source
                 NodeIcon:=NodeN.FirstChild;
                 if Assigned(NodeIcon) then begin
@@ -370,12 +371,23 @@ var
                   NodeChat:=NodeIcon.NextSibling;
                   // id only
                   if Assigned(NodeChat) then begin
-                    scheck:=scheck+NodeChat.ElementInnerText;
-                    NodeChat:=NodeChat.NextSibling;
+                    // to do : skip banned user message
+                    // class text-fragment
+                    containchat:=False;
+                    while Assigned(NodeChat) do begin
+                      sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
+                      if sclass='text-fragment' then
+                        containchat:=True;
+                      scheck:=scheck+NodeChat.ElementInnerText;
+                      NodeChat:=NodeChat.NextSibling;
+                    end;
+                    if not containchat then
+                      skipcheck:=True;
                   end;
                 end;
                 checksumN:=MakeHash(@scheck[1],Length(scheck)*SizeOf(WideChar));
 
+                if not skipcheck then
                 if matched then begin
                   if i<lastchkCount then begin
                     if CompareHash(checksumN,lastchecksum[i]) then begin
@@ -392,17 +404,21 @@ var
 
                 // fill bottom checksum
                 if chkCount<MaxChecksum then begin
-                  // check duplication on first checksum
-                  if (chkCount>0) and CompareHash(checksumN,bottomchecksum[chkCount-1]) then
-                    Inc(dupCount[chkCount-1])
-                  else begin
-                    bottomchecksum[chkCount]:=checksumN;
-                    dupCount[chkCount]:=1;
-                    Inc(chkCount);
+                  if not skipcheck then begin
+                    // check duplication on first checksum
+                    if (chkCount>0) and CompareHash(checksumN,bottomchecksum[chkCount-1]) then
+                      Inc(dupCount[chkCount-1])
+                    else begin
+                      bottomchecksum[chkCount]:=checksumN;
+                      dupCount[chkCount]:=1;
+                      Inc(chkCount);
+                    end;
                   end;
                 end else
                   if (i>=lastchkCount) or (not matched) then
                     break;
+                if skipcheck then
+                  break;
               end;
               NodeN:=NodeN.PreviousSibling;
             end;
