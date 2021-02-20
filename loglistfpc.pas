@@ -236,7 +236,7 @@ var
   temp : TLogStringData;
   SRect : TRect;
 begin
-  //FEvent.ResetEvent;
+  Canvas.Lock;
   try
   Canvas.Brush.Color:=Color;
   SRect:=GetScrolledClientRect;
@@ -269,7 +269,7 @@ begin
      else Canvas.Brush.Color:=clInactiveBorder;
   Canvas.FillRect(SRect.Left,SRect.Top,SRect.Left+BorderWidth-2,SRect.Bottom);
   finally
-    //FEvent.SetEvent;
+    Canvas.Unlock;
   end;
   inherited Paint;
 end;
@@ -372,6 +372,7 @@ destructor TLogListFPC.Destroy;
 begin
   FTimer.OnTimer:=nil;
   LogData.Free;
+  FEvent.SetEvent;
   FEvent.Free;
   inherited Destroy;
 end;
@@ -689,6 +690,7 @@ end;
 
 destructor TLogStringList.Destroy;
 begin
+  fEvent.SetEvent;
   fEvent.Free;
   inherited Destroy;
 end;
