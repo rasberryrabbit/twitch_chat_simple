@@ -114,7 +114,7 @@ uses
   uCEFMiscFunctions;
 
 const
-  MaxChecksum = 10;
+  MaxChecksum = 11; // odd length
   rootUrl = 'https://www.twitch.tv';
 
 var
