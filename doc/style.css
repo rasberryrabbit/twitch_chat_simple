@@ -155,12 +155,9 @@ strong,.screen_out {
     font-weight: bold;
 }
 
-.chat-line__message > div {
-}
-
 .user-notice-line {
     color: #bbbbbb;
-    background-color: #111111e0;
+    background-color: #333300e0;
     padding: 5px;
     border-radius: 5px;    
     font-weight: bold;
@@ -177,8 +174,13 @@ a {
 } 
 
 /* icon to right, fix icon position, fix height */
-.chat-line__username-container > div {
-    display: inline;
+.chat-line__username-container img {
+    display: inline-block;
+    float: right;
+    position: relative;
+    padding: 2px;
+    height: 16px;
+    top: -4px;
 }
 
 /*
@@ -216,11 +218,6 @@ a {
 
 /* 뱃지 및 아이콘. "display: none;" 을 넣으면 사라짐. */
 .chat-badge {
-    float: right;
-    position: relative;
-    padding: 2px;
-    height: 16px;
-    top: -4px;
 }
 
 /* 구독자 이름을 표기 */
