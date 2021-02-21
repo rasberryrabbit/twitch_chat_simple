@@ -148,6 +148,7 @@ var
   LogEleChatAttr : UnicodeString = 'class';
   LogEleChatName : UnicodeString = 'chat-line__message';
   LogEleChatSkipDefault : UnicodeString = 'scrollable-trigger__wrapper';
+  LogEleChatFrag : UnicodeString = 'text-fragment';
 
   LogEleUser : UnicodeString = 'chat-line__username';
   LogEleUserName : UnicodeString = 'chat-author__display-name';
@@ -155,6 +156,8 @@ var
 
   LogAddHead : string = '<li class="twitch_chat">';
   LogAddTail : string = '</li>';
+
+  skipchecksum : THashDigest;
 
 type
 
@@ -376,7 +379,7 @@ var
                     containchat:=False;
                     while Assigned(NodeChat) do begin
                       sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
-                      if sclass='text-fragment' then
+                      if sclass=LogEleChatFrag then
                         containchat:=True;
                       scheck:=scheck+NodeChat.ElementInnerText;
                       NodeChat:=NodeChat.NextSibling;
@@ -385,40 +388,37 @@ var
                       skipcheck:=True;
                   end;
                 end;
-                checksumN:=MakeHash(@scheck[1],Length(scheck)*SizeOf(WideChar));
+                if skipcheck then
+                  checksumN:=skipchecksum
+                  else
+                    checksumN:=MakeHash(@scheck[1],Length(scheck)*SizeOf(WideChar));
 
-                if not skipcheck then
                 if matched then begin
                   if i<lastchkCount then begin
-                    if CompareHash(checksumN,lastchecksum[i]) then begin
+                    if skipcheck or
+                       CompareHash(checksumN,lastchecksum[i]) or
+                       CompareHash(lastchecksum[i],skipchecksum) then begin
                       Dec(dupCountChk[i]);
                       if dupCountChk[i]=0 then
                         Inc(i);
                     end else
-                      matched:=False;
-                  end else begin
-                    if matched and (i>0) and CompareHash(checksumN,lastchecksum[i-1]) then
                       matched:=False;
                   end;
                 end;
 
                 // fill bottom checksum
                 if chkCount<MaxChecksum then begin
-                  if not skipcheck then begin
-                    // check duplication on first checksum
-                    if (chkCount>0) and CompareHash(checksumN,bottomchecksum[chkCount-1]) then
-                      Inc(dupCount[chkCount-1])
-                    else begin
-                      bottomchecksum[chkCount]:=checksumN;
-                      dupCount[chkCount]:=1;
-                      Inc(chkCount);
-                    end;
+                  // check duplication on first checksum
+                  if (chkCount>0) and CompareHash(checksumN,bottomchecksum[chkCount-1]) then
+                    Inc(dupCount[chkCount-1])
+                  else begin
+                    bottomchecksum[chkCount]:=checksumN;
+                    dupCount[chkCount]:=1;
+                    Inc(chkCount);
                   end;
                 end else
                   if (i>=lastchkCount) or (not matched) then
                     break;
-                if skipcheck then
-                  break;
               end;
               NodeN:=NodeN.PreviousSibling;
             end;
@@ -588,6 +588,8 @@ begin
   // Chrome
   FCanClose:=False;
   FClosing:=False;
+
+  FillChar(skipchecksum,sizeof(THashDigest),$ff);
 
   IsMultiThread:=True;
   UserAlertID:=TFPStringHashTableList.Create;
