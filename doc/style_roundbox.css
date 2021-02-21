@@ -228,3 +228,7 @@ a {
     color: transparent;
     font-weight: bold;
 }
+
+.chat-line__reply-icon {
+	display: none;
+}	
