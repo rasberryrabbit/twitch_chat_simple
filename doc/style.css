@@ -7,7 +7,8 @@
 body {
     font: 12px arial;
     color: none;
-    padding: 2px; }
+    padding: 2px; 
+}
   
 form, p, span, div {
     margin:0;
@@ -56,7 +57,7 @@ form, p, span, div {
 }
   
 #wrapper {
-    position: relative;
+    /*position: relative;*/
     height: 300px;
     width: 300px;
 }  
@@ -154,6 +155,17 @@ strong,.screen_out {
     font-weight: bold;
 }
 
+.chat-line__message > div {
+}
+
+.user-notice-line {
+    color: #bbbbbb;
+    background-color: #111111e0;
+    padding: 5px;
+    border-radius: 5px;    
+    font-weight: bold;
+}
+
 a {
     color: #bbbbbb;
     text-decoration: none;
@@ -165,32 +177,22 @@ a {
 } 
 
 /* icon to right, fix icon position, fix height */
-.chat-line__message > span:nth-of-type(1) {
-    float: right;
-    position: relative;
-    top: -5px;
-    height: 10px;
+.chat-line__username-container > div {
+    display: inline;
 }
 
+/*
 .chat-line__message--emote-button > img {
-   float:right;
-   position: relative;
-}
+} */
 
 /* padding right on chat-id */
-.chat-line__message > span:nth-of-type(2) {
-    padding-right: 8px;
+.chat-author__display-name {
+    padding-right: 10px;
 }
 
 /* remove : mark */
 .chat-line__no-background > span:nth-of-type(1) {
     display: none;
-}
-
-/* ID, break newline */
-.chat-line__message > button {
-    display: block;
-    padding-bottom: 1px;
 }
 
 /* disable clip link
@@ -200,16 +202,6 @@ a {
 
 .chat-card__preview-img {
     display: none;
-}
-
-/* 아이콘과 채팅글의 위치를 맞춤 */
-.chat-line__message span img {
-    position: relative;
-    top: 4px;
-}
-
-.chat-line__message--emote-button {
-  position: relative;
 }
 
 /* 채팅 아이디 */
@@ -224,7 +216,11 @@ a {
 
 /* 뱃지 및 아이콘. "display: none;" 을 넣으면 사라짐. */
 .chat-badge {
-    padding-right: 2px;
+    float: right;
+    position: relative;
+    padding: 2px;
+    height: 16px;
+    top: -4px;
 }
 
 /* 구독자 이름을 표기 */
@@ -244,5 +240,13 @@ a {
 }
 
 .chat-line__reply-icon {
-	display: none;
-}	
+    display: none;
+}
+
+.chat-line__message--emote-button {
+    display: inline-block;
+}
+
+.text-fragment {
+    display: inline-block;
+}
