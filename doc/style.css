@@ -149,7 +149,7 @@ strong,.screen_out {
 /* 채팅글의 배경을 지정. 컬러는 RGBA값 */
 .chat-line__message {
     color: #bbbbbb;
-    background-color: #333333e0;
+    background-color: #111111e0;
     padding: 5px;
     border-radius: 5px;    
     font-weight: bold;
@@ -161,6 +161,10 @@ strong,.screen_out {
     padding: 5px;
     border-radius: 5px;    
     font-weight: bold;
+}
+
+.user-notice-line div {
+    display: inline-block;
 }
 
 a {
@@ -244,6 +248,22 @@ a {
     display: inline-block;
 }
 
+.channel-points-icon {
+    display: inline-block;
+}
+
+.channel-points-icon--medium {
+    display: inline-block;
+}
+
+.channel-points-reward-line__icon {
+    display: inline-block;
+}
+
 .text-fragment {
+    display: inline-block;
+}
+
+.channel-points-icon {
     display: inline-block;
 }
