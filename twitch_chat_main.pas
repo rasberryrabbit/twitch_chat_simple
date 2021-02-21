@@ -151,6 +151,7 @@ var
   LogEleChatFrag : UnicodeString = 'text-fragment';
 
   LogEleUser : UnicodeString = 'chat-line__username';
+  LogEleUserCon : UnicodeString = 'chat-line__username-container';
   LogEleUserName : UnicodeString = 'chat-author__display-name';
   LogEleUserAttr : UnicodeString = 'data-a-user';
 
@@ -367,27 +368,38 @@ var
               if not IsContainUniStringSemi(NodeN.GetElementAttribute(LogEleChatAttr)) then begin
                 scheck:='';
                 skipcheck:=False;
-                // make checksum source
                 NodeIcon:=NodeN.FirstChild;
-                if Assigned(NodeIcon) then begin
-                  scheck:=scheck+NodeIcon.ElementInnerText;
-                  NodeChat:=NodeIcon.NextSibling;
-                  // id only
+                // find chat container
+                NodeChat:=NodeIcon;
+                while Assigned(NodeChat) do begin
+                  if Pos(LogEleUserCon,NodeChat.GetElementAttribute(LogEleChatAttr))<>0 then
+                    break;
+                  NodeChat:=NodeChat.FirstChild;
+                end;
+                if Assigned(NodeChat) then begin
+                  // get id
+                  scheck:=NodeChat.ElementInnerText;
                   if Assigned(NodeChat) then begin
-                    // to do : skip banned user message
                     // class text-fragment
                     containchat:=False;
                     while Assigned(NodeChat) do begin
                       sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
-                      if sclass=LogEleChatFrag then
+                      if sclass=LogEleChatFrag then begin
                         containchat:=True;
-                      scheck:=scheck+NodeChat.ElementInnerText;
+                        scheck:=scheck+' '+NodeChat.ElementInnerText;
+                      end;
                       NodeChat:=NodeChat.NextSibling;
                     end;
                     if not containchat then
                       skipcheck:=True;
                   end;
+                end else begin
+                  // non chat
+                  if Assigned(NodeIcon) then
+                    scheck:=scheck+NodeIcon.ElementInnerText;
+                  //FormTwitchChat.log.AddLog(scheck);
                 end;
+
                 if skipcheck then
                   checksumN:=skipchecksum
                   else
@@ -898,12 +910,14 @@ begin
     config.WriteString('PARSER','LogAddTail',LogAddTail);
 
     config.WriteString('PARSER','LogEleUser',LogEleUser);
+    config.WriteString('PARSER','LogEleUserCon',LogEleUserCon);
     config.WriteString('PARSER','LogEleUserName',LogEleUserName);
     config.WriteString('PARSER','LogEleUserAttr',LogEleUserAttr);
 
     config.WriteString('PARSER','LogEleChatAttr',LogEleChatAttr);
     config.WriteString('PARSER','LogEleChatName',LogEleChatName);
 
+    config.WriteString('PARSER','LogEleChatFrag',LogEleChatFrag);
     config.WriteString('PARSER','LogEleChatSkip',LogEleChatSkip.Text);
     config.WriteString('USERALERT','USER',UserAlertID.Text);
     config.WriteString('USERSKIP','USER',UserSkipID.Text);
@@ -948,12 +962,14 @@ begin
     LogAddTail:=config.ReadString('PARSER','LogAddTail',LogAddTail);
 
     LogEleUser:=config.ReadString('PARSER','LogEleUser',LogEleUser);
+    LogEleUserCon:=config.ReadString('PARSER','LogEleUserCon',LogEleUserCon);
     LogEleUserName:=config.ReadString('PARSER','LogEleUserName',LogEleUserName);
     LogEleUserAttr:=config.ReadString('PARSER','LogEleUserAttr',LogEleUserAttr);
 
     LogEleChatAttr:=config.ReadString('PARSER','LogEleChatAttr',LogEleChatAttr);
     LogEleChatName:=config.ReadString('PARSER','LogEleChatName',LogEleChatName);
 
+    LogEleChatFrag:=config.ReadString('PARSER','LogEleChatFrag',LogEleChatFrag);
     LogEleChatSkip.Text:=config.ReadString('PARSER','LogEleChatSkip',LogEleChatSkipDefault);
     UserAlertID.Text:=config.ReadString('USERALERT','USER','');
     UserSkipID.Text:=config.ReadString('USERSKIP','USER','');
