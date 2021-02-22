@@ -248,6 +248,10 @@ a {
     display: inline-block;
 }
 
+.chat-line--inline {
+    display: inline-block;
+}
+
 .channel-points-icon {
     display: inline-block;
 }
