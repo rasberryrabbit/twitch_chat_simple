@@ -271,3 +271,7 @@ a {
 .channel-points-icon {
     display: inline-block;
 }
+
+.chat-line__message-highlight {
+    display: none;
+}
