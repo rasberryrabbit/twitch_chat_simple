@@ -389,8 +389,9 @@ var
                     if (Pos(LogEleChatFrag, sclass)>0){ or
                        (Pos(LogEleChatEmote, sclass)<>0)} then begin
                     }
-                    if Pos('-notice ',sclass)>0 then begin
+                    if Pos('-notice',sclass)>0 then begin
                       containchat:=False;
+                      FormTwitchChat.log.AddLog('>>'+sclass);
                       break;
                     end
                     else begin
