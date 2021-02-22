@@ -372,32 +372,33 @@ var
                 NodeIcon:=NodeN.FirstChild;
                 // find chat container
                 NodeChat:=NodeIcon;
+                containchat:=False;
                 while Assigned(NodeChat) do begin
-                  if Pos(LogEleUserCon,NodeChat.GetElementAttribute(LogEleChatAttr))<>0 then
+                  if Pos(LogEleUserCon,NodeChat.GetElementAttribute(LogEleChatAttr))<>0 then begin
+                    containchat:=True;
                     break;
+                  end;
                   NodeChat:=NodeChat.FirstChild;
                 end;
-                if Assigned(NodeChat) then begin
+                if containchat and Assigned(NodeChat) then begin
                   // get id
                   scheck:=NodeChat.ElementInnerText;
                   // class text-fragment
-                  containchat:=False;
                   while Assigned(NodeChat) do begin
                     sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
                     // check if valid chat message
                     {
-                    if (Pos(LogEleChatFrag, sclass)>0){ or
-                       (Pos(LogEleChatEmote, sclass)<>0)} then begin
+                    if (Pos(LogEleChatFrag, sclass)>0) or
+                       (Pos(LogEleChatEmote, sclass)<>0) then begin
                     }
                     if Pos('-notice',sclass)>0 then begin
                       containchat:=False;
-                      FormTwitchChat.log.AddLog('>>'+sclass);
+                      //FormTwitchChat.log.AddLog('>>'+sclass);
                       break;
                     end
-                    else begin
-                      containchat:=True;
+                    else
                       scheck:=scheck+' '+NodeChat.ElementInnerText;
-                    end;
+
                     NodeChat:=NodeChat.NextSibling;
                   end;
                   if not containchat then
