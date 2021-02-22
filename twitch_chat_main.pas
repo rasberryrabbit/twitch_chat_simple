@@ -386,8 +386,8 @@ var
                     while Assigned(NodeChat) do begin
                       sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
                       // check if valid chat message
-                      if (Pos(LogEleChatFrag, sclass)<>0) or
-                         (Pos(LogEleChatEmote, sclass)<>0) then begin
+                      if (Pos(LogEleChatFrag, sclass)>0){ or
+                         (Pos(LogEleChatEmote, sclass)<>0)} then begin
                         containchat:=True;
                         scheck:=scheck+' '+NodeChat.ElementInnerText;
                       end;
