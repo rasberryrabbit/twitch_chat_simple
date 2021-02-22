@@ -380,27 +380,27 @@ var
                 if Assigned(NodeChat) then begin
                   // get id
                   scheck:=NodeChat.ElementInnerText;
-                  if Assigned(NodeChat) then begin
-                    // class text-fragment
-                    containchat:=False;
-                    while Assigned(NodeChat) do begin
-                      sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
-                      // check if valid chat message
-                      {
-                      if (Pos(LogEleChatFrag, sclass)>0){ or
-                         (Pos(LogEleChatEmote, sclass)<>0)} then begin
-                      }
-                      if Pos('-notice',sclass)>0 then
-                        containchat:=False
-                      else begin
-                        containchat:=True;
-                        scheck:=scheck+' '+NodeChat.ElementInnerText;
-                      end;
-                      NodeChat:=NodeChat.NextSibling;
+                  // class text-fragment
+                  containchat:=False;
+                  while Assigned(NodeChat) do begin
+                    sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
+                    // check if valid chat message
+                    {
+                    if (Pos(LogEleChatFrag, sclass)>0){ or
+                       (Pos(LogEleChatEmote, sclass)<>0)} then begin
+                    }
+                    if Pos('-notice',sclass)>0 then begin
+                      containchat:=False;
+                      break;
+                    end
+                    else begin
+                      containchat:=True;
+                      scheck:=scheck+' '+NodeChat.ElementInnerText;
                     end;
-                    if not containchat then
-                      skipcheck:=True;
+                    NodeChat:=NodeChat.NextSibling;
                   end;
+                  if not containchat then
+                    skipcheck:=True;
                 end else begin
                   // non chat
                   if Assigned(NodeIcon) then
