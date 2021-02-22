@@ -405,8 +405,8 @@ var
                     skipcheck:=True;
                 end else begin
                   // non chat
-                  if Assigned(NodeIcon) then
-                    scheck:=scheck+NodeIcon.ElementInnerText;
+                  if Assigned(NodeN) then
+                    scheck:=scheck+NodeN.ElementInnerText;
                   //FormTwitchChat.log.AddLog(scheck);
                 end;
 
