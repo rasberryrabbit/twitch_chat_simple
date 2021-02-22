@@ -147,6 +147,7 @@ var
 
   LogEleChatAttr : UnicodeString = 'class';
   LogEleChatName : UnicodeString = 'chat-line__message';
+  LogEleChatEmote : UnicodeString = 'chat-line__message--emote-button';
   LogEleChatSkipDefault : UnicodeString = 'scrollable-trigger__wrapper';
   LogEleChatFrag : UnicodeString = 'text-fragment';
 
@@ -386,7 +387,7 @@ var
                       sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
                       // check if valid chat message
                       if (Pos(LogEleChatFrag, sclass)<>0) or
-                         (Pos(LogEleChatName ,sclass)<>0) then begin
+                         (Pos(LogEleChatEmote, sclass)<>0) then begin
                         containchat:=True;
                         scheck:=scheck+' '+NodeChat.ElementInnerText;
                       end;
@@ -920,6 +921,7 @@ begin
     config.WriteString('PARSER','LogEleChatName',LogEleChatName);
 
     config.WriteString('PARSER','LogEleChatFrag',LogEleChatFrag);
+    config.WriteString('PARSER','LogEleChatEmote',LogEleChatEmote);
     config.WriteString('PARSER','LogEleChatSkip',LogEleChatSkip.Text);
     config.WriteString('USERALERT','USER',UserAlertID.Text);
     config.WriteString('USERSKIP','USER',UserSkipID.Text);
@@ -972,6 +974,7 @@ begin
     LogEleChatName:=config.ReadString('PARSER','LogEleChatName',LogEleChatName);
 
     LogEleChatFrag:=config.ReadString('PARSER','LogEleChatFrag',LogEleChatFrag);
+    LogEleChatEmote:=config.ReadString('PARSER','LogEleChatEmote',LogEleChatEmote);
     LogEleChatSkip.Text:=config.ReadString('PARSER','LogEleChatSkip',LogEleChatSkipDefault);
     UserAlertID.Text:=config.ReadString('USERALERT','USER','');
     UserSkipID.Text:=config.ReadString('USERSKIP','USER','');
