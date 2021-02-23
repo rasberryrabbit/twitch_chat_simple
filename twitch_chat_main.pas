@@ -374,27 +374,21 @@ var
                 NodeChat:=NodeIcon;
                 containchat:=False;
                 while Assigned(NodeChat) do begin
-                  if Pos(LogEleUserCon,NodeChat.GetElementAttribute(LogEleChatAttr))<>0 then begin
+                  if Pos(LogEleUserCon,NodeChat.GetElementAttribute(LogEleChatAttr))>0 then begin
                     containchat:=True;
                     break;
                   end;
                   NodeChat:=NodeChat.FirstChild;
                 end;
                 if containchat and Assigned(NodeChat) then begin
-                  // get id
-                  scheck:=NodeChat.ElementInnerText;
+                  // id : first, text : after
                   // class text-fragment
                   while Assigned(NodeChat) do begin
                     sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
-                    // check if valid chat message
-                    {
-                    if (Pos(LogEleChatFrag, sclass)>0) or
-                       (Pos(LogEleChatEmote, sclass)<>0) then begin
-                    }
                     if Pos('-notice',sclass)>0 then begin
                       containchat:=False;
-                      //FormTwitchChat.log.AddLog('>>'+sclass);
                       break;
+                      //FormTwitchChat.log.AddLog('>>'+sclass);
                     end
                     else
                       scheck:=scheck+' '+NodeChat.ElementInnerText;
@@ -431,7 +425,8 @@ var
                 // fill bottom checksum
                 if chkCount<MaxChecksum then begin
                   // check duplication on first checksum
-                  if (chkCount>0) and CompareHash(checksumN,bottomchecksum[chkCount-1]) then
+                  if (chkCount>0) and
+                     CompareHash(checksumN,bottomchecksum[chkCount-1]) then
                     Inc(dupCount[chkCount-1])
                   else begin
                     bottomchecksum[chkCount]:=checksumN;
