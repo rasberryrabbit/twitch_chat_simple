@@ -155,6 +155,8 @@ var
   LogEleUserCon : UnicodeString = 'chat-line__username-container';
   LogEleUserName : UnicodeString = 'chat-author__display-name';
   LogEleUserAttr : UnicodeString = 'data-a-user';
+  LogEleCon : UnicodeString = '-container';
+  LogEleHigh : UnicodeString = '-highlight';
 
   LogAddHead : string = '<li class="twitch_chat">';
   LogAddTail : string = '</li>';
@@ -341,7 +343,7 @@ var
     checksumN : THashDigest;
     bottomchecksum : array[0..MaxChecksum] of THashDigest;
     dupCount, dupCountChk : array[0..MaxChecksum] of Integer;
-    chkCount, i, j, ItemCount : Integer;
+    chkCount, i, j, ItemCount, vcode : Integer;
     matched, skipAddMarkup, disLog, RemoveSys, doAddMsg, IsAlert, ShowReal, containchat, skipcheck : Boolean;
     ssockout, stemp: string;
   begin
@@ -373,12 +375,22 @@ var
                 // find chat container
                 NodeChat:=NodeIcon;
                 containchat:=False;
+                vcode:=0;
                 while Assigned(NodeChat) do begin
-                  if Pos(LogEleUserCon,NodeChat.GetElementAttribute(LogEleChatAttr))>0 then begin
+                  sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
+                  if Pos(LogEleUserCon,sclass)>0 then begin
                     containchat:=True;
                     break;
-                  end;
-                  NodeChat:=NodeChat.FirstChild;
+                  end else
+                  if Pos(LogEleHigh,sclass)>0 then
+                    vcode:=1
+                  else
+                  if Pos(LogEleCon,sclass)>0 then
+                    vcode:=0;
+                  if vcode=0 then
+                    NodeChat:=NodeChat.FirstChild
+                    else
+                      NodeChat:=NodeChat.NextSibling;
                 end;
                 if containchat and Assigned(NodeChat) then begin
                   // id : first, text : after
@@ -458,13 +470,7 @@ var
             //if Nodex.GetElementAttribute(LogEleChatAttr)<>LogEleChatSkip then begin
             if not IsContainUniStringSemi(Nodex.GetElementAttribute(LogEleChatAttr)) then begin
               doAddMsg:=True;
-
-              NodeIcon:=Nodex.FirstChild;
-              if Assigned(NodeIcon) then
-                NodeChat:=NodeIcon.NextSibling
-                else
-                  NodeChat:=nil;
-
+              // system
               sclass:=Nodex.GetElementAttribute(LogEleAlertAttr);
               IsAlert:=False;
               // syslog, alert
@@ -473,24 +479,50 @@ var
               if RemoveSys then
                 doAddMsg:=Pos(LogEleSys,sclass)=0;
 
+              // find chat
+              NodeChat:=nil;
+              NodeIcon:=Nodex.FirstChild;
+              containchat:=False;
+              vcode:=0;
+              while Assigned(NodeIcon) do begin
+                sclass:=NodeIcon.GetElementAttribute(LogEleChatAttr);
+                if Pos(LogEleUserCon,sclass)>0 then begin
+                  containchat:=True;
+                  break;
+                end else
+                if Pos(LogEleHigh,sclass)>0 then
+                  vcode:=1
+                else
+                if Pos(LogEleCon,sclass)>0 then
+                  vcode:=0;
+                if vcode=0 then
+                  NodeIcon:=NodeIcon.FirstChild
+                  else
+                    NodeIcon:=NodeIcon.NextSibling;
+              end;
+              if not containchat then
+                NodeIcon:=Nodex.FirstChild
+                else
+                  NodeChat:=NodeIcon.NextSibling;
+
               scheck:=Nodex.AsMarkup;
               skipAddMarkup:=True;
               // get chat message
               if not disLog then
                 sbuf:=NodeIcon.ElementInnerText;
-              while Assigned(NodeChat) do begin
+
+              if containchat then begin
                 // check user alert and user skip
                 if (UserSkipID.Count>0) or (UserAlertID.Count>0) then begin
-                  sclass:=NodeChat.GetElementAttribute(LogEleAlertAttr);
-                  if Pos(LogEleUser,sclass)<>0 then begin
-                    NodeN:=NodeChat.FirstChild;
-                    while Assigned(NodeN) do begin
-                      sclass:=NodeN.GetElementAttribute(LogEleAlertAttr);
-                      if sclass<>'' then begin
-                        if Pos(LogEleUserName,sclass)<>0 then begin
+                  NodeIcon:=NodeIcon.FirstChild;
+                  while Assigned(NodeIcon) do begin
+                    sclass:=NodeIcon.GetElementAttribute(LogEleAlertAttr);
+                    if Pos(LogEleUser,sclass)>0 then begin
+                      NodeN:=NodeIcon;
+                      while Assigned(NodeN) do begin
+                        sclass:=NodeN.GetElementAttribute(LogEleAlertAttr);
+                        if Pos(LogEleUserName,sclass)>0 then begin
                           sclass:=NodeN.GetElementAttribute(LogEleUserAttr);
-                          if ShowReal then
-                            sbuf:=sbuf+'('+sclass+') ';
                           // user alert
                           if (not IsAlert) and
                              (UserAlertID.Count>0) and
@@ -500,16 +532,18 @@ var
                           if (UserSkipID.Count>0) and
                              (UserSkipID.Items[sclass]='1') then
                             doAddMsg:=False;
-                          break;
+                          if ShowReal then
+                            sbuf:=sbuf+'['+sclass+']';
                         end;
-
-                        NodeN:=NodeN.NextSibling;
-                      end else
                         NodeN:=NodeN.FirstChild;
+                      end;
                     end;
+                    NodeIcon:=NodeIcon.NextSibling;
                   end;
                 end;
-
+              end;
+              // add chat message
+              while Assigned(NodeChat) do begin
                 //if not disLog then
                   sbuf:=sbuf+NodeChat.ElementInnerText;
                 NodeChat:=NodeChat.NextSibling;
@@ -918,6 +952,8 @@ begin
     config.WriteString('PARSER','LogEleUserCon',LogEleUserCon);
     config.WriteString('PARSER','LogEleUserName',LogEleUserName);
     config.WriteString('PARSER','LogEleUserAttr',LogEleUserAttr);
+    config.WriteString('PARSER','LogEleCon',LogEleCon);
+    config.WriteString('PARSER','LogEleHigh',LogEleHigh);
 
     config.WriteString('PARSER','LogEleChatAttr',LogEleChatAttr);
     config.WriteString('PARSER','LogEleChatName',LogEleChatName);
@@ -971,6 +1007,8 @@ begin
     LogEleUserCon:=config.ReadString('PARSER','LogEleUserCon',LogEleUserCon);
     LogEleUserName:=config.ReadString('PARSER','LogEleUserName',LogEleUserName);
     LogEleUserAttr:=config.ReadString('PARSER','LogEleUserAttr',LogEleUserAttr);
+    LogEleCon:=config.ReadString('PARSER','LogEleCon',LogEleCon);
+    LogEleHigh:=config.ReadString('PARSER','LogEleHigh',LogEleHigh);
 
     LogEleChatAttr:=config.ReadString('PARSER','LogEleChatAttr',LogEleChatAttr);
     LogEleChatName:=config.ReadString('PARSER','LogEleChatName',LogEleChatName);
