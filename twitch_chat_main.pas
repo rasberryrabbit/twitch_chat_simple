@@ -406,10 +406,13 @@ var
                     if vcode=3 then
                       vcode:=0;
                   end;
-                  if vcode=0 then
-                    NodeIcon:=NodeIcon.FirstChild
-                    else
-                      NodeIcon:=NodeIcon.NextSibling;
+                  if Assigned(NodeIcon) then begin
+                    if vcode=0 then
+                      NodeIcon:=NodeIcon.FirstChild
+                      else
+                        NodeIcon:=NodeIcon.NextSibling;
+                  end else
+                    break;
                 end;
                 if containchat and Assigned(NodeIcon) then begin
                   // id : first, text : after
@@ -534,10 +537,13 @@ var
                   if vcode=3 then
                     vcode:=0;
                 end;
-                if vcode=0 then
-                  NodeIcon:=NodeIcon.FirstChild
-                  else
-                    NodeIcon:=NodeIcon.NextSibling;
+                if Assigned(NodeIcon) then begin
+                  if vcode=0 then
+                    NodeIcon:=NodeIcon.FirstChild
+                    else
+                      NodeIcon:=NodeIcon.NextSibling;
+                end else
+                  break;
               end;
               NodeChat:=nil;
               if not containchat then
