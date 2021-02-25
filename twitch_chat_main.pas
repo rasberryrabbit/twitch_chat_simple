@@ -635,12 +635,14 @@ end;
 { TFormTwitchChat }
 
 procedure TFormTwitchChat.FormCreate(Sender: TObject);
+const
+  dummy : string = #1;
 begin
   // Chrome
   FCanClose:=False;
   FClosing:=False;
 
-  FillChar(skipchecksum,sizeof(THashDigest),$ff);
+  skipchecksum:=MakeHash(@dummy[1],Length(dummy));
 
   IsMultiThread:=True;
   UserAlertID:=TFPStringHashTableList.Create;
