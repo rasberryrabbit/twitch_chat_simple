@@ -371,13 +371,12 @@ var
               if not IsContainUniStringSemi(NodeN.GetElementAttribute(LogEleChatAttr)) then begin
                 scheck:='';
                 skipcheck:=False;
-                NodeIcon:=NodeN.FirstChild;
+                NodeIcon:=NodeN;
                 // find chat container
-                NodeChat:=NodeIcon;
                 containchat:=False;
                 vcode:=0;
-                while Assigned(NodeChat) do begin
-                  sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
+                while Assigned(NodeIcon) do begin
+                  sclass:=NodeIcon.GetElementAttribute(LogEleChatAttr);
                   if Pos(LogEleUserCon,sclass)>0 then begin
                     containchat:=True;
                     break;
@@ -386,15 +385,36 @@ var
                     vcode:=1
                   else
                   if Pos(LogEleCon,sclass)>0 then
-                    vcode:=0;
+                    vcode:=0
+                  else
+                  if Pos(LogEleAlert,sclass)>0 then begin
+                    NodeIcon:=NodeIcon.FirstChild;
+                    while Assigned(NodeIcon) do begin
+                      NodeChat:=NodeIcon;
+                      while Assigned(NodeChat) do begin
+                        sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
+                        if Pos(LogEleChatName,sclass)>0 then begin
+                          vcode:=3;
+                          break;
+                        end;
+                        NodeChat:=NodeChat.FirstChild;
+                      end;
+                      if vcode=3 then
+                        break;
+                      NodeIcon:=NodeIcon.NextSibling;
+                    end;
+                    if vcode=3 then
+                      vcode:=0;
+                  end;
                   if vcode=0 then
-                    NodeChat:=NodeChat.FirstChild
+                    NodeIcon:=NodeIcon.FirstChild
                     else
-                      NodeChat:=NodeChat.NextSibling;
+                      NodeIcon:=NodeIcon.NextSibling;
                 end;
-                if containchat and Assigned(NodeChat) then begin
+                if containchat and Assigned(NodeIcon) then begin
                   // id : first, text : after
                   // class text-fragment
+                  NodeChat:=NodeIcon;
                   while Assigned(NodeChat) do begin
                     sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
                     if Pos('-notice',sclass)>0 then begin
@@ -480,8 +500,7 @@ var
                 doAddMsg:=Pos(LogEleSys,sclass)=0;
 
               // find chat
-              NodeChat:=nil;
-              NodeIcon:=Nodex.FirstChild;
+              NodeIcon:=Nodex;
               containchat:=False;
               vcode:=0;
               while Assigned(NodeIcon) do begin
@@ -494,12 +513,33 @@ var
                   vcode:=1
                 else
                 if Pos(LogEleCon,sclass)>0 then
-                  vcode:=0;
+                  vcode:=0
+                else
+                if Pos(LogEleAlert,sclass)>0 then begin
+                  NodeIcon:=NodeIcon.FirstChild;
+                  while Assigned(NodeIcon) do begin
+                    NodeChat:=NodeIcon;
+                    while Assigned(NodeChat) do begin
+                      sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
+                      if Pos(LogEleChatName,sclass)>0 then begin
+                        vcode:=3;
+                        break;
+                      end;
+                      NodeChat:=NodeChat.FirstChild;
+                    end;
+                    if vcode=3 then
+                      break;
+                    NodeIcon:=NodeIcon.NextSibling;
+                  end;
+                  if vcode=3 then
+                    vcode:=0;
+                end;
                 if vcode=0 then
                   NodeIcon:=NodeIcon.FirstChild
                   else
                     NodeIcon:=NodeIcon.NextSibling;
               end;
+              NodeChat:=nil;
               if not containchat then
                 NodeIcon:=Nodex.FirstChild
                 else
