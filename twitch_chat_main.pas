@@ -387,6 +387,7 @@ var
                   if Pos(LogEleCon,sclass)>0 then
                     vcode:=0
                   else
+                  // notice chat
                   if Pos(LogEleAlert,sclass)>0 then begin
                     NodeIcon:=NodeIcon.FirstChild;
                     while Assigned(NodeIcon) do begin
@@ -518,6 +519,7 @@ var
                 if Pos(LogEleCon,sclass)>0 then
                   vcode:=0
                 else
+                // notice chat
                 if Pos(LogEleAlert,sclass)>0 then begin
                   NodeIcon:=NodeIcon.FirstChild;
                   while Assigned(NodeIcon) do begin
