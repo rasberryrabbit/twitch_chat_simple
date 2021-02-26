@@ -336,7 +336,7 @@ end;
 
 procedure TElementIdVisitor.Visit(const document: ICefDomDocument);
 const
-  checksumlen=512;
+  checksumlen=128;
 var
   NodeH : ICefDomNode;
   stemp : string;
@@ -442,7 +442,7 @@ var
                       end;
                     end else
                       if Length(scheck)<checksumlen then
-                      scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,checksumlen);
+                      scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen);
 
                     NodeChat:=NodeChat.NextSibling;
                   end;
@@ -452,7 +452,8 @@ var
                 end else begin
                   // non chat
                   if Assigned(NodeN) then
-                    scheck:=scheck+Copy(NodeN.ElementInnerText,checksumlen);
+                    if Length(scheck)<checksumlen then
+                    scheck:=scheck+Copy(NodeN.ElementInnerText,1,checksumlen);
                   //FormTwitchChat.log.AddLog(scheck);
                 end;
 
@@ -636,7 +637,7 @@ var
 
                 // log
                 if not disLog then begin
-                  FormTwitchChat.log.AddLog(UTF8Encode(sbuf));
+                  FormTwitchChat.log.AddLog(UTF8Encode(Copy(sbuf,1,checksumlen*2)));
                 end;
               end;
             end;
