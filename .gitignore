@@ -4,3 +4,5 @@ lib/
 locales/
 mormot/
 webrtc_event_logs/
+swiftshader/
+mphash/
