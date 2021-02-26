@@ -158,6 +158,7 @@ var
   LogEleCon : UnicodeString = '-container';
   LogEleHigh : UnicodeString = '-highlight';
   LogEleEmote : UnicodeString = '--emote';
+  LogEleNotice : UnicodeString = '-notice';
 
   LogAddHead : string = '<li class="twitch_chat">';
   LogAddTail : string = '</li>';
@@ -334,12 +335,14 @@ begin
 end;
 
 procedure TElementIdVisitor.Visit(const document: ICefDomDocument);
+const
+  checksumlen=512;
 var
   NodeH : ICefDomNode;
   stemp : string;
   procedure ProcessNode(ANode: ICefDomNode);
   var
-    Node, Nodex, NodeN, NodeIcon, NodeChat, NodeStart, NodeEnd: ICefDomNode;
+    Node, Nodex, NodeN, NodeL, NodeIcon, NodeChat, NodeStart, NodeEnd: ICefDomNode;
     s, sclass, sbuf, scheck : UnicodeString;
     checksumN : THashDigest;
     bottomchecksum : array[0..MaxChecksum] of THashDigest;
@@ -422,16 +425,28 @@ var
                   NodeChat:=NodeIcon;
                   while Assigned(NodeChat) do begin
                     sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
-                    if Pos('-notice',sclass)>0 then begin
+                    if Pos(LogEleNotice,sclass)>0 then begin
                       containchat:=False;
                       break;
                       //FormTwitchChat.log.AddLog('>>'+sclass);
                     end
                     else
+                    // emote checksum
+                    if Pos(LogEleEmote,sclass)>0 then begin
+                      NodeL:=NodeChat.FirstChild;
+                      while Assigned(NodeL) do begin
+                        if Length(scheck)<checksumlen then
+                        if NodeL.ElementTagName='IMG' then
+                          scheck:=scheck+' '+NodeL.GetElementAttribute('ALT');
+                        NodeL:=NodeL.FirstChild;
+                      end;
+                    end else
+                      if Length(scheck)<checksumlen then
                       scheck:=scheck+' '+NodeChat.ElementInnerText;
 
                     NodeChat:=NodeChat.NextSibling;
                   end;
+                  //FormTwitchChat.log.AddLog('>>'+scheck);
                   if not containchat then
                     skipcheck:=True;
                 end else begin
