@@ -157,6 +157,7 @@ var
   LogEleUserAttr : UnicodeString = 'data-a-user';
   LogEleCon : UnicodeString = '-container';
   LogEleHigh : UnicodeString = '-highlight';
+  LogEleEmote : UnicodeString = '--emote';
 
   LogAddHead : string = '<li class="twitch_chat">';
   LogAddTail : string = '</li>';
@@ -592,6 +593,14 @@ var
               end;
               // add chat message
               while Assigned(NodeChat) do begin
+                if Pos(LogEleEmote,NodeChat.GetElementAttribute(LogEleChatAttr))>0 then begin
+                  NodeN:=NodeChat.FirstChild;
+                  while Assigned(NodeN) do begin
+                    if NodeN.ElementTagName='IMG' then
+                      sbuf:=sbuf+' '+NodeN.GetElementAttribute('ALT');
+                    NodeN:=NodeN.FirstChild;
+                  end;
+                end else
                 //if not disLog then
                   sbuf:=sbuf+NodeChat.ElementInnerText;
                 NodeChat:=NodeChat.NextSibling;
