@@ -442,7 +442,7 @@ var
                       end;
                     end else
                       if Length(scheck)<checksumlen then
-                      scheck:=scheck+' '+NodeChat.ElementInnerText;
+                      scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,checksumlen);
 
                     NodeChat:=NodeChat.NextSibling;
                   end;
@@ -452,7 +452,7 @@ var
                 end else begin
                   // non chat
                   if Assigned(NodeN) then
-                    scheck:=scheck+NodeN.ElementInnerText;
+                    scheck:=scheck+Copy(NodeN.ElementInnerText,checksumlen);
                   //FormTwitchChat.log.AddLog(scheck);
                 end;
 
