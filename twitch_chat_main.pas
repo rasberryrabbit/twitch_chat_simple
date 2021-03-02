@@ -465,8 +465,7 @@ var
                 if matched then begin
                   if i<lastchkCount then begin
                     if skipcheck or
-                       CompareHash(checksumN,lastchecksum[i]) or
-                       CompareHash(lastchecksum[i],skipchecksum) then begin
+                       CompareHash(checksumN,lastchecksum[i]) then begin
                       Dec(dupCountChk[i]);
                       if dupCountChk[i]=0 then
                         Inc(i);
