@@ -149,7 +149,11 @@ strong,.screen_out {
 /* 채팅글의 배경을 지정. 컬러는 RGBA값 */
 
 .tw-flex {
-  display: flex;    
+  display: flex;
+}
+
+figure {
+    display: contents;
 }
 
 .chat-line__message {
@@ -201,9 +205,6 @@ a {
     float: right;
 }
 
-.chat-image__container .chat-image {
-}
-
 .chat-image__container img {
     width: 18px;
     height: 18px;
@@ -212,7 +213,8 @@ a {
 }
 
 .channel-points-reward-line__icon {
-    float: left;
+    display: contents;
+    /* float: left; */
     width: 16px;    
     height: 16px;
     top: 3px;
@@ -221,10 +223,6 @@ a {
 .tw-icon {
     width: 16px;
     height: 16px;
-}
-
-.reply-context-pill {
-    display: flex;
 }
 
 /* padding right on chat-id */
