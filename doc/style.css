@@ -152,6 +152,10 @@ strong,.screen_out {
   display: flex;
 }
 
+.tw-inline-flex {
+    display: flex;
+}
+
 figure {
     display: contents;
 }
