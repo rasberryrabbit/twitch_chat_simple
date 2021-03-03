@@ -272,10 +272,9 @@ begin
     Canvas.Unlock;
   end;
   end;
-  if HorzScrollBar.IsScrollBarVisible<>FLastHBar then begin
-    FLastHBar:=HorzScrollBar.IsScrollBarVisible;
+  if HorzScrollBar.IsScrollBarVisible<>FLastHBar then
     DoOnResize;
-  end;
+  FLastHBar:=HorzScrollBar.IsScrollBarVisible;
   inherited Paint;
 end;
 
