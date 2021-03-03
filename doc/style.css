@@ -205,7 +205,7 @@ a {
     width: 18px;
     height: 18px;
     background-color: transparent;
-    top: 3px;
+    top: -3px;
 }
 
 /* user icon */
