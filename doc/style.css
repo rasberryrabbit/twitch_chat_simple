@@ -177,19 +177,24 @@ a {
     display: none;
 } 
 
-/* icon to right, fix icon position, fix height */
-.chat-line__username-container img {
+/* user icon */
+.chat-line__username-container button {
     display: inline-block;
     float: right;
     position: relative;
-    padding: 2px;
-    height: 16px;
-    top: -4px;
+    padding: 0px;
+    border: none;
+    width: 18px;
+    height: 18px;
+    background-color: transparent;
+    top: 3px;
 }
 
-/*
-.chat-line__message--emote-button > img {
-} */
+/* user icon */
+.chat-line__username-container img {
+    padding-right: 1px;
+    float: right;
+}    
 
 /* padding right on chat-id */
 .chat-author__display-name {
@@ -201,10 +206,9 @@ a {
     display: none;
 }
 
-/* disable clip link
 .chat-card__link {
     display: none;
-} */
+}
 
 .chat-card__preview-img {
     display: none;
@@ -240,7 +244,8 @@ a {
     font-weight: bold;
 }
 
-.chat-line__reply-icon {
+/* remove reply icon */
+.chat-line__reply-icon button {
     display: none;
 }
 
@@ -248,10 +253,11 @@ a {
     display: inline-block;
 }
 
+/*
 .chat-line--inline {
     display: inline-block;
 }
-
+*/
 .channel-points-icon {
     display: inline-block;
 }
