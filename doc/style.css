@@ -156,6 +156,11 @@ figure {
     display: contents;
 }
 
+/* chat box padding */
+.tw-inline {
+    padding: 2px;
+}
+
 .chat-line__message {
     color: #bbbbbb;
     background-color: #111111e0;
