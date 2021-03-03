@@ -147,6 +147,11 @@ strong,.screen_out {
 }  
 
 /* 채팅글의 배경을 지정. 컬러는 RGBA값 */
+
+.tw-flex {
+  display: flex;    
+}
+
 .chat-line__message {
     color: #bbbbbb;
     background-color: #111111e0;
@@ -194,7 +199,33 @@ a {
 .chat-line__username-container img {
     padding-right: 1px;
     float: right;
-}    
+}
+
+.chat-image__container .chat-image {
+}
+
+.chat-image__container img {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    top: 4px;
+}
+
+.channel-points-reward-line__icon {
+    float: left;
+    width: 16px;    
+    height: 16px;
+    top: 3px;
+}
+
+.tw-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.reply-context-pill {
+    display: flex;
+}
 
 /* padding right on chat-id */
 .chat-author__display-name {
