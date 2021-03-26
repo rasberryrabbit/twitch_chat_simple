@@ -258,6 +258,7 @@ begin
   //GlobalCEFApp.LogSeverity      := LOGSEVERITY_ERROR;
   GlobalCEFApp.SingleProcess:=True;
   GlobalCEFApp.OnProcessMessageReceived:=@OnCEFProcessMsg;
+  GlobalCEFApp.CheckCEFFiles:=False;
   if CheckParam('IGNORECERT') then
     GlobalCEFApp.IgnoreCertificateErrors:=True;
 end;
@@ -783,6 +784,7 @@ begin
         l:=Length(s);
         i:=Pos(baseaddr,LowerCase(s));
         j:=Pos('/chat',LowerCase(s));
+        j:=j+Pos('/search',LowerCase(s)); // prevent infinite renaming
         // auto navigate to chat url
         if i<>0 then begin
           if (i+Length(baseaddr)>l) then
