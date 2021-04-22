@@ -165,6 +165,8 @@ var
 
   skipchecksum : THashDigest;
 
+  UseTimeInRawChat : Boolean = True;
+
 type
 
   { TElementIdVisitor }
@@ -633,12 +635,13 @@ var
                   WebSockAlert.BroadcastMsg(stemp);
                 //ssockout:=ssockout+stemp+#13;
                 //ChatBuffer.Add(stemp);
+                if UseTimeInRawChat then
+                  sbuf:=TimeToStr(Now)+' '+sbuf;
                 WebSockRawChat.BroadcastMsg(sbuf);
 
                 // log
-                if not disLog then begin
+                if not disLog then
                   FormTwitchChat.log.AddLog(UTF8Encode(Copy(sbuf,1,checksumlen*2)));
-                end;
               end;
             end;
 
