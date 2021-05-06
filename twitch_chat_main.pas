@@ -1097,6 +1097,8 @@ begin
     LogEleChatSkip.Text:=config.ReadString('PARSER','LogEleChatSkip',LogEleChatSkipDefault);
     UserAlertID.Text:=config.ReadString('USERALERT','USER','');
     UserSkipID.Text:=config.ReadString('USERSKIP','USER','');
+
+    UseTimeInRawChat:=config.ReadBool('PARSER','USETIMERAWCHAT',UseTimeInRawChat);
   finally
     config.Free
   end;
