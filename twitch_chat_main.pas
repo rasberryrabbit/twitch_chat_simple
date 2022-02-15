@@ -345,7 +345,7 @@ var
   stemp : string;
   procedure ProcessNode(ANode: ICefDomNode);
   var
-    Node, Nodex, NodeN, NodeL, NodeIcon, NodeChat, NodeStart, NodeEnd: ICefDomNode;
+    Node, Nodex, NodeN, NodeL, NodeM, NodeIcon, NodeChat, NodeStart, NodeEnd: ICefDomNode;
     s, sclass, sbuf, scheck : UnicodeString;
     checksumN : THashDigest;
     bottomchecksum : array[0..MaxChecksum] of THashDigest;
@@ -427,22 +427,34 @@ var
                   // class text-fragment
                   NodeChat:=NodeIcon;
                   while Assigned(NodeChat) do begin
-                    sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
-                    if Pos(LogEleNotice,sclass)>0 then begin
-                      containchat:=False;
-                      break;
-                      //FormTwitchChat.log.AddLog('>>'+sclass);
-                    end
-                    else
-                    // emote checksum
-                    if Pos(LogEleEmote,sclass)>0 then begin
-                      NodeL:=NodeChat.FirstChild;
-                      while Assigned(NodeL) do begin
+                    if NodeChat.HasElementAttribute(LogEleChatAttr) then begin
+                      sclass:=NodeChat.GetElementAttribute(LogEleChatAttr);
+                      if Pos(LogEleNotice,sclass)>0 then begin
+                        containchat:=False;
+                        break;
+                        //FormTwitchChat.log.AddLog('>>'+sclass);
+                      end
+                      else
+                      // emote checksum
+                      if NodeChat.HasChildren then begin
+                        NodeL:=NodeChat.FirstChild;
+                        while Assigned(NodeL) do begin
+                          if Pos(LogEleEmote,NodeL.GetElementAttribute(LogEleChatAttr))>0 then begin
+                            NodeM:=NodeL;
+                            while Assigned(NodeM) do begin
+                              if Length(scheck)<checksumlen then
+                              if NodeM.ElementTagName='IMG' then
+                                scheck:=scheck+' '+NodeM.GetElementAttribute('ALT');
+                              NodeM:=NodeM.FirstChild;
+                            end;
+                          end else
+                            if Length(scheck)<checksumlen then
+                            scheck:=scheck+' '+Copy(NodeL.ElementInnerText,1,checksumlen);
+                          NodeL:=NodeL.NextSibling;
+                        end;
+                      end else
                         if Length(scheck)<checksumlen then
-                        if NodeL.ElementTagName='IMG' then
-                          scheck:=scheck+' '+NodeL.GetElementAttribute('ALT');
-                        NodeL:=NodeL.FirstChild;
-                      end;
+                        scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen);
                     end else
                       if Length(scheck)<checksumlen then
                       scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen);
@@ -611,13 +623,23 @@ var
               end;
               // add chat message
               while Assigned(NodeChat) do begin
-                if Pos(LogEleEmote,NodeChat.GetElementAttribute(LogEleChatAttr))>0 then begin
-                  NodeN:=NodeChat.FirstChild;
-                  while Assigned(NodeN) do begin
-                    if NodeN.ElementTagName='IMG' then
-                      sbuf:=sbuf+' '+NodeN.GetElementAttribute('ALT');
-                    NodeN:=NodeN.FirstChild;
-                  end;
+                if NodeChat.HasElementAttribute(LogEleChatAttr) then begin
+                  if NodeChat.HasChildren then begin
+                    NodeL:=NodeChat.FirstChild;
+                    while Assigned(NodeL) do begin
+                      if Pos(LogEleEmote,NodeL.GetElementAttribute(LogEleChatAttr))>0 then begin
+                        NodeN:=NodeL;
+                        while Assigned(NodeN) do begin
+                          if NodeN.ElementTagName='IMG' then
+                            sbuf:=sbuf+' '+NodeN.GetElementAttribute('ALT');
+                          NodeN:=NodeN.FirstChild;
+                        end;
+                      end else
+                        sbuf:=sbuf+' '+NodeL.ElementInnerText;
+                      NodeL:=NodeL.NextSibling;
+                    end;
+                  end else
+                    sbuf:=sbuf+NodeChat.ElementInnerText;
                 end else
                 //if not disLog then
                   sbuf:=sbuf+NodeChat.ElementInnerText;

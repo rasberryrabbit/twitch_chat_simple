@@ -12,7 +12,7 @@ object FormTwitchChat: TFormTwitchChat
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object ButtonAct: TButton
     Left = 552
     Height = 25
@@ -35,7 +35,7 @@ object FormTwitchChat: TFormTwitchChat
     Left = 8
     Height = 19
     Top = 442
-    Width = 95
+    Width = 93
     Anchors = [akLeft, akBottom]
     Caption = 'Clear on Load'
     TabOrder = 4
@@ -44,7 +44,7 @@ object FormTwitchChat: TFormTwitchChat
     Left = 144
     Height = 19
     Top = 442
-    Width = 80
+    Width = 78
     Anchors = [akLeft, akBottom]
     Caption = 'Disable log'
     TabOrder = 5
@@ -53,7 +53,7 @@ object FormTwitchChat: TFormTwitchChat
     Left = 256
     Height = 19
     Top = 442
-    Width = 104
+    Width = 102
     Anchors = [akLeft, akBottom]
     Caption = 'Remove system'
     Checked = True
@@ -82,7 +82,7 @@ object FormTwitchChat: TFormTwitchChat
     Left = 8
     Height = 19
     Top = 32
-    Width = 100
+    Width = 98
     Caption = 'Auto Chat URL'
     Checked = True
     State = cbChecked
@@ -92,7 +92,7 @@ object FormTwitchChat: TFormTwitchChat
     Left = 128
     Height = 19
     Top = 32
-    Width = 140
+    Width = 138
     Caption = 'Disable Image loading'
     TabOrder = 3
     Visible = False
@@ -101,7 +101,7 @@ object FormTwitchChat: TFormTwitchChat
     Left = 400
     Height = 19
     Top = 442
-    Width = 89
+    Width = 87
     Anchors = [akLeft, akBottom]
     Caption = 'Show real ID'
     TabOrder = 7
