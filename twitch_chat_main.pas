@@ -157,7 +157,7 @@ var
   LogEleUserAttr : UnicodeString = 'data-a-user';
   LogEleCon : UnicodeString = '-container';
   LogEleHigh : UnicodeString = '-highlight';
-  LogEleEmote : UnicodeString = '--emote';
+  LogEleEmote : UnicodeString = 'emote';
   LogEleNotice : UnicodeString = '-notice';
 
   LogAddHead : string = '<li class="twitch_chat">';
