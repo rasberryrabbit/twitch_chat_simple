@@ -11,5 +11,5 @@ chat relay : 8100
   
 mORMot : <https://github.com/synopse/mORMot/archive/refs/heads/master.zip>  
 CEF4DELPHI : <https://github.com/salvadordf/CEF4Delphi>  
-CEF 90.6.7 Binary : <https://cef-builds.spotifycdn.com/cef_binary_90.6.7%2Bg19ba721%2Bchromium-90.0.4430.212_windows32.tar.bz2>  
+CEF 98.1.19 Binary : <https://cef-builds.spotifycdn.com/cef_binary_98.1.19%2Bg57be9e2%2Bchromium-98.0.4758.80_windows32.tar.bz2>  
 
