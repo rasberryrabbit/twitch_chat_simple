@@ -259,7 +259,7 @@ begin
       Canvas.DrawFocusRect(Rect(cPointX-1,cPointY-1,cPointX+MaxTextWidth+1,cPointY+tHeight-1));
     *)
     Inc(cPointY,tHeight);
-    if (cPointY-FLastPosY+tHeight)>ViewHeight then
+    if (cPointY-FLastPosY)>ViewHeight then
        Break;
     Inc(cPos);
   end;
@@ -353,7 +353,7 @@ begin
   inherited Create(AOwner);
   if Parent=nil then Parent:=TWinControl(AOwner);
   FLineSpace:=2;
-  BorderWidth:=5;
+  BorderWidth:=2;
   FAddFlag:=False;
   FSkipLast:=False;
   FIsViewHorz:=False;
