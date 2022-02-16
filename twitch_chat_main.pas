@@ -354,14 +354,17 @@ begin
       end;
     end else
       if Length(Result)<MaxLen then
-        Result:=Result+' '+Copy(NodeL.ElementInnerText,1,MaxLen);
+        Result:=Result+' '+Copy(NodeL.ElementInnerText,1,MaxLen)
+        else
+          Result:=Result+'..';
     NodeL:=NodeL.NextSibling;
   end;
 end;
 
 procedure TElementIdVisitor.Visit(const document: ICefDomDocument);
 const
-  checksumlen=512;
+  checksumlen=128;
+  loglinelen=1024;
 var
   NodeH : ICefDomNode;
   stemp : string;
@@ -461,10 +464,14 @@ var
                       if NodeChat.HasChildren then
                         scheck:=scheck+GetEmoteName(NodeChat,checksumlen)
                       else if Length(scheck)<checksumlen then
-                             scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen);
+                             scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen)
+                             else
+                               scheck:=scheck+'..';
                     end else
                       if Length(scheck)<checksumlen then
-                      scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen);
+                        scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen)
+                        else
+                          scheck:=scheck+'..';
 
                     NodeChat:=NodeChat.NextSibling;
                   end;
@@ -633,11 +640,17 @@ var
                 while Assigned(NodeChat) do begin
                   if NodeChat.HasElementAttribute(LogEleChatAttr) then begin
                     if NodeChat.HasChildren then
-                      sbuf:=sbuf+GetEmoteName(NodeChat,1024)
+                      sbuf:=sbuf+GetEmoteName(NodeChat,loglinelen)
                     else
-                      sbuf:=sbuf+NodeChat.ElementInnerText;
+                      if Length(sbuf)<loglinelen then
+                        sbuf:=sbuf+NodeChat.ElementInnerText
+                        else
+                          sbuf:=sbuf+'..';
                   end else
-                    sbuf:=sbuf+NodeChat.ElementInnerText;
+                    if Length(sbuf)<loglinelen then
+                      sbuf:=sbuf+NodeChat.ElementInnerText
+                      else
+                        sbuf:=sbuf+'..';
                   NodeChat:=NodeChat.NextSibling;
                 end;
               end;
@@ -659,7 +672,7 @@ var
 
                 // log
                 if not disLog then
-                  FormTwitchChat.log.AddLog(UTF8Encode(Copy(sbuf,1,checksumlen*2)));
+                  FormTwitchChat.log.AddLog(UTF8Encode(Copy(sbuf,1,loglinelen)));
               end;
             end;
 
