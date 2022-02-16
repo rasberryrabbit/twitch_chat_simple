@@ -337,28 +337,34 @@ begin
   Result:=LogEleChatSkip.Find(pchar(UTF8Encode(s)))<>nil;
 end;
 
-function GetEmoteName(const vNode:ICefDomNode; MaxLen:Integer):UnicodeString;
+function GetChatEmoteName(const vNode:ICefDomNode; MaxLen:Integer):UnicodeString;
 var
   NodeL, NodeM: ICefDomNode;
 begin
   Result:='';
-  NodeL:=vNode.FirstChild;
-  while Assigned(NodeL) do begin
-    if Pos(LogEleEmote,NodeL.GetElementAttribute(LogEleChatAttr))>0 then begin
-      NodeM:=NodeL;
-      while Assigned(NodeM) do begin
+  if vNode.HasChildren then begin
+    NodeL:=vNode.FirstChild;
+    while Assigned(NodeL) do begin
+      if Pos(LogEleEmote,NodeL.GetElementAttribute(LogEleChatAttr))>0 then begin
+        NodeM:=NodeL;
+        while Assigned(NodeM) do begin
+          if Length(Result)<MaxLen then
+          if NodeM.ElementTagName='IMG' then
+            Result:=Result+NodeM.GetElementAttribute('ALT');
+          NodeM:=NodeM.FirstChild;
+        end;
+      end else
         if Length(Result)<MaxLen then
-        if NodeM.ElementTagName='IMG' then
-          Result:=Result+' '+NodeM.GetElementAttribute('ALT');
-        NodeM:=NodeM.FirstChild;
-      end;
-    end else
-      if Length(Result)<MaxLen then
-        Result:=Result+' '+Copy(NodeL.ElementInnerText,1,MaxLen)
-        else
-          Result:=Result+'..';
-    NodeL:=NodeL.NextSibling;
-  end;
+          Result:=Result+Copy(NodeL.ElementInnerText,1,MaxLen)
+          else
+            Result:=Result+'..';
+      NodeL:=NodeL.NextSibling;
+    end;
+  end else
+    if Length(Result)<MaxLen then
+      Result:=Result+Copy(vNode.ElementInnerText,1,MaxLen)
+      else
+        Result:=Result+'..';
 end;
 
 procedure TElementIdVisitor.Visit(const document: ICefDomDocument);
@@ -460,16 +466,11 @@ var
                         //FormTwitchChat.log.AddLog('>>'+sclass);
                       end
                       else
-                      // emote checksum
-                      if NodeChat.HasChildren then
-                        scheck:=scheck+GetEmoteName(NodeChat,checksumlen)
-                      else if Length(scheck)<checksumlen then
-                             scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen)
-                             else
-                               scheck:=scheck+'..';
+                        // emote checksum
+                        scheck:=scheck+GetChatEmoteName(NodeChat,checksumlen);
                     end else
                       if Length(scheck)<checksumlen then
-                        scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen)
+                        scheck:=scheck+Copy(NodeChat.ElementInnerText,1,checksumlen)
                         else
                           scheck:=scheck+'..';
 
@@ -638,15 +639,9 @@ var
               // add chat message
               if not disLog then begin
                 while Assigned(NodeChat) do begin
-                  if NodeChat.HasElementAttribute(LogEleChatAttr) then begin
-                    if NodeChat.HasChildren then
-                      sbuf:=sbuf+GetEmoteName(NodeChat,loglinelen)
+                  if NodeChat.HasElementAttribute(LogEleChatAttr) then
+                    sbuf:=sbuf+GetChatEmoteName(NodeChat,loglinelen)
                     else
-                      if Length(sbuf)<loglinelen then
-                        sbuf:=sbuf+NodeChat.ElementInnerText
-                        else
-                          sbuf:=sbuf+'..';
-                  end else
                     if Length(sbuf)<loglinelen then
                       sbuf:=sbuf+NodeChat.ElementInnerText
                       else
