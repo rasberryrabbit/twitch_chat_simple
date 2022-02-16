@@ -361,7 +361,7 @@ end;
 
 procedure TElementIdVisitor.Visit(const document: ICefDomDocument);
 const
-  checksumlen=128;
+  checksumlen=512;
 var
   NodeH : ICefDomNode;
   stemp : string;
@@ -629,16 +629,17 @@ var
                 end;
               end;
               // add chat message
-              while Assigned(NodeChat) do begin
-                if NodeChat.HasElementAttribute(LogEleChatAttr) then begin
-                  if NodeChat.HasChildren then
-                    sbuf:=sbuf+GetEmoteName(NodeChat,1024)
-                  else
+              if not disLog then begin
+                while Assigned(NodeChat) do begin
+                  if NodeChat.HasElementAttribute(LogEleChatAttr) then begin
+                    if NodeChat.HasChildren then
+                      sbuf:=sbuf+GetEmoteName(NodeChat,1024)
+                    else
+                      sbuf:=sbuf+NodeChat.ElementInnerText;
+                  end else
                     sbuf:=sbuf+NodeChat.ElementInnerText;
-                end else
-                //if not disLog then
-                  sbuf:=sbuf+NodeChat.ElementInnerText;
-                NodeChat:=NodeChat.NextSibling;
+                  NodeChat:=NodeChat.NextSibling;
+                end;
               end;
 
               if doAddMsg then begin
