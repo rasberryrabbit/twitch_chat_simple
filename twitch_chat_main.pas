@@ -337,6 +337,28 @@ begin
   Result:=LogEleChatSkip.Find(pchar(UTF8Encode(s)))<>nil;
 end;
 
+function GetEmoteName(const vNode:ICefDomNode; MaxLen:Integer):UnicodeString;
+var
+  NodeL, NodeM: ICefDomNode;
+begin
+  Result:='';
+  NodeL:=vNode.FirstChild;
+  while Assigned(NodeL) do begin
+    if Pos(LogEleEmote,NodeL.GetElementAttribute(LogEleChatAttr))>0 then begin
+      NodeM:=NodeL;
+      while Assigned(NodeM) do begin
+        if Length(Result)<MaxLen then
+        if NodeM.ElementTagName='IMG' then
+          Result:=Result+' '+NodeM.GetElementAttribute('ALT');
+        NodeM:=NodeM.FirstChild;
+      end;
+    end else
+      if Length(Result)<MaxLen then
+        Result:=Result+' '+Copy(NodeL.ElementInnerText,1,MaxLen);
+    NodeL:=NodeL.NextSibling;
+  end;
+end;
+
 procedure TElementIdVisitor.Visit(const document: ICefDomDocument);
 const
   checksumlen=128;
@@ -345,7 +367,7 @@ var
   stemp : string;
   procedure ProcessNode(ANode: ICefDomNode);
   var
-    Node, Nodex, NodeN, NodeL, NodeM, NodeIcon, NodeChat, NodeStart, NodeEnd: ICefDomNode;
+    Node, Nodex, NodeN, NodeIcon, NodeChat, NodeStart, NodeEnd: ICefDomNode;
     s, sclass, sbuf, scheck : UnicodeString;
     checksumN : THashDigest;
     bottomchecksum : array[0..MaxChecksum] of THashDigest;
@@ -436,25 +458,10 @@ var
                       end
                       else
                       // emote checksum
-                      if NodeChat.HasChildren then begin
-                        NodeL:=NodeChat.FirstChild;
-                        while Assigned(NodeL) do begin
-                          if Pos(LogEleEmote,NodeL.GetElementAttribute(LogEleChatAttr))>0 then begin
-                            NodeM:=NodeL;
-                            while Assigned(NodeM) do begin
-                              if Length(scheck)<checksumlen then
-                              if NodeM.ElementTagName='IMG' then
-                                scheck:=scheck+' '+NodeM.GetElementAttribute('ALT');
-                              NodeM:=NodeM.FirstChild;
-                            end;
-                          end else
-                            if Length(scheck)<checksumlen then
-                            scheck:=scheck+' '+Copy(NodeL.ElementInnerText,1,checksumlen);
-                          NodeL:=NodeL.NextSibling;
-                        end;
-                      end else
-                        if Length(scheck)<checksumlen then
-                        scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen);
+                      if NodeChat.HasChildren then
+                        scheck:=scheck+GetEmoteName(NodeChat,checksumlen)
+                      else if Length(scheck)<checksumlen then
+                             scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen);
                     end else
                       if Length(scheck)<checksumlen then
                       scheck:=scheck+' '+Copy(NodeChat.ElementInnerText,1,checksumlen);
@@ -624,21 +631,9 @@ var
               // add chat message
               while Assigned(NodeChat) do begin
                 if NodeChat.HasElementAttribute(LogEleChatAttr) then begin
-                  if NodeChat.HasChildren then begin
-                    NodeL:=NodeChat.FirstChild;
-                    while Assigned(NodeL) do begin
-                      if Pos(LogEleEmote,NodeL.GetElementAttribute(LogEleChatAttr))>0 then begin
-                        NodeN:=NodeL;
-                        while Assigned(NodeN) do begin
-                          if NodeN.ElementTagName='IMG' then
-                            sbuf:=sbuf+' '+NodeN.GetElementAttribute('ALT');
-                          NodeN:=NodeN.FirstChild;
-                        end;
-                      end else
-                        sbuf:=sbuf+' '+NodeL.ElementInnerText;
-                      NodeL:=NodeL.NextSibling;
-                    end;
-                  end else
+                  if NodeChat.HasChildren then
+                    sbuf:=sbuf+GetEmoteName(NodeChat,1024)
+                  else
                     sbuf:=sbuf+NodeChat.ElementInnerText;
                 end else
                 //if not disLog then
