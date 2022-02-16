@@ -24,7 +24,7 @@ type
     protected
       function OnBeforeResourceLoad(const browser: ICefBrowser;
         const frame: ICefFrame; const request: ICefRequest;
-        const callback: ICefRequestCallback): TCefReturnValue; override;
+        const callback: ICefCallback): TCefReturnValue; override;
   end;
 
 implementation
@@ -40,7 +40,7 @@ end;
 
 function TMyRequestHandler.OnBeforeResourceLoad(const browser: ICefBrowser;
   const frame: ICefFrame; const request: ICefRequest;
-  const callback: ICefRequestCallback): TCefReturnValue;
+  const callback: ICefCallback): TCefReturnValue;
 begin
   Result:=inherited OnBeforeResourceLoad(browser, frame, request, callback);
 end;
