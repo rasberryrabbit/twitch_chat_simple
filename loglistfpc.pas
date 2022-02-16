@@ -259,7 +259,7 @@ begin
       Canvas.DrawFocusRect(Rect(cPointX-1,cPointY-1,cPointX+MaxTextWidth+1,cPointY+tHeight-1));
     *)
     Inc(cPointY,tHeight);
-    if (cPointY-FLastPosY)>ViewHeight then
+    if (cPointY-FLastPosY+tHeight)>ViewHeight then
        Break;
     Inc(cPos);
   end;
