@@ -167,11 +167,13 @@ end;
 
 function TLogListFPC.GetItemIndex: Integer;
 begin
-  if Assigned(VertScrollBar) then begin
+  if VertScrollBar.Visible then begin
     FLastPosY:=VertScrollBar.Position;
     Result:=FLastPosY div tHeight;
-  end else
+  end else begin
+    FLastPosY:=0;
     Result:=0;
+  end;
 end;
 
 procedure TLogListFPC.SetHPos(Pos: Integer);
@@ -246,7 +248,7 @@ begin
   SRect:=GetScrolledClientRect;
   Canvas.FillRect(SRect);
   FLastPosX:=HorzScrollBar.Position;
-  cPos := GetItemIndex; // FLastPosY updated
+  cPos:=GetItemIndex; // FLastPosY updated
   cPointY:=cPos*tHeight;
   cPointX:=BorderWidth-FLastPosX;
   ViewHeight:=HorzScrollBar.ClientSizeWithoutBar;
