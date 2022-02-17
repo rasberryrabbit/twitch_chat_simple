@@ -357,6 +357,7 @@ end;
 constructor TLogListFPC.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  BorderStyle:=bsSingle;
   if Parent=nil then Parent:=TWinControl(AOwner);
   FLineSpace:=2;
   BorderWidth:=2;
