@@ -113,6 +113,11 @@ uses
   uformParserTag, uhashimpl, Hash, DefaultTranslator, Contnrs, uformUserlist,
   uCEFMiscFunctions;
 
+resourcestring
+  rsBtnActivate = 'Activate';
+  rsBtnStop = 'Stop';
+
+
 const
   MaxChecksum = 11; // odd length
   rootUrl = 'https://www.twitch.tv';
@@ -779,9 +784,9 @@ procedure TFormTwitchChat.ButtonActClick(Sender: TObject);
 begin
   Timer1.Enabled:=not Timer1.Enabled;
   if Timer1.Enabled then
-    ButtonAct.Caption:='Stop'
+    ButtonAct.Caption:=rsBtnStop
     else
-      ButtonAct.Caption:='Activate';
+      ButtonAct.Caption:=rsBtnActivate;
 end;
 
 procedure TFormTwitchChat.Button2Click(Sender: TObject);

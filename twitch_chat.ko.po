@@ -43,7 +43,6 @@ msgid "500"
 msgstr ""
 
 #: tformportset.editrchat.text
-msgctxt "tformportset.editrchat.text"
 msgid "8100"
 msgstr ""
 
@@ -85,6 +84,7 @@ msgid "Home"
 msgstr "홈"
 
 #: tformtwitchchat.buttonact.caption
+msgctxt "tformtwitchchat.buttonact.caption"
 msgid "Activate"
 msgstr "활성화"
 
@@ -121,13 +121,11 @@ msgid "Setting"
 msgstr "환경"
 
 #: tformuserlist.buttoncancel.caption
-#, fuzzy
 msgctxt "tformuserlist.buttoncancel.caption"
 msgid "Cancel"
 msgstr "취소"
 
 #: tformuserlist.buttonok.caption
-#, fuzzy
 msgctxt "tformuserlist.buttonok.caption"
 msgid "Ok"
 msgstr "확인"
@@ -143,4 +141,13 @@ msgstr "사용자 알림"
 #: tformuserlist.label2.caption
 msgid "User Skip"
 msgstr "사용자 무시"
+
+#: twitch_chat_main.rsbtnactivate
+msgctxt "twitch_chat_main.rsbtnactivate"
+msgid "Activate"
+msgstr "활성화"
+
+#: twitch_chat_main.rsbtnstop
+msgid "Stop"
+msgstr "멈추기"
 

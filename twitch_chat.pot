@@ -84,6 +84,7 @@ msgid "Home"
 msgstr ""
 
 #: tformtwitchchat.buttonact.caption
+msgctxt "tformtwitchchat.buttonact.caption"
 msgid "Activate"
 msgstr ""
 
@@ -139,5 +140,14 @@ msgstr ""
 
 #: tformuserlist.label2.caption
 msgid "User Skip"
+msgstr ""
+
+#: twitch_chat_main.rsbtnactivate
+msgctxt "twitch_chat_main.rsbtnactivate"
+msgid "Activate"
+msgstr ""
+
+#: twitch_chat_main.rsbtnstop
+msgid "Stop"
 msgstr ""
 

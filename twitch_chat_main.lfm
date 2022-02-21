@@ -6,6 +6,7 @@ object FormTwitchChat: TFormTwitchChat
   Caption = 'Twitch Chat'
   ClientHeight = 614
   ClientWidth = 1280
+  Constraints.MinWidth = 640
   Menu = MainMenu1
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
@@ -14,11 +15,11 @@ object FormTwitchChat: TFormTwitchChat
   OnShow = FormShow
   LCLVersion = '2.3.0.0'
   object ButtonAct: TButton
-    Left = 552
+    Left = 1120
     Height = 25
-    Top = 434
+    Top = 436
     Width = 152
-    Anchors = [akBottom]
+    Anchors = [akRight, akBottom]
     Caption = 'Activate'
     OnClick = ButtonActClick
     TabOrder = 8
