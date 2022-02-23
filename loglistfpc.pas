@@ -188,6 +188,8 @@ end;
 
 procedure TLogListFPC.OnTimer(Sender: TObject);
 begin
+  if HorzScrollBar.IsScrollBarVisible<>FLastHBar then
+    DoOnResize;
   if FUpdated then
     if VertScrollBar.Visible then
       VertScrollBar.Range:=Count * tHeight;
@@ -275,8 +277,6 @@ begin
     Canvas.Unlock;
   end;
   end;
-  if HorzScrollBar.IsScrollBarVisible<>FLastHBar then
-    DoOnResize;
   FLastHBar:=HorzScrollBar.IsScrollBarVisible;
   inherited Paint;
 end;
@@ -305,7 +305,6 @@ begin
     HorzScrollBar.Page:=ClientWidth;
   FLastCHeight:=ClientHeight;
   FUpdated:=True;
-  OnTimer(Self);
 end;
 
 procedure TLogListFPC.KeyDown(var Key: Word; Shift: TShiftState);
