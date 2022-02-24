@@ -64,11 +64,11 @@ type
       procedure PutObject(Index: Integer; AObject: TObject); override;
       procedure InsertItem(Index: Integer; const S: string; O: TObject);
         override;
-      procedure Clear; override;
       procedure Changed; override;
     public
       constructor Create;
       destructor Destroy; override;
+      procedure Clear; override;
 
       function GetStrObj(Index, MaxLen:Integer; out obj:TLogStringData):string;
 
