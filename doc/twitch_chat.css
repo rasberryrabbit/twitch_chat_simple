@@ -262,9 +262,8 @@ a {
 
 .chat-line__username-container {
     display: inline-flex;
-    /* position: relative; */
-    /* top: -5px; */
     padding-right: 3px;
+    padding-bottom: 1px;
     height: 18px;
 }
 
