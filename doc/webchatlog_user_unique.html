@@ -29,7 +29,11 @@
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.5);
-    }    
+    }
+    button {
+        background-color: transparent;
+        border: none;
+    }
 </style>
 <script>
 try {
@@ -53,18 +57,18 @@ $(document).ready(function(){
 </script>
 </head> 
 <body>
-<button id="btnclear"><p style="border-radius: 8px;background-color:red;padding: 5px;width: 80px; height: 30px; color:white">리셋</p></button>
+<button id="btnclear"><p style="border-radius: 8px;background-color:red;padding: 5px;width: 80px; height: 20px; color:white">RESET</p></button>
 <span id="usercount" style="display: inine-flex; background-color:glay;padding: 5px;color:blue">0</span>
 <div id="wrapper" style="padding: 10px">   
     <div id="chatbox"></div>
 </div>
 <div style="border-radius: 6px; display: inline; padding: 5px;width: 80px; height: 30px; color:white; background:gray">
-<input type="radio" name="selusertype" value="all"><label for="all">모두</label></input>
-<input type="radio" name="selusertype" value="sub"><label for="sub">구독자</label></input>
-<input type="radio" name="selusertype" value="nosub"><label for="nosub">구독자 제외</label></input>
+<input type="radio" name="selusertype" value="all"><label for="all">All</label></input>
+<input type="radio" name="selusertype" value="sub"><label for="sub">Subscriber</label></input>
+<input type="radio" name="selusertype" value="nosub"><label for="nosub">Non-Subscriber</label></input>
 </div>
-<button id="selectNumberBtn"><p style="border-radius: 8px;background-color:blue;padding: 5px;width: 80px; height: 30px; color:white">선택하기</p></button>
-<button id="choosenclear"><p style="margin-left:20px; border-radius: 8px;background-color:red;padding: 5px;width: 80px; height: 30px; color:white">선택리셋</p></button>
+<button id="selectNumberBtn"><p style="border-radius: 8px;background-color:blue;padding: 5px;width: 80px; height: 20px; color:white">Select</p></button>
+<button id="choosenclear"><p style="margin-left:20px; border-radius: 8px;background-color:red;padding: 5px;width: 80px; height: 20px; color:white">Clear select</p></button>
 <div id="choosen" style="padding: 10px"></div>
 <div id="overlay">
     <div class="pyro" style="display:none">
