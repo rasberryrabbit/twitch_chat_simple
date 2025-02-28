@@ -80,7 +80,7 @@ $(document).ready(function(){
     <p id="selectedUser" style="padding: 10px; background: #111111ef; border-radius: 8px;"></p>
     <div id="seluserchat" style="margin: 10px;"></div>
     <p align="center" style="margin: 5px;">
-    <button id="closePopup" style="display: block; width: 80px; height: 30px;border-radius: 8px;background-color:red">닫기</button>
+    <button id="closePopup" style="display: block; width: 80px; height: 30px;border-radius: 8px;background-color:red">Close</button>
     </p>
 </div>
 <script type="text/javascript" src="reconnecting-websocket.min.js"></script>
@@ -238,7 +238,7 @@ document.getElementById('selectNumberBtn').addEventListener('click', function() 
             } else if(usertype==2) {
               if(sublist[idname]) continue;
             }
-            selectedUser.textContent = '선택 중';
+            selectedUser.textContent = 'Selecting...';
             if(!selidlist[idname]) {
               if(sublist[idname]) {
                 selidlist[idname]=1;
