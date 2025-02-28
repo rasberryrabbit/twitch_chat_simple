@@ -133,14 +133,14 @@ a {
 .channel-points-reward-line__icon {
     display: contents;
     /* float: left; */
-    width: 16px;    
-    height: 16px;
+    width: 18px;    
+    height: 18px;
     top: 3px;
 }
 
 .tw-icon {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
 }
 
 /* padding right on chat-id */
@@ -178,8 +178,9 @@ a {
 
 /* 뱃지 및 아이콘. "display: none;" 을 넣으면 사라짐. */
 .chat-badge {
+    display: inline-block;
     position: relative;
-    top: 10px;
+    top: 4px;
 }
 
 /* 구독자 이름을 표기 */
@@ -206,6 +207,8 @@ a {
 .chat-line__message--emote-button {
     display: inline-block;
     padding-left: 1px;
+    width: 18px;
+    height: 18px;
 }
 
 /*
@@ -254,13 +257,15 @@ a {
 .chat-line__message-container > div:nth-child(2) > div > div > span:nth-child(3) {
     display: inline-flex;
     padding-left: 2px;
+    align-items: baseline;
 }
 
 .chat-line__username-container {
-    display: inline-block;
-    position: relative;
-    top: -5px;
+    display: inline-flex;
+    /* position: relative; */
+    /* top: -5px; */
     padding-right: 3px;
+    height: 18px;
 }
 
 .chat-image {
@@ -277,5 +282,9 @@ a {
 
 .announcement-line {
     display: none;
+}
+
+.chat-line__username-container button {
+    display: inline-flex;
 }
 
