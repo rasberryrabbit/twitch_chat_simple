@@ -71,7 +71,7 @@ object FormTwitchChat: TFormTwitchChat
     Top = 144
   end
   object Timer2: TTimer
-    Interval = 300
+    Interval = 500
     OnTimer = Timer2Timer
     Left = 104
     Top = 144
