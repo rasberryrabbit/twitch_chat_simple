@@ -163,8 +163,9 @@ a {
     display: none;
 }
 
+
 /* 채팅 아이디 */
-.chat-line__username {
+:not(.chat-line--inline) .chat-line__username {
     border: 0px;
     background-color: transparent;
     padding: 0px;
@@ -174,6 +175,7 @@ a {
     position: relative;
     top: 4px;
     padding-left: 3px;
+    display: inline-block;
 }
 
 /* 뱃지 및 아이콘. "display: none;" 을 넣으면 사라짐. */
@@ -234,6 +236,13 @@ a {
     top: -2px;
 }
 
+.mention-fragment {
+    display: flex;
+    position: relative;
+    top: -2px;
+    padding-right: 2px;
+}
+
 .channel-points-icon {
     display: inline-block;
 }
@@ -287,3 +296,15 @@ a {
     display: inline-flex;
 }
 
+.scrollable-trigger__wrapper {
+    display: none;
+}
+
+.room-message {
+    display: none;
+}
+
+.mystery-gift-theme__image {
+    width: 18px;
+    height: 18px;
+}
