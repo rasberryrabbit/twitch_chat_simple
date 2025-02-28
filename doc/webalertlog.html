@@ -21,10 +21,10 @@ $(document).ready(function(){
     $("#alertdiv").height(chatsize[windowname].height);
   }
   // make resizable
-  $("#alertdiv").resizable({autoHide: true, stop: function (event, ui) {
-            chatsize[windowname] = ui.size;
-            localStorage.chatsize = JSON.stringify(chatsize);
-        }}); 
+  //$("#alertdiv").resizable({autoHide: true, stop: function (event, ui) {
+  //          chatsize[windowname] = ui.size;
+  //          localStorage.chatsize = JSON.stringify(chatsize);
+  //      }}); 
 });
 </script>
 </head> 
