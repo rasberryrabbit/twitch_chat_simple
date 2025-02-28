@@ -4,8 +4,12 @@ unit uWebsockSimple;
 
 interface
 
+
 uses
-  Classes, SysUtils, SynCommons, SynCrtSock, SynBidirSock, uChatBuffer;
+  Classes, SysUtils,
+  { mormot2 }
+  mormot.net.ws.core, mormot.net.ws.server, mormot.net.server,
+  uChatBuffer;
 
 type
 
@@ -31,7 +35,7 @@ type
     public
       Server: TSimpleWebsocketServer;
 
-      procedure onExIncomeFrame(Sender: THttpServerResp; const Frame: TWebSocketFrame);
+      procedure onExIncomeFrame(Sender: TWebSocketProcess; const Frame: TWebSocketFrame);
   end;
 
 
@@ -40,7 +44,7 @@ implementation
 
 { TWebSocketProtocolEcho }
 
-procedure TWebSocketProtocolEcho.onExIncomeFrame(Sender: THttpServerResp;
+procedure TWebSocketProtocolEcho.onExIncomeFrame(Sender: TWebSocketProcess;
   const Frame: TWebSocketFrame);
 var
   respf:TWebSocketFrame;
@@ -61,7 +65,7 @@ constructor TSimpleWebsocketServer.Create(const Port: string;
 var
   protocol:TWebSocketProtocolEcho;
 begin
-  fServer:=TWebSocketServer.Create(Port,nil,nil,'twitchchat');
+  fServer:=TWebSocketServer.Create(Port,nil,nil,'Chzzkchat');
   ChatBuffer:=ChatBuf;
   protocol:=TWebSocketProtocolEcho.Create('chat','');
   protocol.Server:=Self;
@@ -72,6 +76,7 @@ end;
 destructor TSimpleWebsocketServer.Destroy;
 begin
   fServer.Free;
+  Sleep(100);
   inherited Destroy;
 end;
 

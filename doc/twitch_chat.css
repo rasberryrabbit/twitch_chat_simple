@@ -1,0 +1,251 @@
+/* CSS Document */
+body {
+    font: 12px arial;
+    color: none;
+    padding: 2px; 
+}
+  
+form, p, span, div {
+    margin:0;
+    padding:0; 
+}
+
+#chatbox, li {
+    list-style-type: none;
+    padding: 0px;
+    padding-top: 1px;
+}
+  
+#wrapper {
+
+}  
+
+/* 전체 글상자. 속성 조정으로 하단부터 시작하는 채팅글이 표현 */
+#chatbox {
+    text-align: left;
+}
+
+#alertbox {
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+#alertbox, li {
+    list-style-type: none;
+    padding: 0px;
+    padding-top: 1px;
+}
+
+/* 트위치 CSS. todo: 아이디 앞에 트위치 아이콘을 넣기. 채팅 통합시에 필요. */
+
+#alertdiv {
+    position: relative;
+    height: 300px;
+    width: 300px;
+}  
+
+/* 채팅글의 배경을 지정. 컬러는 RGBA값 */
+
+.tw-flex {
+  display: flex;
+}
+
+.tw-inline-flex {
+    display: flex;
+}
+
+figure {
+    display: contents;
+}
+
+/* chat box padding */
+.tw-inline {
+    padding: 2px;
+}
+
+.chat-line__message {
+    color: #bbbbbb;
+    background-color: #111111e0;
+    padding: 5px;
+    border-radius: 5px;    
+    font-weight: bold;
+}
+
+.user-notice-line {
+    color: #bbbbbb;
+    background-color: #333300e0;
+    padding: 5px;
+    border-radius: 5px;    
+    font-weight: bold;
+}
+
+.user-notice-line div {
+    display: inline-block;
+}
+
+a {
+    color: #bbbbbb;
+    text-decoration: none;
+}
+
+/* 영문 아이디. 보이지 않게 제거 */
+.chat-author__intl-login {
+    display: none;
+} 
+
+/* user icon */
+.chat-line__username-container button {
+    display: inline-block;
+    float: right;
+    position: relative;
+    padding: 0px;
+    border: none;
+    width: 18px;
+    height: 18px;
+    background-color: transparent;
+    top: -3px;
+}
+
+/* user icon */
+.chat-line__username-container img {
+    padding-right: 1px;
+    float: right;
+}
+
+.chat-image__container img {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    top: 4px;
+}
+
+.channel-points-reward-line__icon {
+    display: contents;
+    /* float: left; */
+    width: 16px;    
+    height: 16px;
+    top: 3px;
+}
+
+.tw-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* padding right on chat-id */
+.chat-author__display-name {
+    padding-right: 10px;
+    padding-left: 5px;
+    display: inline;
+}
+
+/* remove : mark */
+.chat-line__no-background > span:nth-of-type(1) {
+    display: none;
+}
+
+.chat-card__link {
+    display: none;
+}
+
+.chat-card__preview-img {
+    display: none;
+}
+
+/* 채팅 아이디 */
+.chat-line__username {
+    border: 0px;
+    background-color: transparent;
+    padding: 0px;
+    font-weight: bold;
+    font-size: 12px;
+    color: yellowgreen;
+    position: relative;
+    top: 4px;
+}
+
+/* 뱃지 및 아이콘. "display: none;" 을 넣으면 사라짐. */
+.chat-badge {
+    position: relative;
+    top: 4px;
+}
+
+/* 구독자 이름을 표기 */
+.chatter-name {
+    border: 0px;
+    background-color: transparent;
+    padding: 1px;
+    background: #55ffaa;
+    background: -webkit-linear-gradient(left, #55ff55, #55ffff);
+    background:    -moz-linear-gradient(right, #55ff55, #55ffff);
+    background:      -o-linear-gradient(right, #55ff55, #55ffff);
+    background:         linear-gradient(to right, #55ff55, #55ffff);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+    font-weight: bold;
+}
+
+/* remove reply icon */
+.chat-line__reply-icon button {
+    display: none;
+}
+
+.chat-line__message--emote-button {
+    display: inline-block;
+}
+
+/*
+.chat-line--inline {
+    display: inline-block;
+}
+*/
+.channel-points-icon {
+    display: inline-block;
+}
+
+.channel-points-icon--medium {
+    display: inline-block;
+}
+
+.channel-points-reward-line__icon {
+    display: inline-block;
+}
+
+.text-fragment {
+    display: inline-block;
+}
+
+.channel-points-icon {
+    display: inline-block;
+}
+
+.chat-line__message-highlight {
+    display: none;
+}
+
+.InjectLayout-sc-1i43xsx-0.jbmPmA {
+    display: inline-block;
+}
+
+.Layout-sc-1xcs6mc-0 {
+   padding: 1px;
+}
+
+.chat-line__status {
+  display: none;
+}
+
+.chat-line__message-container > div:nth-child(2) > div > div > span:nth-child(2) {
+  display: none;
+}
+
+.chat-line__message-container > div:nth-child(2) > div > div > span:nth-child(3) {
+  display: inline-flex;
+}
+
+.chat-line__username-container {
+  display: inline-flex;
+}

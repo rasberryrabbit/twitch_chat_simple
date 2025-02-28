@@ -22,10 +22,10 @@ $(document).ready(function(){
     //$("#wrapper").height(chatsize[windowname].height);
   }
   // make resizable
-  $("#wrapper").resizable({autoHide: true, stop: function (event, ui) {
-            chatsize[windowname] = ui.size;
-            localStorage.chatsize = JSON.stringify(chatsize);
-        }}); 
+  //$("#wrapper").resizable({autoHide: true, stop: function (event, ui) {
+  //          chatsize[windowname] = ui.size;
+  //          localStorage.chatsize = JSON.stringify(chatsize);
+  //      }}); 
 });
 </script>
 </head> 
@@ -37,23 +37,21 @@ $(document).ready(function(){
 <script type="text/javascript">
 //
 var randomcolor=1;
-var chatsock1 = new ReconnectingWebSocket("ws://localhost:65002","chat");
-chatsock1.reconnectInterval=1000;
-chatsock1.onmessage = function (event) {
+
+var chatsock = new ReconnectingWebSocket("ws://localhost:65002","chat");
+chatsock.reconnectInterval=2000;
+chatsock.onmessage = function (event) {
     var div = $("#chatbox");
     chatline=$(event.data);
     div.append(chatline);
-    if (div.children('div').length>10) {
+    if (div.children('div').length>1000) {
       div.children('div')[0].remove();
     }
-    $('#chatbox').animate({scrollTop: document.body.scrollHeight},"slow");
-    // disappear 
-    var le=document.querySelector('#chatbox').lastChild;
-    setTimeout(function () {
-          le.style.display='none';    
-    }, 30000);
+    if (document.getElementById("chatbox").offsetHeight>document.documentElement.clientHeight) {
+      nstop=document.getElementById("chatbox").offsetHeight-document.documentElement.clientHeight;
+      $(document.documentElement).animate({scrollTop: nstop},"slow");
+    }
 }
-
 </script>
 </body>
 </html>

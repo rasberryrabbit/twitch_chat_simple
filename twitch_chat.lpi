@@ -5,40 +5,63 @@
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="twitch_chat"/>
+      <Title Value="Twitch_chat"/>
       <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
     </General>
-    <i18n>
-      <EnableI18N Value="True"/>
-    </i18n>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <MinorVersionNr Value="1"/>
-      <RevisionNr Value="19"/>
-      <BuildNr Value="164"/>
+      <MinorVersionNr Value="2"/>
     </VersionInfo>
     <BuildModes>
-      <Item Name="default" Default="True"/>
+      <Item Name="Default" Default="True"/>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
+      <UseFileFilters Value="True"/>
     </PublishOptions>
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
     <RequiredPackages>
       <Item>
-        <PackageName Value="CEF4Delphi_Lazarus"/>
+        <PackageName Value="JvXPCtrlsLazR"/>
+      </Item>
+      <Item>
+        <PackageName Value="JvXPCtrlsLazD"/>
+      </Item>
+      <Item>
+        <PackageName Value="JvJansLazR"/>
+      </Item>
+      <Item>
+        <PackageName Value="JvJansLazD"/>
+      </Item>
+      <Item>
+        <PackageName Value="ExceptionLogger"/>
+      </Item>
+      <Item>
+        <PackageName Value="rxnew"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
       </Item>
       <Item>
         <PackageName Value="uniqueinstance_package"/>
       </Item>
       <Item>
-        <PackageName Value="lnetvisual"/>
+        <PackageName Value="mormot2"/>
+      </Item>
+      <Item>
+        <PackageName Value="dcpcrypt_laz"/>
+      </Item>
+      <Item>
+        <PackageName Value="dcpcrypt"/>
+      </Item>
+      <Item>
+        <PackageName Value="CEF4Delphi_Lazarus"/>
       </Item>
       <Item>
         <PackageName Value="LCL"/>
@@ -46,52 +69,26 @@
     </RequiredPackages>
     <Units>
       <Unit>
-        <Filename Value="twitch_chat.lpr"/>
+        <Filename Value="Twitch_chat.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="twitch_chat_main.pas"/>
+        <Filename Value="twitchchat_main.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FormTwitchChat"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="TwitchChat_main"/>
       </Unit>
       <Unit>
-        <Filename Value="fpCEF3\uchatbuffer.pas"/>
+        <Filename Value="uchecksumlist.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="uChatBuffer"/>
+        <UnitName Value="uChecksumList"/>
       </Unit>
       <Unit>
-        <Filename Value="uwebsocksimple.pas"/>
+        <Filename Value="uwebexthandler.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="uWebsockSimple"/>
-      </Unit>
-      <Unit>
-        <Filename Value="form_portset.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="FormPortSet"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-      </Unit>
-      <Unit>
-        <Filename Value="uformparsertag.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="FormParserSet"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="uformParserTag"/>
-      </Unit>
-      <Unit>
-        <Filename Value="uhashimpl.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="uformuserlist.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="FormUserList"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="uformUserlist"/>
+        <UnitName Value="uWebExtHandler"/>
       </Unit>
     </Units>
   </ProjectOptions>
@@ -99,22 +96,26 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="twitch_chat"/>
+      <Filename Value="Twitch_chat"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <Libraries Value="mormot\static\i386-win32"/>
-      <OtherUnitFiles Value="mormot;mphash;mormot\SQLite3;C:\development\extras\lnet\;C:\development\extras\CEF4Delphi\source\;C:\development\extras\CEF4Delphi\packages\"/>
+      <Libraries Value="C:\fpcupdeluxe\extras\mormot\packages\lazarus\lib\i386-win32\;C:\fpcupdeluxe\extras\mormot\static\i386-win32\"/>
+      <OtherUnitFiles Value="C:\fpcupdeluxe\extras\mormot\packages\lazarus\lib\i386-win32\;C:\fpcupdeluxe\extras\mormot\src\net\;C:\fpcupdeluxe\extras\mormot\src\crypt\;C:\fpcupdeluxe\extras\mormot\src\core\"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>
-      <RelocatableUnit Value="True"/>
+      <Checks>
+        <StackChecks Value="True"/>
+      </Checks>
+      <TargetProcessor Value="pentiumm"/>
       <Optimizations>
         <OptimizationLevel Value="2"/>
       </Optimizations>
     </CodeGeneration>
     <Linking>
       <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
         <UseExternalDbgSyms Value="True"/>
       </Debugging>
       <Options>

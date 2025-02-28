@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-<title>Chat - Customer Module</title>
+<title>도네이션, 구독</title>
 <link rel="stylesheet" href="./jquery/jquery-ui.css" />
 <link type="text/css" rel="stylesheet" href="twitch_chat.css" />
 <script src = "./jquery/jquery-3.7.1.min.js"></script>
@@ -35,25 +35,46 @@ $(document).ready(function(){
 </div>
 <script type="text/javascript" src="reconnecting-websocket.min.js"></script>
 <script type="text/javascript">
+var itemmax=500;
+var itemlimit=700;
+var doscroll=1;
 //
-var randomcolor=1;
-var chatsock1 = new ReconnectingWebSocket("ws://localhost:65002","chat");
-chatsock1.reconnectInterval=1000;
-chatsock1.onmessage = function (event) {
+$(window).on('scroll', function(){
+  var curpos=$(window).scrollTop();
+  var height = $("#chatbox").height();
+  var pageHeight = $(window).height();
+  doscroll=1;
+  if (height > pageHeight) {
+      if (curpos + pageHeight + 30 >= height) {
+        doscroll=1;
+      } else {
+        doscroll=0;
+      }
+  }
+})
+
+var chatsock = new ReconnectingWebSocket("ws://localhost:63103","chat");
+chatsock.reconnectInterval=2000;
+chatsock.onmessage = function (event) {
     var div = $("#chatbox");
     chatline=$(event.data);
     div.append(chatline);
-    if (div.children('div').length>10) {
-      div.children('div')[0].remove();
+    if (doscroll==1) {
+        if (div.children('div').length>itemmax) {
+          div.children('div')[0].remove();
+        }      
+        // scroll
+        var height = div.height();
+        var pageHeight = $(window).height();
+        if (height > pageHeight) {
+          window.scrollTo(0, height - pageHeight);
+        }
+    } else {
+        if (div.children('div').length>itemlimit) {
+          div.children('div')[0].remove();
+        }
     }
-    $('#chatbox').animate({scrollTop: document.body.scrollHeight},"slow");
-    // disappear 
-    var le=document.querySelector('#chatbox').lastChild;
-    setTimeout(function () {
-          le.style.display='none';    
-    }, 30000);
 }
-
 </script>
 </body>
 </html>

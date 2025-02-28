@@ -6,3 +6,5 @@ mormot/
 webrtc_event_logs/
 swiftshader/
 mphash/
+cache/
+doc/jquery/

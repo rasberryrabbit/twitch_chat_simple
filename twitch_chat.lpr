@@ -1,27 +1,33 @@
-program twitch_chat;
+program Twitch_chat;
 
 {$mode objfpc}{$H+}
-//{$SetPEFlags IMAGE_FILE_LARGE_ADDRESS_AWARE}
 
 uses
-  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  {$IFDEF UNIX}
   cthreads,
-  {$ENDIF}{$ENDIF}
+  {$ENDIF}
+  {$IFDEF HASAMIGA}
+  athreads,
+  {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, twitch_chat_main, lnetvisual, uniqueinstance_package, uChatBuffer,
-  uWebsockSimple, form_portset, uformParserTag, uhashimpl, uformUserlist,
-  uCEFApplication;
+  Forms, Windows,
+  uCEFApplication,
+  TwitchChat_main, uChecksumList, uniqueinstance_package
+  { you can add units after this };
 
 {$R *.res}
+
+//{$SetPEFlags IMAGE_FILE_LARGE_ADDRESS_AWARE}
 
 begin
   CreateGlobalCEFApp;
 
-  if GlobalCEFApp.StartMainProcess then begin
-    RequireDerivedFormResource:=True;
+  RequireDerivedFormResource:=True;
+  IsMultiThread:=True;
   Application.Scaled:=True;
+  if GlobalCEFApp.StartMainProcess then begin
     Application.Initialize;
-    Application.CreateForm(TFormTwitchChat, FormTwitchChat);
+  Application.CreateForm(TFormTwitchChat, FormTwitchChat);
     Application.Run;
   end;
 

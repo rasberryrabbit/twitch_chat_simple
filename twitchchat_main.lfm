@@ -1,0 +1,181 @@
+object FormTwitchChat: TFormTwitchChat
+  Left = 441
+  Height = 618
+  Top = 226
+  Width = 1027
+  Caption = 'ChzzkWeb'
+  ClientHeight = 618
+  ClientWidth = 1027
+  Menu = MainMenu1
+  SessionProperties = 'Editurl.Text;Width;Height;WindowState;Top;Left'
+  LCLVersion = '4.99.0.0'
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  object CEFWindowParent1: TCEFWindowParent
+    Left = 8
+    Height = 544
+    Top = 72
+    Width = 1010
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 0
+  end
+  object ButtonHome: TButton
+    Left = 8
+    Height = 25
+    Top = 40
+    Width = 75
+    Caption = '치지직 홈'
+    TabOrder = 1
+    OnClick = ButtonHomeClick
+  end
+  object Label1: TLabel
+    Left = 96
+    Height = 31
+    Top = 8
+    Width = 480
+    AutoSize = False
+    Caption = '19금 상태는 지원 안됨(로그인 필요). 채팅을 스크롤하면 작동하지 않음. 코덱이 없기 때문에 영상은 보이지 않음. 웹소켓 서버 때문에 하나만 실행할 수 있음.'
+    WordWrap = True
+  end
+  object Editurl: TEdit
+    Left = 96
+    Height = 23
+    Top = 40
+    Width = 857
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 2
+    OnKeyPress = EditurlKeyPress
+  end
+  object ButtonGo: TButton
+    Left = 960
+    Height = 25
+    Top = 40
+    Width = 56
+    Anchors = [akTop, akRight]
+    Caption = 'Go'
+    TabOrder = 3
+    OnClick = ButtonGoClick
+  end
+  object Chromium1: TChromium
+    OnProcessMessageReceived = Chromium1ProcessMessageReceived
+    OnLoadingStateChange = Chromium1LoadingStateChange
+    OnAddressChange = Chromium1AddressChange
+    OnLoadingProgressChange = Chromium1LoadingProgressChange
+    OnBeforePopup = Chromium1BeforePopup
+    OnBeforeDevToolsPopup = Chromium1BeforeDevToolsPopup
+    OnAfterCreated = Chromium1AfterCreated
+    OnBeforeClose = Chromium1BeforeClose
+    OnClose = Chromium1Close
+    OnChromeCommand = Chromium1ChromeCommand
+    Left = 24
+    Top = 80
+  end
+  object Timer1: TTimer
+    Interval = 100
+    OnTimer = Timer1Timer
+    Left = 24
+    Top = 144
+  end
+  object Timer2: TTimer
+    Interval = 300
+    OnTimer = Timer2Timer
+    Left = 104
+    Top = 144
+  end
+  object UniqueInstance1: TUniqueInstance
+    Enabled = True
+    Left = 496
+    Top = 8
+  end
+  object ActionList1: TActionList
+    Left = 104
+    Top = 80
+    object ActionWSPort: TAction
+      Category = 'WebSocket'
+      Caption = '웹소켓 포트 설정'
+      OnExecute = ActionWSPortExecute
+    end
+    object ActionOpenChat: TAction
+      Caption = '채팅 파일 열기'
+      OnExecute = ActionOpenChatExecute
+    end
+    object ActionOpenNotify: TAction
+      Caption = '구독/도네이션 파일 열기'
+      OnExecute = ActionOpenNotifyExecute
+    end
+    object ActionChatTime: TAction
+      Caption = '시간 태크 추가'
+      OnExecute = ActionChatTimeExecute
+    end
+    object ActionOpenChatFull: TAction
+      Caption = '채팅 리스트 열기'
+      OnExecute = ActionOpenChatFullExecute
+    end
+    object ActionWSockUnique: TAction
+      Caption = '단일 웹소켓 사용'
+      OnExecute = ActionWSockUniqueExecute
+    end
+    object ActionChatuser: TAction
+      Caption = '유저 리스트'
+      OnExecute = ActionChatuserExecute
+    end
+    object ActionWSLog: TAction
+      Caption = '로깅'
+      Checked = True
+      OnExecute = ActionWSLogExecute
+    end
+  end
+  object MainMenu1: TMainMenu
+    Left = 200
+    Top = 83
+    object MenuItem1: TMenuItem
+      Caption = '웹소켓(&W)'
+      object MenuItem11: TMenuItem
+        Action = ActionWSLog
+      end
+      object MenuItem2: TMenuItem
+        Action = ActionWSPort
+      end
+    end
+    object MenuItem3: TMenuItem
+      Caption = '파일(&F)'
+      object MenuItem4: TMenuItem
+        Action = ActionOpenChat
+      end
+      object MenuItem5: TMenuItem
+        Action = ActionOpenNotify
+      end
+      object MenuItem9: TMenuItem
+        Action = ActionOpenChatFull
+      end
+      object MenuItem7: TMenuItem
+        Action = ActionChatuser
+      end
+    end
+    object MenuItem6: TMenuItem
+      Caption = '기타(&M)'
+      object MenuItem10: TMenuItem
+        Action = ActionWSockUnique
+      end
+    end
+  end
+  object XMLConfig1: TXMLConfig
+    StartEmpty = False
+    RootName = 'CONFIG'
+    ReadOnly = False
+    Left = 202
+    Top = 144
+  end
+  object RxVersionInfo1: TRxVersionInfo
+    Left = 536
+    Top = 8
+  end
+  object XMLPropStorage1: TXMLPropStorage
+    StoredValues = <>
+    Left = 296
+    Top = 83
+  end
+end
