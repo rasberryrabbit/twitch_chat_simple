@@ -34,7 +34,6 @@ type
     CEFWindowParent1: TCEFWindowParent;
     Chromium1: TChromium;
     Editurl: TEdit;
-    Label1: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
@@ -189,7 +188,7 @@ procedure TFormTwitchChat.ActionWSPortExecute(Sender: TObject);
 var
   ir: Integer;
 begin
-  ir:=InputCombo('웹소켓 포트','웹소켓 포트를 지정',['63102','63110','63120','63130','63140']);
+  ir:=InputCombo('WebSocket port','Select WebSocket port',['63102','63110','63120','63130','63140']);
   case ir of
   1: WSPortChat:='63102';
   2: WSPortChat:='63110';
