@@ -9,6 +9,6 @@ chat log port : 63102
 chat log alert : 63103  
     
 mORMot2  
-CEF4DELPHI : <https://github.com/salvadordf/CEF4Delphi>  
+CEF4DELPHI  
 CEF 98.1.19 Binary : <[https://cef-builds.spotifycdn.com/cef_binary_132.3.2%2Bg4997b2f%2Bchromium-132.0.6834.161_windows32.tar.bz2](https://cef-builds.spotifycdn.com/cef_binary_132.3.2%2Bg4997b2f%2Bchromium-132.0.6834.161_windows32.tar.bz2)>  
 
