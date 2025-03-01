@@ -174,6 +174,7 @@ var
   chatlog_donation: string = 'doc\webchatlog_donation_sub.html';
   chatlog_chatonly: string = 'doc\webchatlog_chatbox.html';
   chatlog_userid: string = 'doc\webchatlog_user_unique.html';
+  page_avail: Boolean = False;
   observer_started: Boolean = False;
 
 
@@ -272,8 +273,8 @@ procedure TFormTwitchChat.Chromium1AddressChange(Sender: TObject;
   const browser: ICefBrowser; const frame: ICefFrame; const url: ustring);
 begin
   Editurl.Text:=url;
+  page_avail:=False;
   observer_started:=False;
-  Timer2.Enabled:=True;
 end;
 
 procedure TFormTwitchChat.Chromium1AfterCreated(Sender: TObject;
@@ -326,12 +327,13 @@ end;
 procedure TFormTwitchChat.Chromium1LoadingProgressChange(Sender: TObject;
   const browser: ICefBrowser; const progress: double);
 begin
+
 end;
 
 procedure TFormTwitchChat.Chromium1LoadingStateChange(Sender: TObject;
   const browser: ICefBrowser; isLoading, canGoBack, canGoForward: Boolean);
 begin
-
+  page_avail:=not isLoading;
 end;
 
 function InsertTime(var s:ustring):Boolean;
@@ -474,7 +476,7 @@ procedure TFormTwitchChat.ExecuteScript(var Msg: TLMessage);
 var
   TempMsg : ICefProcessMessage;
 begin
-  if observer_started then
+  if observer_started or (not page_avail) then
     exit;
   // Send Message to Renderer for parsing
   if 0<Pos('www.twitch.tv/',Chromium1.DocumentURL) then
