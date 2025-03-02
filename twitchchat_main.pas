@@ -84,8 +84,8 @@ type
       disposition: TCefWindowOpenDisposition; var aResult: boolean);
     procedure Chromium1Close(Sender: TObject; const browser: ICefBrowser;
       var aAction: TCefCloseBrowserAction);
-    procedure Chromium1LoadingProgressChange(Sender: TObject;
-      const browser: ICefBrowser; const progress: double);
+    procedure Chromium1DocumentAvailableInMainFrame(Sender: Tobject;
+      const browser: ICefBrowser);
     procedure Chromium1LoadingStateChange(Sender: TObject;
       const browser: ICefBrowser; isLoading, canGoBack, canGoForward: Boolean);
     procedure Chromium1ProcessMessageReceived(Sender: TObject;
@@ -138,9 +138,11 @@ uses
 const
   MaxLength = 2048;
   cqueryjs = 'var obser=document.querySelector("div.chat-scrollable-area__message-container");'+
+             'var observer;'+
              'if(obser) {'+
+             'if(observer) { observer.disconnect(); };'+
              'browserExt.postMessage("!Observer Start!");'+
-             'const observer = new MutationObserver((mutations) => {'+
+             'var observer = new MutationObserver((mutations) => {'+
              'mutations.forEach(mutat => {'+
              'mutat.addedNodes.forEach(node => {'+
              'browserExt.postMessage(node.outerHTML);'+
@@ -174,7 +176,6 @@ var
   chatlog_donation: string = 'doc\webchatlog_donation_sub.html';
   chatlog_chatonly: string = 'doc\webchatlog_chatbox.html';
   chatlog_userid: string = 'doc\webchatlog_user_unique.html';
-  page_avail: Boolean = False;
   observer_started: Boolean = False;
 
 
@@ -273,7 +274,6 @@ procedure TFormTwitchChat.Chromium1AddressChange(Sender: TObject;
   const browser: ICefBrowser; const frame: ICefFrame; const url: ustring);
 begin
   Editurl.Text:=url;
-  page_avail:=False;
   observer_started:=False;
 end;
 
@@ -324,8 +324,8 @@ begin
   aAction := cbaDelay;
 end;
 
-procedure TFormTwitchChat.Chromium1LoadingProgressChange(Sender: TObject;
-  const browser: ICefBrowser; const progress: double);
+procedure TFormTwitchChat.Chromium1DocumentAvailableInMainFrame(
+  Sender: Tobject; const browser: ICefBrowser);
 begin
 
 end;
@@ -333,7 +333,6 @@ end;
 procedure TFormTwitchChat.Chromium1LoadingStateChange(Sender: TObject;
   const browser: ICefBrowser; isLoading, canGoBack, canGoForward: Boolean);
 begin
-  page_avail:=not isLoading;
 end;
 
 function InsertTime(var s:ustring):Boolean;
@@ -363,8 +362,9 @@ begin
   if message.Name='postMessage' then
     begin
       buf:=message.ArgumentList.GetString(0);
-      if (not observer_started) and (buf='!Observer Start!') then begin
-        observer_started:=True;
+      if not observer_started then begin
+        if buf='!Observer Start!' then
+          observer_started:=True;
       end else
       begin
         if (Pos(UTF8Decode(syschat_str),buf)>0) then
@@ -378,8 +378,8 @@ begin
 
         //if IncludeChatTime then
         //  InsertTime(s);
-        Result:=True;
       end;
+      Result:=True;
     end;
 end;
 
@@ -472,14 +472,25 @@ begin
   PostMessage(Handle, LM_Execute_script, 0, 0);
 end;
 
-procedure TFormTwitchChat.ExecuteScript(var Msg: TLMessage);
+function check_url(const url:ustring):boolean;
+const
+  twitch_base = 'www.twitch.tv/';
 var
-  TempMsg : ICefProcessMessage;
+  i: Integer;
+  s: ustring;
 begin
-  if observer_started or (not page_avail) then
-    exit;
+  Result:=False;
+  i:=Pos(twitch_base,url);
+  if i>0 then begin
+    s:=Copy(url,i+Length(twitch_base));
+    Result:=(s<>'') and (s<>'directory');
+  end;
+end;
+
+procedure TFormTwitchChat.ExecuteScript(var Msg: TLMessage);
+begin
   // Send Message to Renderer for parsing
-  if 0<Pos('www.twitch.tv/',Chromium1.DocumentURL) then
+  if (not observer_started) and check_url(Chromium1.DocumentURL) then
     Chromium1.ExecuteJavaScript(cqueryjs,'');
   Msg.Result:=-1;
 end;

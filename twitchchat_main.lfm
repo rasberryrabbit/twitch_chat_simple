@@ -16,7 +16,7 @@ object FormTwitchChat: TFormTwitchChat
   OnShow = FormShow
   object CEFWindowParent1: TCEFWindowParent
     Left = 8
-    Height = 576
+    Height = 568
     Top = 40
     Width = 1010
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -54,12 +54,12 @@ object FormTwitchChat: TFormTwitchChat
     OnProcessMessageReceived = Chromium1ProcessMessageReceived
     OnLoadingStateChange = Chromium1LoadingStateChange
     OnAddressChange = Chromium1AddressChange
-    OnLoadingProgressChange = Chromium1LoadingProgressChange
     OnBeforePopup = Chromium1BeforePopup
     OnBeforeDevToolsPopup = Chromium1BeforeDevToolsPopup
     OnAfterCreated = Chromium1AfterCreated
     OnBeforeClose = Chromium1BeforeClose
     OnClose = Chromium1Close
+    OnDocumentAvailableInMainFrame = Chromium1DocumentAvailableInMainFrame
     OnChromeCommand = Chromium1ChromeCommand
     Left = 24
     Top = 80
