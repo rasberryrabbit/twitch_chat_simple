@@ -1,6 +1,6 @@
 /* CSS Document */
 body {
-    font-size: 12px;
+    font-size: 14px;
 }    
 
 #chatbox, li {
@@ -13,7 +13,6 @@ body {
 
 }  
 
-/* 전체 글상자. 속성 조정으로 하단부터 시작하는 채팅글이 표현 */
 #chatbox {
     text-align: left;
 }
@@ -107,7 +106,6 @@ a {
 }
 
 .chat-line__username-container span {
-    display: inline-flex;
     position: relative;
     top: 1px;
 }
@@ -343,4 +341,9 @@ a {
 
 .tw-interactable {
    display: inline;
+}
+
+/* point message notify */
+.Layout-sc-1xcs6mc-0.kjARyu {
+    display: none;
 }
