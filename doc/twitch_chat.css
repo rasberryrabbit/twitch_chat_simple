@@ -74,11 +74,16 @@ figure {
 .user-notice-line {
     color: #bbbbbb;
     background-color: #333300e0;
-    padding: 5px;
+    padding: 1px;
     border-radius: 5px;
     font-weight: bold;
-    display: flex;
-    align-items: flex-end;
+    display: inline-flex;
+    align-items: center;
+    margin: 1px;
+}
+
+.user-notice-line p {
+    display: inline;
 }
 
 a {
