@@ -52,6 +52,7 @@ figure {
     position: relative;
     top: -3px;
     padding-left: 2px;
+    display: inline;
 }
 
 .tw-svg {
@@ -236,7 +237,7 @@ a {
 }
 
 .text-fragment {
-    display: flex;
+    display: inline;
     position: relative;
     top: -4px;
 }
@@ -272,9 +273,8 @@ a {
 
 /* text message */
 .chat-line__no-background > div > span:nth-child(3) {
-    display: inline-flex;
+    display: inline-block;
     padding-left: 2px;
-    align-items: baseline;
 }
 
 .chat-line__username-container {
