@@ -61,11 +61,14 @@ figure {
 .chat-line__message {
     color: #bbbbbb;
     background-color: #111111e0;
-    padding: 3px;
+    padding: 1px;
+    padding-left: 5px;
+    padding-right: 5px;
     border-radius: 6px;
     /* font-weight: bold; */
     margin-bottom: 1px;
     vertical-align: baseline;
+    display: inline-block;
 }
 
 .user-notice-line {
@@ -326,11 +329,15 @@ a {
    top: 5px;
 }
 
-.chat-card__title p {
-   display: inline;
+.chat-card {
+   display: none;
 }
 
 .channel-point-icon {
     width: 18px;
     height: 18px;
+}
+
+.tw-interactable {
+   display: inline;
 }
