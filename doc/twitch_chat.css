@@ -1,14 +1,7 @@
 /* CSS Document */
 body {
-    font: 12px arial;
-    color: none;
-    padding: 2px; 
-}
-  
-form, p, span, div {
-    margin:0;
-    padding:0; 
-}
+    font-size: 12px;
+}    
 
 #chatbox, li {
     list-style-type: none;
@@ -38,16 +31,6 @@ form, p, span, div {
     padding-top: 1px;
 }
 
-/* 트위치 CSS. todo: 아이디 앞에 트위치 아이콘을 넣기. 채팅 통합시에 필요. */
-
-#alertdiv {
-    position: relative;
-    height: 300px;
-    width: 300px;
-}  
-
-/* 채팅글의 배경을 지정. 컬러는 RGBA값 */
-
 .tw-flex {
   display: flex;
 }
@@ -65,9 +48,10 @@ figure {
     padding: 2px;
 }
 
-.tw-link {
+:not(.user-notice-line) .tw-link {
     position: relative;
     top: -3px;
+    padding-left: 2px;
 }
 
 .tw-svg {
@@ -88,12 +72,10 @@ figure {
     color: #bbbbbb;
     background-color: #333300e0;
     padding: 5px;
-    border-radius: 5px;    
+    border-radius: 5px;
     font-weight: bold;
-}
-
-.user-notice-line div {
-    display: inline-block;
+    display: flex;
+    align-items: flex-end;
 }
 
 a {
@@ -164,7 +146,7 @@ a {
 }
 
 
-/* 채팅 아이디 */
+/* user name */
 :not(.chat-line--inline) .chat-line__username {
     border: 0px;
     background-color: transparent;
@@ -173,7 +155,7 @@ a {
     font-size: 12px;
     color: yellowgreen;
     position: relative;
-    top: 4px;
+    top: 1px;
     padding-left: 3px;
     display: inline-block;
 }
@@ -181,24 +163,24 @@ a {
 .chat-line--inline .chat-line__username {
     border: 0px;
     background-color: transparent;
-    padding: 0px;
+    padding: 1px;
     font-weight: bold;
     font-size: 12px;
     color: yellowgreen;
-    position: relative;
-    top: -4px;
+    /* position: relative; */
+    /* top: 2px; */
     padding-left: 3px;
-    display: inline-block;
+    display: block;
 }
 
-/* 뱃지 및 아이콘. "display: none;" 을 넣으면 사라짐. */
+/* badge */
 .chat-badge {
     display: inline-block;
     position: relative;
     top: 4px;
 }
 
-/* 구독자 이름을 표기 */
+/* subscriber */
 .chatter-name {
     border: 0px;
     background-color: transparent;
@@ -231,8 +213,10 @@ a {
     display: inline-block;
 }
 */
-.channel-points-icon {
+.channel-points-icon img {
     display: inline-block;
+    width: 18px;
+    height: 18px;
 }
 
 .channel-points-icon--medium {
@@ -246,14 +230,15 @@ a {
 .text-fragment {
     display: flex;
     position: relative;
-    top: -2px;
+    top: -4px;
 }
 
 .mention-fragment {
     display: flex;
     position: relative;
-    top: -2px;
+    top: -4px;
     padding-right: 2px;
+    padding-left: 2px;
 }
 
 .channel-points-icon {
@@ -272,11 +257,13 @@ a {
   display: none;
 }
 
-.chat-line__message-container > div:nth-child(2) > div > div > span:nth-child(2) {
-  display: none;
+/* : */
+.chat-line__no-background > div > span:nth-child(2) {
+    display: none;
 }
 
-.chat-line__message-container > div:nth-child(2) > div > div > span:nth-child(3) {
+/* text message */
+.chat-line__no-background > div > span:nth-child(3) {
     display: inline-flex;
     padding-left: 2px;
     align-items: baseline;
@@ -294,6 +281,12 @@ a {
 }
 
 .chat-line__message-container {
+    padding-left: 3px;
+    vertical-align: sub;
+}
+
+.chat-line__message-container p {
+    display: inline;
     padding-left: 3px;
     vertical-align: sub;
 }
@@ -318,6 +311,26 @@ a {
 }
 
 .mystery-gift-theme__image, .mystery-gift-theme__icon {
+    width: 18px;
+    height: 18px;
+    display: inline;
+}
+
+.user-notice-line .tw-link {
+    position: relative;
+    top: 0px;
+}
+
+.user-notice-line .tw-svg {
+   position: relative;
+   top: 5px;
+}
+
+.chat-card__title p {
+   display: inline;
+}
+
+.channel-point-icon {
     width: 18px;
     height: 18px;
 }
