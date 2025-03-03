@@ -118,6 +118,11 @@ object FormTwitchChat: TFormTwitchChat
       Checked = True
       OnExecute = ActionWSLogExecute
     end
+    object ActionDisableMention: TAction
+      Caption = 'Disable Mention'
+      Checked = True
+      OnExecute = ActionDisableMentionExecute
+    end
   end
   object MainMenu1: TMainMenu
     Left = 200
@@ -150,6 +155,9 @@ object FormTwitchChat: TFormTwitchChat
       Caption = '&Misc'
       object MenuItem10: TMenuItem
         Action = ActionWSockUnique
+      end
+      object MenuItem8: TMenuItem
+        Action = ActionDisableMention
       end
     end
   end
