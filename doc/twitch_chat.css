@@ -99,14 +99,17 @@ a {
 /* user icon */
 .chat-line__username-container button {
     display: inline-block;
-    float: right;
     position: relative;
     padding: 0px;
     border: none;
-    width: 18px;
-    height: 18px;
     background-color: transparent;
     top: -3px;
+}
+
+.chat-line__username-container span {
+    display: inline-flex;
+    position: relative;
+    top: 1px;
 }
 
 /* user icon */
@@ -135,8 +138,8 @@ a {
 
 /* padding right on chat-id */
 .chat-author__display-name {
-    padding-right: 5px;
-    padding-left: 5px;
+    padding-right: 2px;
+    padding-left: 2px;
     display: contents;
 }
 
@@ -160,12 +163,11 @@ a {
     background-color: transparent;
     padding: 0px;
     font-weight: bold;
-    font-size: 12px;
     color: yellowgreen;
-    position: relative;
-    top: 1px;
     padding-left: 3px;
     display: inline-block;
+    position: relative;
+    top: -4px;
 }
 
 .chat-line--inline .chat-line__username {
@@ -173,12 +175,11 @@ a {
     background-color: transparent;
     padding: 1px;
     font-weight: bold;
-    font-size: 12px;
     color: yellowgreen;
     /* position: relative; */
     /* top: 2px; */
     padding-left: 3px;
-    display: block;
+    display: inline;
 }
 
 /* badge */
@@ -238,13 +239,13 @@ a {
 .text-fragment {
     display: inline;
     position: relative;
-    top: -4px;
+    top: -2px;
 }
 
 .mention-fragment {
-    display: flex;
+    display: inline;
     position: relative;
-    top: -4px;
+    top: -2px;
     padding-right: 2px;
     padding-left: 2px;
 }
@@ -277,10 +278,8 @@ a {
 }
 
 .chat-line__username-container {
-    display: inline-flex;
-    padding-right: 3px;
-    padding-bottom: 1px;
-    height: 18px;
+    display: inline-block;
+    padding: 3px;
 }
 
 .chat-image {
@@ -288,7 +287,7 @@ a {
 }
 
 .chat-line__message-container {
-    padding-left: 3px;
+    /* padding-left: 3px; */
     vertical-align: sub;
 }
 
