@@ -123,6 +123,10 @@ object FormTwitchChat: TFormTwitchChat
       Checked = True
       OnExecute = ActionDisableMentionExecute
     end
+    object ActionDisableReply: TAction
+      Caption = 'Disable Reply'
+      OnExecute = ActionDisableReplyExecute
+    end
   end
   object MainMenu1: TMainMenu
     Left = 200
@@ -158,6 +162,9 @@ object FormTwitchChat: TFormTwitchChat
       end
       object MenuItem8: TMenuItem
         Action = ActionDisableMention
+      end
+      object MenuItem12: TMenuItem
+        Action = ActionDisableReply
       end
     end
   end

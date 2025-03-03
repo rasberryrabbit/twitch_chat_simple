@@ -20,6 +20,7 @@ type
   { TFormTwitchChat }
 
   TFormTwitchChat = class(TForm)
+    ActionDisableReply: TAction;
     ActionDisableMention: TAction;
     ActionWSLog: TAction;
     ActionChatuser: TAction;
@@ -39,6 +40,7 @@ type
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
+    MenuItem12: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
@@ -56,6 +58,7 @@ type
     procedure ActionChatTimeExecute(Sender: TObject);
     procedure ActionChatuserExecute(Sender: TObject);
     procedure ActionDisableMentionExecute(Sender: TObject);
+    procedure ActionDisableReplyExecute(Sender: TObject);
     procedure ActionOpenChatExecute(Sender: TObject);
     procedure ActionOpenChatFullExecute(Sender: TObject);
     procedure ActionOpenNotifyExecute(Sender: TObject);
@@ -166,6 +169,7 @@ const
 
   syschat_str = 'user-notice-line';
   mention_str = 'mention-fragment';
+  reply_str   = 'CoreText-sc-';
 
 
 var
@@ -182,6 +186,7 @@ var
   chatlog_userid: string = 'doc\webchatlog_user_unique.html';
   observer_started: Boolean = False;
   disable_mention: Boolean = True;
+  disable_reply: Boolean = False;
 
 
 { TFormTwitchChat }
@@ -251,6 +256,12 @@ procedure TFormTwitchChat.ActionDisableMentionExecute(Sender: TObject);
 begin
   ActionDisableMention.Checked:=not ActionDisableMention.Checked;
   disable_mention:=ActionDisableMention.Checked;
+end;
+
+procedure TFormTwitchChat.ActionDisableReplyExecute(Sender: TObject);
+begin
+  ActionDisableReply.Checked:=not ActionDisableReply.Checked;
+  disable_reply:=ActionDisableReply.Checked;
 end;
 
 procedure TFormTwitchChat.ActionOpenNotifyExecute(Sender: TObject);
@@ -385,7 +396,8 @@ begin
              SockServerChat.BroadcastMsg(UTF8Encode(buf));
          end
          else
-           if (not disable_mention) or (disable_mention and (Pos(mention_str,buf)=0)) then
+         if ((not disable_mention) or (disable_mention and (Pos(mention_str,buf)=0))) and
+            ((not disable_reply) or (disable_reply and (Pos(reply_str,buf)=0))) then
              SockServerChat.BroadcastMsg(UTF8Encode(buf));
 
         //if IncludeChatTime then
@@ -440,6 +452,7 @@ begin
   XMLConfig1.SetValue('CHAT/DONATION',UTF8Decode(chatlog_donation));
   XMLConfig1.SetValue('CHAT/USERID',UTF8Decode(chatlog_userid));
   XMLConfig1.SetValue('CHAT/DMENTION',disable_mention);
+  XMLConfig1.SetValue('CHAT/DREPLY',disable_reply);
   if XMLConfig1.Modified then
     XMLConfig1.SaveToFile('config.xml');
 end;
@@ -454,9 +467,11 @@ begin
   WSPortSys:=XMLConfig1.GetValue('WS/PORTSYS','63103');
   WSPortUnique:=XMLConfig1.GetValue('WS/UNIQUE',WSPortUnique);
   disable_mention:=XMLConfig1.GetValue('CHAT/DMENTION',disable_mention);
+  disable_reply:=XMLConfig1.GetValue('CHAT/DREPLY',disable_reply);
   ActionChatTime.Checked:=IncludeChatTime;
   ActionWSockUnique.Checked:=WSPortUnique;
   ActionDisableMention.Checked:=disable_mention;
+  ActionDisableReply.Checked:=disable_reply;
 
   chatlog_full:=UTF8Encode(XMLConfig1.GetValue('CHAT/FULL',UTF8Decode(chatlog_full)));
   chatlog_full_unique:=UTF8Encode(XMLConfig1.GetValue('CHAT/FULLUNIQUE',UTF8Decode(chatlog_full_unique)));
