@@ -78,8 +78,7 @@ figure {
     padding: 1px;
     border-radius: 5px;
     font-weight: bold;
-    display: inline-flex;
-    align-items: center;
+    display: inline-block;
     margin: 1px;
 }
 
