@@ -385,7 +385,7 @@ begin
     begin
       buf:=message.ArgumentList.GetString(0);
       if not observer_started then begin
-        if buf='!Observer Start!' then
+        {if buf='!Observer Start!' then}
           observer_started:=True;
       end else
       begin
